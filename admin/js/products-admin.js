@@ -1,4 +1,5 @@
 import { fetchAdminProducts, createProduct, updateProduct, deleteProduct, fetchProductById } from '../api/admin-products.js';
+import { fetchAdminCategories } from '../api/admin-categories.js';
 import { checkAdminAuth } from './admin.js';
 import { formatCurrency } from './format.js';
 
@@ -9,11 +10,15 @@ if (!checkAdminAuth()) {
 
 let currentProducts = [];
 let currentEditId = null; // null = adding, otherwise editing
+let cachedCategories = [];
 
 const productsContainer = document.getElementById('products-container');
 const modal = document.getElementById('product-modal');
 const modalTitle = document.getElementById('modal-title');
 const productForm = document.getElementById('product-form');
+const productImagesInput = document.getElementById('product-images');
+const existingImagesContainer = document.getElementById('existing-images');
+const categorySelect = document.getElementById('product-category');
 const addProductBtn = document.getElementById('add-product-btn');
 const closeModal = document.querySelector('.close');
 const cancelModal = document.getElementById('cancel-modal');
@@ -26,6 +31,48 @@ function escapeHtml(str) {
         if (m === '<') return '&lt;';
         if (m === '>') return '&gt;';
         return m;
+    });
+}
+
+function getPrimaryImage(product) {
+    return product?.image || product?.images?.[0];
+}
+
+function getImageCount(product) {
+    if (Array.isArray(product?.images)) return product.images.length;
+    return product?.image ? 1 : 0;
+}
+
+async function loadCategories() {
+    try {
+        const categories = await fetchAdminCategories();
+        cachedCategories = categories || [];
+        populateCategorySelect();
+    } catch (error) {
+        cachedCategories = [];
+        populateCategorySelect();
+    }
+}
+
+function populateCategorySelect(selectedValue = '') {
+    categorySelect.innerHTML = '<option value="">Select a category</option>';
+    if (!cachedCategories.length) {
+        const option = document.createElement('option');
+        option.value = '';
+        option.textContent = 'No categories available';
+        option.disabled = true;
+        categorySelect.appendChild(option);
+        return;
+    }
+    cachedCategories.forEach(category => {
+        const option = document.createElement('option');
+        option.value = category.name;
+        option.textContent = category.name;
+        option.dataset.id = category.id;
+        if (selectedValue && selectedValue === category.name) {
+            option.selected = true;
+        }
+        categorySelect.appendChild(option);
     });
 }
 
@@ -53,7 +100,10 @@ function renderProducts(products) {
                 ${products.map(product => `
                     <tr data-product-id="${product.id}">
                         <td>${product.id}</td>
-                        <td><img src="${product.image || 'https://via.placeholder.com/50x50?text=No+Img'}" alt="${escapeHtml(product.name)}" class="product-thumb"></td>
+                        <td>
+                            <img src="${getPrimaryImage(product) || 'https://via.placeholder.com/50x50?text=No+Img'}" alt="${escapeHtml(product.name)}" class="product-thumb">
+                            <div class="muted-text">(${getImageCount(product)})</div>
+                        </td>
                         <td>${escapeHtml(product.name)}</td>
                         <td>${escapeHtml(product.category)}</td>
                         <td>${formatCurrency(product.price)}</td>
@@ -95,6 +145,9 @@ function openAddModal() {
     currentEditId = null;
     modalTitle.textContent = 'Add New Product';
     productForm.reset();
+    productImagesInput.value = '';
+    existingImagesContainer.textContent = '';
+    populateCategorySelect();
     modal.style.display = 'flex';
 }
 
@@ -107,10 +160,17 @@ async function openEditModal(productId) {
         modalTitle.textContent = 'Edit Product';
         document.getElementById('product-name').value = product.name;
         document.getElementById('product-price').value = product.price;
-        document.getElementById('product-category').value = product.category;
+        populateCategorySelect(product.category);
         document.getElementById('product-description').value = product.description;
-        document.getElementById('product-image').value = product.image || '';
+        productImagesInput.value = '';
         document.getElementById('product-stock').value = product.stock || 0;
+        const existingImages = Array.isArray(product.images) ? product.images : (product.image ? [product.image] : []);
+        if (existingImages.length) {
+            existingImagesContainer.textContent = `Existing images: ${existingImages.length}`;
+        } else {
+            existingImagesContainer.textContent = 'No images uploaded yet.';
+        }
+        existingImagesContainer.dataset.images = JSON.stringify(existingImages);
         modal.style.display = 'flex';
     } catch (error) {
         alert('Failed to load product details');
@@ -126,13 +186,33 @@ async function handleProductSubmit(e) {
         price: parseFloat(document.getElementById('product-price').value),
         category: document.getElementById('product-category').value.trim(),
         description: document.getElementById('product-description').value.trim(),
-        image: document.getElementById('product-image').value.trim(),
         stock: parseInt(document.getElementById('product-stock').value) || 0
     };
 
     if (!productData.name || isNaN(productData.price) || !productData.category || !productData.description) {
         alert('Please fill in all required fields.');
         return;
+    }
+
+    const files = Array.from(productImagesInput.files || []);
+    if (files.length > 10) {
+        alert('You can upload a maximum of 10 images.');
+        return;
+    }
+
+    let payload = productData;
+    if (files.length > 0) {
+        const formData = new FormData();
+        Object.entries(productData).forEach(([key, value]) => {
+            formData.append(key, String(value));
+        });
+        files.forEach(file => formData.append('images', file));
+        payload = formData;
+    } else if (currentEditId) {
+        const existingImages = JSON.parse(existingImagesContainer.dataset.images || '[]');
+        if (existingImages.length) {
+            payload = { ...productData, images: existingImages, image: existingImages[0] };
+        }
     }
 
     const submitBtn = productForm.querySelector('button[type="submit"]');
@@ -142,9 +222,9 @@ async function handleProductSubmit(e) {
 
     try {
         if (currentEditId) {
-            await updateProduct(currentEditId, productData);
+            await updateProduct(currentEditId, payload);
         } else {
-            await createProduct(productData);
+            await createProduct(payload);
         }
         // Refresh product list
         await loadProducts();
@@ -173,6 +253,9 @@ async function handleDelete(productId) {
 function closeModalHandler() {
     modal.style.display = 'none';
     productForm.reset();
+    productImagesInput.value = '';
+    existingImagesContainer.textContent = '';
+    existingImagesContainer.dataset.images = '';
     currentEditId = null;
 }
 

@@ -4,6 +4,10 @@ import { formatCurrency } from './format.js';
 
 const cartContainer = document.getElementById('cart-container');
 
+function getProductImage(product) {
+    return product?.image || product?.images?.[0] || 'https://via.placeholder.com/80x80?text=No+Image';
+}
+
 // Helper to escape HTML
 function escapeHtml(str) {
     if (!str) return '';
@@ -43,7 +47,7 @@ function renderCart(cart) {
                     ${cart.items.map(item => `
                         <tr data-item-id="${item.id}">
                             <td class="product-info">
-                                <img src="${item.product?.image || 'https://via.placeholder.com/80x80?text=No+Image'}" alt="${escapeHtml(item.product?.name)}">
+                                <img src="${getProductImage(item.product)}" alt="${escapeHtml(item.product?.name)}">
                                 <span>${escapeHtml(item.product?.name)}</span>
                             </td>
                             <td>${formatCurrency(item.product?.price)}</td>

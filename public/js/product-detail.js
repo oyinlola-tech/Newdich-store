@@ -5,6 +5,10 @@ import { formatCurrency } from './format.js';
 const productDetailContainer = document.getElementById('product-detail');
 const relatedGrid = document.getElementById('related-products-grid');
 
+function getProductImage(product) {
+    return product?.image || product?.images?.[0] || 'https://via.placeholder.com/600x600?text=No+Image';
+}
+
 // Get product ID from URL query parameter
 function getProductIdFromUrl() {
     const params = new URLSearchParams(window.location.search);
@@ -34,7 +38,7 @@ function renderProduct(product) {
     const productHtml = `
         <div class="product-detail">
             <div class="product-detail-image">
-                <img src="${product.image || 'https://via.placeholder.com/600x600?text=No+Image'}" alt="${escapeHtml(product.name)}">
+                <img src="${getProductImage(product)}" alt="${escapeHtml(product.name)}">
             </div>
             <div class="product-detail-info">
                 <div class="product-meta">${categoryLabel}</div>
@@ -103,7 +107,7 @@ function renderRelatedProducts(products) {
     relatedGrid.innerHTML = products.map(product => `
             <div class="product-card" data-product-id="${product.id}">
             <div class="product-media">
-                <img src="${product.image || 'https://via.placeholder.com/600x450?text=No+Image'}" alt="${escapeHtml(product.name)}">
+                <img src="${product?.image || product?.images?.[0] || 'https://via.placeholder.com/600x450?text=No+Image'}" alt="${escapeHtml(product.name)}">
                 <span class="product-badge badge-new">Recommended</span>
                 <button class="product-quick btn-wishlist" data-id="${product.id}" aria-label="Save">
                     <i class="fas fa-heart"></i>

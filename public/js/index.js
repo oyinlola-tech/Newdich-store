@@ -6,6 +6,10 @@ const productGrid = document.getElementById('featured-products-grid');
 const heroFeaturedCard = document.getElementById('hero-featured-card');
 const relatedGrid = document.getElementById('home-related-grid');
 
+function getProductImage(product) {
+    return product?.image || product?.images?.[0] || 'https://via.placeholder.com/600x450?text=No+Image';
+}
+
 function getBadgeMeta(product) {
     let badgeText = 'New';
     let badgeClass = 'badge-new';
@@ -42,7 +46,7 @@ async function loadFeaturedProducts() {
             return `
             <div class="product-card" data-product-id="${product.id}">
                 <div class="product-media">
-                    <img src="${product.image || 'https://via.placeholder.com/600x450?text=No+Image'}" alt="${escapeHtml(product.name)}">
+                    <img src="${getProductImage(product)}" alt="${escapeHtml(product.name)}">
                     <span class="product-badge ${badgeClass}">${badgeText}</span>
                     <button class="product-quick btn-wishlist" data-id="${product.id}" aria-label="Save">
                         <i class="fas fa-heart"></i>
@@ -69,7 +73,7 @@ async function loadFeaturedProducts() {
                 const { badgeText, badgeClass } = getBadgeMeta(highlight);
                 heroFeaturedCard.innerHTML = `
                     <div class="product-media">
-                        <img src="${highlight.image || 'https://via.placeholder.com/600x450?text=No+Image'}" alt="${escapeHtml(highlight.name)}">
+                        <img src="${getProductImage(highlight)}" alt="${escapeHtml(highlight.name)}">
                         <span class="product-badge ${badgeClass}">${badgeText}</span>
                     </div>
                     <div class="product-body">
@@ -140,7 +144,7 @@ function renderRelatedProducts(products) {
         return `
             <div class="product-card" data-product-id="${product.id}">
                 <div class="product-media">
-                    <img src="${product.image || 'https://via.placeholder.com/600x450?text=No+Image'}" alt="${escapeHtml(product.name)}">
+                    <img src="${getProductImage(product)}" alt="${escapeHtml(product.name)}">
                     <span class="product-badge ${badgeClass}">${badgeText}</span>
                     <button class="product-quick btn-wishlist" data-id="${product.id}" aria-label="Save">
                         <i class="fas fa-heart"></i>

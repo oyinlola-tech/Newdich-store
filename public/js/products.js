@@ -19,6 +19,10 @@ const applyFiltersBtn = document.getElementById('apply-filters');
 const resetFiltersBtn = document.getElementById('reset-filters');
 const relatedGrid = document.getElementById('products-related-grid');
 
+function getProductImage(product) {
+    return product?.image || product?.images?.[0] || 'https://via.placeholder.com/600x450?text=No+Image';
+}
+
 // Helper to escape HTML
 function escapeHtml(str) {
     if (!str) return '';
@@ -57,7 +61,7 @@ function renderProducts(products) {
         return `
         <div class="product-card" data-product-id="${product.id}">
             <div class="product-media">
-                <img src="${product.image || 'https://via.placeholder.com/600x450?text=No+Image'}" alt="${escapeHtml(product.name)}">
+                <img src="${getProductImage(product)}" alt="${escapeHtml(product.name)}">
                 <span class="product-badge ${badgeClass}">${badgeText}</span>
                 <button class="product-quick btn-wishlist" data-id="${product.id}" aria-label="Save">
                     <i class="fas fa-heart"></i>
@@ -123,7 +127,7 @@ function renderRelatedProducts(products) {
         return `
             <div class="product-card" data-product-id="${product.id}">
                 <div class="product-media">
-                    <img src="${product.image || 'https://via.placeholder.com/600x450?text=No+Image'}" alt="${escapeHtml(product.name)}">
+                    <img src="${getProductImage(product)}" alt="${escapeHtml(product.name)}">
                     <span class="product-badge ${badgeClass}">${badgeText}</span>
                     <button class="product-quick btn-wishlist" data-id="${product.id}" aria-label="Save">
                         <i class="fas fa-heart"></i>

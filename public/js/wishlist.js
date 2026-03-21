@@ -5,6 +5,10 @@ import { formatCurrency } from './format.js';
 
 const wishlistContainer = document.getElementById('wishlist-container');
 
+function getProductImage(product) {
+    return product?.image || product?.images?.[0] || 'https://via.placeholder.com/300x200?text=No+Image';
+}
+
 function escapeHtml(str) {
     if (!str) return '';
     return str.replace(/[&<>]/g, function(m) {
@@ -36,7 +40,7 @@ function renderWishlist(items) {
         <div class="wishlist-grid">
             ${items.map(item => `
                 <div class="wishlist-card" data-item-id="${item.id}">
-                    <img src="${item.product?.image || 'https://via.placeholder.com/300x200?text=No+Image'}" alt="${escapeHtml(item.product?.name)}">
+                    <img src="${getProductImage(item.product)}" alt="${escapeHtml(item.product?.name)}">
                     <div class="wishlist-info">
                         <h4>${escapeHtml(item.product?.name)}</h4>
                         <p class="price">${formatCurrency(item.product?.price)}</p>

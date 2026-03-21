@@ -7,6 +7,10 @@ import { formatCurrency } from './format.js';
 
 const checkoutContainer = document.getElementById('checkout-container');
 
+function getProductImage(product) {
+    return product?.image || product?.images?.[0] || 'https://via.placeholder.com/60x60?text=No+Image';
+}
+
 // Check authentication
 if (!isLoggedIn()) {
     // Redirect to login with return URL
@@ -42,7 +46,7 @@ async function loadCheckout() {
 function renderCheckoutForm(user) {
     const orderItemsHtml = cartData.items.map(item => `
         <div class="checkout-item">
-            <img src="${item.product?.image || 'https://via.placeholder.com/60x60?text=No+Image'}" alt="${escapeHtml(item.product?.name)}">
+            <img src="${getProductImage(item.product)}" alt="${escapeHtml(item.product?.name)}">
             <div class="checkout-item-details">
                 <span class="item-name">${escapeHtml(item.product?.name)}</span>
                 <span class="item-quantity">Qty: ${item.quantity}</span>

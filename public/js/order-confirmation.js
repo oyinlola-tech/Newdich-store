@@ -5,6 +5,10 @@ import { formatCurrency } from './format.js';
 
 const container = document.getElementById('order-confirmation-container');
 
+function getProductImage(product) {
+    return product?.image || product?.images?.[0] || 'https://via.placeholder.com/60x60?text=No+Image';
+}
+
 // Get order ID from URL
 function getOrderIdFromUrl() {
     const params = new URLSearchParams(window.location.search);
@@ -28,7 +32,7 @@ function renderOrderConfirmation(order) {
     const itemsHtml = order.items.map(item => `
         <div class="order-item">
             <div class="order-item-image">
-                <img src="${item.product?.image || 'https://via.placeholder.com/60x60?text=No+Image'}" alt="${escapeHtml(item.product?.name)}">
+                <img src="${getProductImage(item.product)}" alt="${escapeHtml(item.product?.name)}">
             </div>
             <div class="order-item-details">
                 <span class="item-name">${escapeHtml(item.product?.name)}</span>
