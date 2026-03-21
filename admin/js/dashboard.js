@@ -44,12 +44,12 @@ async function loadRecentOrders() {
     try {
         const orders = await fetchRecentOrders(5);
         if (!orders.length) {
-            recentOrdersContainer.innerHTML = '<h3>Recent Orders</h3><p>No recent orders</p>';
+            recentOrdersContainer.innerHTML = '<h3>Recent Orders</h3><div class="empty-state">No recent orders yet.</div>';
             return;
         }
 
         const tableHtml = `
-            <table class="orders-table">
+            <table class="orders-table premium-table">
                 <thead>
                     <tr>
                         <th>Order ID</th>

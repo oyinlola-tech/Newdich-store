@@ -6,7 +6,7 @@ const errorBox = document.getElementById('admin-reset-error');
 
 function getToken() {
     const params = new URLSearchParams(window.location.search);
-    return params.get('token');
+    return params.get('token') || sessionStorage.getItem('adminResetToken');
 }
 
 form.addEventListener('submit', async (e) => {

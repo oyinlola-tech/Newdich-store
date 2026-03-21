@@ -23,9 +23,12 @@ form.addEventListener('submit', async (e) => {
 
     try {
         await requestAdminPasswordReset(email);
-        message.textContent = 'Reset link sent! Check your email.';
-        message.style.display = 'block';
-        form.reset();
+        sessionStorage.setItem('pendingAdminOtp', JSON.stringify({
+            email,
+            purpose: 'reset',
+            otpToken: null
+        }));
+        window.location.href = `otp.html?purpose=reset&email=${encodeURIComponent(email)}`;
     } catch (error) {
         errorBox.textContent = error.message || 'Failed to send reset link.';
         errorBox.style.display = 'block';

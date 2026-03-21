@@ -1,4 +1,5 @@
 import { resetPassword } from '../api/password.js';
+import './footer-year.js';
 
 const form = document.getElementById('reset-password-form');
 const message = document.getElementById('reset-message');
@@ -6,7 +7,7 @@ const errorBox = document.getElementById('reset-error');
 
 function getToken() {
     const params = new URLSearchParams(window.location.search);
-    return params.get('token');
+    return params.get('token') || sessionStorage.getItem('resetToken');
 }
 
 form.addEventListener('submit', async (e) => {

@@ -13,6 +13,9 @@ export async function adminLogin(credentials) {
             throw new Error(error.message || 'Admin login failed');
         }
         const data = await response.json();
+        if (data.requiresOtp || data.otpRequired) {
+            return data;
+        }
         if (data.token) {
             localStorage.setItem('authToken', data.token);
             if (data.admin) {

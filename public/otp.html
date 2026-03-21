@@ -1,14 +1,11 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Newdich Store - My Account</title>
-    <!-- Google Fonts -->
+    <title>Verify OTP - Newdich Store</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -45,8 +42,26 @@
 
     <main>
         <div class="container">
-            <div id="account-container">
-                <div class="loading">Loading account details...</div>
+            <div class="auth-container">
+                <div class="auth-card">
+                    <h2>Verify OTP</h2>
+                    <p class="muted-note">We sent a 6-digit code to your email.</p>
+                    <form id="otp-form">
+                        <div class="form-group">
+                            <label for="otp-code">OTP Code</label>
+                            <input type="text" id="otp-code" maxlength="6" inputmode="numeric" placeholder="Enter 6-digit code" required>
+                        </div>
+                        <button type="submit" class="btn-primary btn-block">Verify</button>
+                    </form>
+                    <div class="auth-footer">
+                        <p><button id="resend-otp" class="btn-secondary">Resend Code</button></p>
+                    </div>
+                    <div id="otp-message" class="success-message" style="display:none;"></div>
+                    <div id="otp-error" class="error-message" style="display:none;"></div>
+                    <div class="auth-footer">
+                        <p><a href="login.html">Back to login</a></p>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
@@ -58,7 +73,6 @@
         </div>
     </footer>
 
-    <script type="module" src="js/account.js"></script>
+    <script type="module" src="js/otp.js"></script>
 </body>
 </html>
-

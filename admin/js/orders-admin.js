@@ -48,7 +48,7 @@ async function renderOrders(orders) {
     }
 
     const tableHtml = `
-        <table class="data-table">
+        <table class="data-table premium-table">
             <thead>
                 <tr>
                     <th>Order ID</th>

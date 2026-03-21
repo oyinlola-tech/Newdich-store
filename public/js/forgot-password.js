@@ -1,4 +1,5 @@
 import { requestPasswordReset } from '../api/password.js';
+import './footer-year.js';
 
 const form = document.getElementById('forgot-password-form');
 const message = document.getElementById('forgot-message');
@@ -23,9 +24,12 @@ form.addEventListener('submit', async (e) => {
 
     try {
         await requestPasswordReset(email);
-        message.textContent = 'Reset link sent! Check your email.';
-        message.style.display = 'block';
-        form.reset();
+        sessionStorage.setItem('pendingOtp', JSON.stringify({
+            email,
+            purpose: 'reset',
+            otpToken: null
+        }));
+        window.location.href = `otp.html?purpose=reset&email=${encodeURIComponent(email)}`;
     } catch (error) {
         errorBox.textContent = error.message || 'Failed to send reset link.';
         errorBox.style.display = 'block';

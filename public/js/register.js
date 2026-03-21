@@ -1,4 +1,5 @@
 import { registerUser, isLoggedIn } from '../api/auth.js';
+import { requestOtp } from '../api/otp.js';
 import { updateCartCount } from './main.js';
 
 const registerForm = document.getElementById('register-form');
@@ -63,7 +64,23 @@ registerForm.addEventListener('submit', async (e) => {
     submitBtn.disabled = true;
     
     try {
-        await registerUser({ name, email, password });
+        const data = await registerUser({ name, email, password });
+        if (data?.requiresOtp || data?.otpRequired) {
+            if (!data.otpToken) {
+                try {
+                    await requestOtp(email, 'register');
+                } catch (e) {
+                    // ignore, backend may already send OTP
+                }
+            }
+            sessionStorage.setItem('pendingOtp', JSON.stringify({
+                email,
+                purpose: 'register',
+                otpToken: data.otpToken || null
+            }));
+            window.location.href = `otp.html?purpose=register&email=${encodeURIComponent(email)}`;
+            return;
+        }
         // Registration successful
         showSuccess('Account created successfully! Redirecting...');
         // Update cart count (if user had items in local storage before login, they'll now be synced)

@@ -6,9 +6,6 @@ function loadSettings() {
     if (settings.emailUpdates !== undefined) {
         document.getElementById('email-updates').checked = settings.emailUpdates;
     }
-    if (settings.smsUpdates !== undefined) {
-        document.getElementById('sms-updates').checked = settings.smsUpdates;
-    }
     if (settings.darkMode !== undefined) {
         document.getElementById('dark-mode').checked = settings.darkMode;
     }
@@ -27,7 +24,6 @@ settingsForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const settings = {
         emailUpdates: document.getElementById('email-updates').checked,
-        smsUpdates: document.getElementById('sms-updates').checked,
         darkMode: document.getElementById('dark-mode').checked
     };
     localStorage.setItem('userSettings', JSON.stringify(settings));

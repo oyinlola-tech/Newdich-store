@@ -1,4 +1,5 @@
 import { adminLogin } from '../api/admin-auth.js';
+import { requestAdminOtp } from '../api/admin-otp.js';
 
 const loginForm = document.getElementById('admin-login-form');
 const errorDiv = document.getElementById('admin-login-error');
@@ -30,7 +31,23 @@ loginForm.addEventListener('submit', async (e) => {
     errorDiv.style.display = 'none';
 
     try {
-        await adminLogin({ email, password });
+        const data = await adminLogin({ email, password });
+        if (data?.requiresOtp || data?.otpRequired) {
+            if (!data.otpToken) {
+                try {
+                    await requestAdminOtp(email, 'login');
+                } catch (e) {
+                    // ignore, backend may already send OTP
+                }
+            }
+            sessionStorage.setItem('pendingAdminOtp', JSON.stringify({
+                email,
+                purpose: 'login',
+                otpToken: data.otpToken || null
+            }));
+            window.location.href = `otp.html?purpose=login&email=${encodeURIComponent(email)}`;
+            return;
+        }
         window.location.href = getRedirectUrl();
     } catch (error) {
         showError(error.message || 'Invalid credentials. Please try again.');

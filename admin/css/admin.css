@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+
 /* Reset & Base */
 * {
     margin: 0;
@@ -28,7 +30,7 @@ body {
 /* Sidebar */
 .admin-sidebar {
     width: 260px;
-    background-color: #11221f;
+    background: linear-gradient(180deg, #0f1d1a 0%, #162824 100%);
     color: #fff;
     display: flex;
     flex-direction: column;
@@ -111,6 +113,12 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border-bottom: 1px solid #eef2f7;
+}
+
+.admin-header h1 {
+    font-family: 'Playfair Display', serif;
+    letter-spacing: 0.3px;
 }
 
 .admin-content {
@@ -178,6 +186,9 @@ body {
 .orders-table th {
     background-color: #f8f9fa;
     font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
 }
 
 .status-badge {
@@ -284,8 +295,11 @@ body {
 }
 
 .data-table th {
-    background-color: #f8f9fa;
+    background-color: #f4f1ea;
     font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
 }
 
 .product-thumb {

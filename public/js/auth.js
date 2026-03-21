@@ -1,4 +1,5 @@
 import { loginUser, isLoggedIn } from '../api/auth.js';
+import { requestOtp } from '../api/otp.js';
 import { updateCartCount } from './main.js';
 
 const loginForm = document.getElementById('login-form');
@@ -43,6 +44,13 @@ loginForm.addEventListener('submit', async (e) => {
     try {
         const data = await loginUser({ email, password });
         if (data?.requiresOtp || data?.otpRequired) {
+            if (!data.otpToken) {
+                try {
+                    await requestOtp(email, 'login');
+                } catch (e) {
+                    // ignore, backend may already send OTP
+                }
+            }
             sessionStorage.setItem('pendingOtp', JSON.stringify({
                 email,
                 purpose: 'login',
