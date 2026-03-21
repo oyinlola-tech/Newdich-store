@@ -43,7 +43,7 @@ function formatDate(dateString) {
 
 async function renderOrders(orders) {
     if (!orders || orders.length === 0) {
-        ordersContainer.innerHTML = '<p>No orders found.</p>';
+        ordersContainer.innerHTML = '<div class="empty-state">No orders yet. Once checkout is live, new orders will show up here.</div>';
         return;
     }
 

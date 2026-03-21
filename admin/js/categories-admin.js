@@ -25,12 +25,12 @@ function escapeHtml(str) {
 
 function renderCategories(categories) {
     if (!categories || categories.length === 0) {
-        container.innerHTML = '<div class="empty-state">No categories yet.</div>';
+        container.innerHTML = '<div class="empty-state">No categories yet. Add your core fashion, jewelry, and accessory groups to keep products organized.</div>';
         return;
     }
 
     container.innerHTML = `
-        <table class="data-table">
+        <table class="data-table premium-table">
             <thead>
                 <tr>
                     <th>ID</th>

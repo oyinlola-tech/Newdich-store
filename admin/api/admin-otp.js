@@ -9,11 +9,11 @@ export async function requestAdminOtp(email, purpose) {
         });
         if (!response.ok) {
             const error = await response.json();
-            throw new Error(error.message || 'Failed to request OTP');
+            throw new Error(error.message || 'Failed to request verification code');
         }
         return await response.json();
     } catch (error) {
-        console.error('Admin OTP request error:', error);
+        console.error('Admin verification code request error:', error);
         throw error;
     }
 }
@@ -27,11 +27,11 @@ export async function verifyAdminOtp(email, code, purpose, otpToken) {
         });
         if (!response.ok) {
             const error = await response.json();
-            throw new Error(error.message || 'Failed to verify OTP');
+            throw new Error(error.message || 'Failed to verify code');
         }
         return await response.json();
     } catch (error) {
-        console.error('Admin OTP verify error:', error);
+        console.error('Admin verification code verify error:', error);
         throw error;
     }
 }

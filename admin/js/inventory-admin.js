@@ -28,12 +28,12 @@ function escapeHtml(str) {
 
 function renderInventory(items) {
     if (!items || items.length === 0) {
-        container.innerHTML = '<div class="empty-state">No inventory data found.</div>';
+        container.innerHTML = '<div class="empty-state">No inventory yet. Once products are live, stock levels will appear here.</div>';
         return;
     }
 
     container.innerHTML = `
-        <table class="data-table">
+        <table class="data-table premium-table">
             <thead>
                 <tr>
                     <th>ID</th>

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
 
 /* Reset & Base */
 * {
@@ -8,27 +8,46 @@
 }
 
 :root {
-    --brand: #0f766e;
-    --brand-strong: #0b5e57;
-    --ink: #1b1b1d;
-    --muted: #6b6f76;
-    --bg: #f8f5f0;
-    --card: #ffffff;
-    --radius: 12px;
-    --shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+    --brand: #1f4b99;
+    --brand-strong: #163a77;
+    --accent: #d1962f;
+    --ink: #12141a;
+    --muted: #5a6270;
+    --bg: #f4f6f9;
+    --surface: #ffffff;
+    --surface-2: #eef1f6;
+    --border: #e2e7f0;
+    --radius: 14px;
+    --shadow: 0 14px 30px rgba(17, 24, 39, 0.08);
+    --shadow-soft: 0 8px 18px rgba(17, 24, 39, 0.06);
+    --ring: 0 0 0 3px rgba(31, 75, 153, 0.18);
 }
 
 body {
-    font-family: 'Poppins', sans-serif;
-    line-height: 1.6;
+    font-family: 'Manrope', sans-serif;
+    line-height: 1.65;
     color: var(--ink);
     background-color: var(--bg);
+    background-image:
+        radial-gradient(circle at top left, rgba(31, 75, 153, 0.08), transparent 45%),
+        radial-gradient(circle at 85% 20%, rgba(209, 150, 47, 0.08), transparent 40%);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
 }
 
 h1, h2, h3, h4 {
-    font-family: 'Playfair Display', serif;
-    letter-spacing: 0.2px;
+    font-family: 'Space Grotesk', sans-serif;
+    letter-spacing: -0.2px;
     color: var(--ink);
+}
+
+a {
+    color: inherit;
+}
+
+img {
+    display: block;
+    max-width: 100%;
 }
 
 input::placeholder,
@@ -38,12 +57,30 @@ textarea::placeholder {
 
 .container {
     width: 90%;
-    max-width: 1200px;
+    max-width: 1280px;
     margin: 0 auto;
 }
 
+main {
+    min-height: 60vh;
+}
+
+section {
+    padding: 3.75rem 0;
+}
+
+.section-title {
+    font-size: 2.1rem;
+    margin-bottom: 0.75rem;
+}
+
+.section-subtitle {
+    color: var(--muted);
+    max-width: 680px;
+}
+
 ::selection {
-    background: rgba(15, 118, 110, 0.2);
+    background: rgba(31, 75, 153, 0.2);
 }
 
 .muted-note {

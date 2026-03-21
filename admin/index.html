@@ -26,7 +26,6 @@
                     <li><a href="inventory.html"><i class="fas fa-warehouse"></i> Inventory</a></li>
                     <li><a href="orders.html"><i class="fas fa-shopping-cart"></i> Orders</a></li>
                     <li><a href="users.html"><i class="fas fa-users"></i> Users</a></li>
-                    <li><a href="settings.html"><i class="fas fa-gear"></i> Settings</a></li>
                 </ul>
             </nav>
             <div class="sidebar-footer">
@@ -72,6 +71,30 @@
                         </div>
                     </div>
 
+                    <div class="dashboard-card kpi-card">
+                        <div class="card-head">
+                            <div>
+                                <h3>Revenue Velocity</h3>
+                                <span class="muted-text">Mini KPI trend</span>
+                            </div>
+                            <div class="kpi-value">
+                                <span id="kpi-amount" class="kpi-amount">₦0</span>
+                                <span id="kpi-change" class="kpi-change positive"><i id="kpi-change-icon" class="fas fa-arrow-up"></i> <span id="kpi-change-value">0%</span></span>
+                            </div>
+                        </div>
+                        <div class="kpi-chart">
+                            <svg viewBox="0 0 240 80" aria-hidden="true">
+                                <path id="kpi-glow" class="chart-glow" d=""></path>
+                                <path id="kpi-line-secondary" class="chart-line-secondary" d=""></path>
+                                <path id="kpi-line" class="chart-line" d=""></path>
+                            </svg>
+                        </div>
+                        <div class="kpi-legend">
+                            <span><i class="legend-dot legend-primary"></i> Revenue</span>
+                            <span><i class="legend-dot legend-secondary"></i> Forecast</span>
+                        </div>
+                    </div>
+
                     <div class="dashboard-card">
                         <div class="card-head">
                             <h3>Top Categories</h3>
@@ -83,7 +106,7 @@
                             <span>Handbags</span>
                             <span>Footwear</span>
                         </div>
-                        <p class="muted-text">Update these in admin settings to match your catalog.</p>
+                        <p class="muted-text">Keep these aligned with your active catalog categories.</p>
                     </div>
                 </div>
 

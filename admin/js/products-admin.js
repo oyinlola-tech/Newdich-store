@@ -32,12 +32,12 @@ function escapeHtml(str) {
 // Render products table
 function renderProducts(products) {
     if (!products || products.length === 0) {
-        productsContainer.innerHTML = '<p>No products found. Click "Add New Product" to create one.</p>';
+        productsContainer.innerHTML = '<div class="empty-state">No products yet. Add your signature fashion and jewelry pieces to get started.</div>';
         return;
     }
 
     const tableHtml = `
-        <table class="data-table">
+        <table class="data-table premium-table">
             <thead>
                 <tr>
                     <th>ID</th>

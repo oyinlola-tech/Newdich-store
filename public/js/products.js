@@ -42,17 +42,34 @@ function renderProducts(products) {
         return;
     }
 
-    productsGrid.innerHTML = products.map(product => `
+    productsGrid.innerHTML = products.map(product => {
+        const categoryLabel = product.category ? escapeHtml(product.category) : 'New Arrival';
+        let badgeText = 'New';
+        if (product.featured) badgeText = 'Featured';
+        if (product.stock !== undefined && product.stock !== null && product.stock <= 5) badgeText = 'Low Stock';
+        return `
         <div class="product-card" data-product-id="${product.id}">
-            <img src="${product.image || 'https://via.placeholder.com/300x200?text=No+Image'}" alt="${escapeHtml(product.name)}">
-            <h4>${escapeHtml(product.name)}</h4>
-            <p class="price">${formatCurrency(product.price)}</p>
-            <div class="card-actions">
-                <button class="btn-add-to-cart" data-id="${product.id}">Add to Cart</button>
-                <button class="btn-wishlist" data-id="${product.id}"><i class="fas fa-heart"></i> Save</button>
+            <div class="product-media">
+                <img src="${product.image || 'https://via.placeholder.com/600x450?text=No+Image'}" alt="${escapeHtml(product.name)}">
+                <span class="product-badge">${badgeText}</span>
+                <button class="product-quick btn-wishlist" data-id="${product.id}" aria-label="Save">
+                    <i class="fas fa-heart"></i>
+                </button>
+            </div>
+            <div class="product-body">
+                <div class="product-meta">${categoryLabel}</div>
+                <h4 class="product-title">${escapeHtml(product.name)}</h4>
+                <div class="product-price">${formatCurrency(product.price)}</div>
+                <div class="product-actions">
+                    <button class="btn-add-to-cart" data-id="${product.id}">Add to Cart</button>
+                    <button class="btn-wishlist" data-id="${product.id}" aria-label="Save">
+                        <i class="fas fa-heart"></i>
+                    </button>
+                </div>
             </div>
         </div>
-    `).join('');
+        `;
+    }).join('');
 
     // Attach event listeners to add-to-cart buttons
     const addButtons = document.querySelectorAll('.btn-add-to-cart');

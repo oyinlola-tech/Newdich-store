@@ -4,15 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Newdich Store - Home</title>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome 6 (Free) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <header>
+    <div class="top-bar">
+        <div class="container top-bar-content">
+            <div class="top-bar-left">
+                <span><i class="fas fa-shield-alt"></i> Secure checkout</span>
+                <span class="divider">•</span>
+                <span><i class="fas fa-truck"></i> Nationwide delivery</span>
+            </div>
+            <div class="top-bar-right">
+                <span><i class="fas fa-headset"></i> 24/7 client support</span>
+            </div>
+        </div>
+    </div>    <header>
         <div class="container">
             <div class="logo">
                 <h1>Newdich Store</h1>
@@ -43,13 +52,43 @@
         </div>
     </header>
 
+    <section class="trust-strip">
+        <div class="container trust-strip-inner">
+            <div class="trust-item">
+                <i class="fas fa-shield-alt"></i>
+                <span>Secure, compliant checkout</span>
+            </div>
+            <div class="trust-item">
+                <i class="fas fa-truck"></i>
+                <span>Nationwide delivery network</span>
+            </div>
+            <div class="trust-item">
+                <i class="fas fa-award"></i>
+                <span>Quality-checked catalog</span>
+            </div>
+            <div class="trust-item">
+                <i class="fas fa-headset"></i>
+                <span>24/7 enterprise support</span>
+            </div>
+        </div>
+    </section>
+
     <main>
         <section class="hero">
-            <div class="container">
+            <div class="container hero-layout">
                 <div class="hero-content">
-                    <h2>Welcome to Newdich Store</h2>
-                    <p>Discover the latest trends and quality products at unbeatable prices.</p>
-                    <a href="products.html" class="btn-primary">Shop Now</a>
+                    <h2>Enterprise-ready commerce for modern teams.</h2>
+                    <p>Discover curated products, trusted fulfillment, and a buying experience built for scale.</p>
+                    <a href="products.html" class="btn-primary">Shop the Catalog</a>
+                </div>
+                <div class="hero-featured">
+                    <div class="hero-featured-header">
+                        <span>Featured Product</span>
+                        <span>Editor’s Pick</span>
+                    </div>
+                    <div id="hero-featured-card" class="product-card">
+                        <div class="loading">Loading featured highlight...</div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -65,10 +104,50 @@
         </section>
     </main>
 
-    <footer>
-        <div class="container">
+        <footer class="site-footer">
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <h3>Newdich Store</h3>
+                <p>Enterprise-grade commerce for professionals. Curated assortments, reliable fulfillment, and secure transactions built for scale.</p>
+                <div class="footer-badges">
+                    <span class="badge"><i class="fas fa-lock"></i> PCI-ready</span>
+                    <span class="badge"><i class="fas fa-globe"></i> Nationwide</span>
+                    <span class="badge"><i class="fas fa-star"></i> Trusted by teams</span>
+                </div>
+            </div>
+            <div class="footer-column">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="products.html">Products</a></li>
+                    <li><a href="account.html">Account</a></li>
+                    <li><a href="wishlist.html">Wishlist</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="returns.html">Returns</a></li>
+                    <li><a href="cart.html">Cart</a></li>
+                    <li><a href="checkout.html">Checkout</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Access</h4>
+                <ul>
+                    <li><a href="login.html">Login</a></li>
+                    <li><a href="register.html">Register</a></li>
+                    <li><a href="forgot-password.html">Forgot Password</a></li>
+                    <li><a href="order-confirmation.html">Order Status</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="container footer-bottom">
             <p>&copy; 2026 Newdich Store. All rights reserved.</p>
-            <p>Powered by Newdich Technology</p>
+            <div class="footer-meta">
+                <span>Powered by Newdich Technology</span>
+            </div>
         </div>
     </footer>
 
@@ -76,4 +155,6 @@
     <script type="module" src="js/index.js"></script>
 </body>
 </html>
+
+
 

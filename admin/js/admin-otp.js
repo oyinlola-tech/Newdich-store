@@ -24,7 +24,7 @@ form.addEventListener('submit', async (e) => {
     const otpToken = pending.otpToken || null;
 
     if (!email || !code) {
-        errorBox.textContent = 'Email or OTP code missing.';
+        errorBox.textContent = 'Email or verification code missing.';
         errorBox.style.display = 'block';
         return;
     }
@@ -58,7 +58,7 @@ form.addEventListener('submit', async (e) => {
         const redirect = new URLSearchParams(window.location.search).get('redirect');
         window.location.href = redirect || 'index.html';
     } catch (error) {
-        errorBox.textContent = error.message || 'Failed to verify OTP.';
+        errorBox.textContent = error.message || 'Failed to verify code.';
         errorBox.style.display = 'block';
     } finally {
         submitBtn.textContent = originalText;
@@ -77,10 +77,10 @@ resendBtn.addEventListener('click', async () => {
     resendBtn.textContent = 'Sending...';
     try {
         await requestAdminOtp(email, purpose);
-        message.textContent = 'OTP resent. Check your email.';
+        message.textContent = 'Verification code resent. Check your email.';
         message.style.display = 'block';
     } catch (error) {
-        errorBox.textContent = error.message || 'Failed to resend OTP.';
+        errorBox.textContent = error.message || 'Failed to resend code.';
         errorBox.style.display = 'block';
     } finally {
         resendBtn.textContent = 'Resend Code';

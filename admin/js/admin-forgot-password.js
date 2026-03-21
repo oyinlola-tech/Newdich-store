@@ -18,7 +18,7 @@ form.addEventListener('submit', async (e) => {
 
     const submitBtn = form.querySelector('button[type="submit"]');
     const originalText = submitBtn.textContent;
-    submitBtn.textContent = 'Sending...';
+    submitBtn.textContent = 'Sending code...';
     submitBtn.disabled = true;
 
     try {
@@ -30,7 +30,7 @@ form.addEventListener('submit', async (e) => {
         }));
         window.location.href = `otp.html?purpose=reset&email=${encodeURIComponent(email)}`;
     } catch (error) {
-        errorBox.textContent = error.message || 'Failed to send reset link.';
+        errorBox.textContent = error.message || 'Failed to send verification code.';
         errorBox.style.display = 'block';
     } finally {
         submitBtn.textContent = originalText;

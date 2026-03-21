@@ -35,12 +35,12 @@ function formatDate(dateString) {
 
 async function renderUsers(users) {
     if (!users || users.length === 0) {
-        usersContainer.innerHTML = '<p>No users found.</p>';
+        usersContainer.innerHTML = '<div class="empty-state">No users found yet. New customer accounts will appear here as they sign up.</div>';
         return;
     }
 
     const tableHtml = `
-        <table class="data-table">
+        <table class="data-table premium-table">
             <thead>
                 <tr>
                     <th>ID</th>

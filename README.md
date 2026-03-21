@@ -79,13 +79,13 @@ The reset token can come from:
 **Public**
 - `index.html`, `products.html`, `product-detail.html`
 - `cart.html`, `checkout.html`, `order-confirmation.html`
-- `account.html`, `wishlist.html`, `returns.html`, `settings.html`
+- `account.html`, `wishlist.html`, `returns.html`
 - `login.html`, `register.html`, `forgot-password.html`, `reset-password.html`, `otp.html`
 - `404.html`
 
 **Admin**
 - `index.html`, `orders.html`, `order-detail.html`
-- `products.html`, `categories.html`, `inventory.html`, `users.html`, `settings.html`
+- `products.html`, `categories.html`, `inventory.html`, `users.html`
 - `login.html`, `forgot-password.html`, `reset-password.html`, `otp.html`
 
 ## Running Locally
@@ -117,6 +117,3 @@ Update these to your backend URL.
   - `admin/api/admin-otp.js`
   - `admin/api/admin-password.js`
 - OTP verification stores tokens in `sessionStorage`.
-
----
-If you want the admin CSS split into multiple files or need a deeper UI refresh, just say the word.

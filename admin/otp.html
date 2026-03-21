@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin OTP Verification - Newdich Store</title>
+    <title>Admin Code Verification - Newdich Store</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="css/admin.css">
@@ -12,14 +12,15 @@
     <div class="admin-auth-wrapper">
         <div class="admin-auth-card">
             <div class="admin-auth-header">
-                <h2>Verify OTP</h2>
-                <p>Enter the 6-digit code sent to your email.</p>
+                <h2>Verify Code</h2>
+                <p>Enter the 6-digit verification code sent to your email.</p>
             </div>
             <form id="admin-otp-form">
                 <div class="form-group">
-                    <label for="admin-otp-code">OTP Code</label>
+                    <label for="admin-otp-code">Verification Code</label>
                     <input type="text" id="admin-otp-code" maxlength="6" inputmode="numeric" required>
                 </div>
+                <br>
                 <button type="submit" class="btn-primary btn-block">Verify</button>
                 <div id="admin-otp-message" class="success-message" style="display:none;"></div>
                 <div id="admin-otp-error" class="error-message" style="display:none;"></div>
