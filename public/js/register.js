@@ -1,0 +1,92 @@
+import { registerUser, isLoggedIn } from '../api/auth.js';
+import { updateCartCount } from './main.js';
+
+const registerForm = document.getElementById('register-form');
+const errorDiv = document.getElementById('register-error');
+const successDiv = document.getElementById('register-success');
+
+// Get redirect URL from query parameter (default to index.html)
+function getRedirectUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const redirect = params.get('redirect');
+    if (redirect && (redirect.startsWith('http') || redirect.includes('..'))) {
+        return redirect;
+    }
+    return redirect || 'index.html';
+}
+
+// Check if already logged in
+if (isLoggedIn()) {
+    // If already logged in, redirect
+    window.location.href = getRedirectUrl();
+}
+
+registerForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirm-password').value;
+    
+    // Clear previous messages
+    errorDiv.style.display = 'none';
+    successDiv.style.display = 'none';
+    
+    // Validation
+    if (!name || !email || !password || !confirmPassword) {
+        showError('Please fill in all fields.');
+        return;
+    }
+    
+    if (password.length < 6) {
+        showError('Password must be at least 6 characters long.');
+        return;
+    }
+    
+    if (password !== confirmPassword) {
+        showError('Passwords do not match.');
+        return;
+    }
+    
+    // Simple email validation
+    const emailRegex = /^[^\s@]+@([^\s@]+\.)+[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        showError('Please enter a valid email address.');
+        return;
+    }
+    
+    // Disable button and show loading
+    const submitBtn = registerForm.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = 'Creating account...';
+    submitBtn.disabled = true;
+    
+    try {
+        await registerUser({ name, email, password });
+        // Registration successful
+        showSuccess('Account created successfully! Redirecting...');
+        // Update cart count (if user had items in local storage before login, they'll now be synced)
+        await updateCartCount();
+        // Redirect after a short delay to show success message
+        setTimeout(() => {
+            window.location.href = getRedirectUrl();
+        }, 1500);
+    } catch (error) {
+        showError(error.message || 'Registration failed. Please try again.');
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+    }
+});
+
+function showError(message) {
+    errorDiv.textContent = message;
+    errorDiv.style.display = 'block';
+    successDiv.style.display = 'none';
+}
+
+function showSuccess(message) {
+    successDiv.textContent = message;
+    successDiv.style.display = 'block';
+    errorDiv.style.display = 'none';
+}
