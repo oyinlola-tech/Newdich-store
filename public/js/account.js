@@ -2,6 +2,7 @@ import { getUserProfile, updateUserProfile } from '../api/user.js';
 import { fetchOrders } from '../api/orders.js';
 import { isLoggedIn, logoutUser } from '../api/auth.js';
 import { updateCartCount } from './main.js';
+import { formatCurrency } from './format.js';
 
 const container = document.getElementById('account-container');
 
@@ -41,12 +42,12 @@ function renderAccountPage(user, orders) {
                     <div class="preview-item">
                         <span class="item-name">${escapeHtml(item.product?.name)}</span>
                         <span class="item-qty">x${item.quantity}</span>
-                        <span class="item-price">$${item.price.toFixed(2)}</span>
+                        <span class="item-price">${formatCurrency(item.price)}</span>
                     </div>
                 `).join('')}
             </div>
             <div class="order-total">
-                <strong>Total:</strong> $${order.total.toFixed(2)}
+                <strong>Total:</strong> ${formatCurrency(order.total)}
             </div>
             <a href="order-confirmation.html?orderId=${order.id}" class="view-order-link">View Details</a>
         </div>

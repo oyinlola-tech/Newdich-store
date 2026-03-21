@@ -3,6 +3,7 @@ import { submitOrder } from '../api/orders.js';
 import { isLoggedIn, getCurrentUser } from '../api/auth.js';
 import { createPaymentIntent, confirmPayment } from '../api/payments.js';
 import { updateCartCount } from './main.js';
+import { formatCurrency } from './format.js';
 
 const checkoutContainer = document.getElementById('checkout-container');
 
@@ -45,9 +46,9 @@ function renderCheckoutForm(user) {
             <div class="checkout-item-details">
                 <span class="item-name">${escapeHtml(item.product?.name)}</span>
                 <span class="item-quantity">Qty: ${item.quantity}</span>
-                <span class="item-price">$${item.product?.price?.toFixed(2)}</span>
+                <span class="item-price">${formatCurrency(item.product?.price)}</span>
             </div>
-            <div class="item-total">$${(item.product?.price * item.quantity).toFixed(2)}</div>
+            <div class="item-total">${formatCurrency(item.product?.price * item.quantity)}</div>
         </div>
     `).join('');
 
@@ -113,15 +114,15 @@ function renderCheckoutForm(user) {
                 <div class="summary-totals">
                     <div class="summary-row">
                         <span>Subtotal:</span>
-                        <span>$${cartData.totalPrice?.toFixed(2) || '0.00'}</span>
+                        <span>${formatCurrency(cartData.totalPrice)}</span>
                     </div>
                     <div class="summary-row">
                         <span>Shipping:</span>
-                        <span>$${cartData.shippingCost?.toFixed(2) || '0.00'}</span>
+                        <span>${formatCurrency(cartData.shippingCost)}</span>
                     </div>
                     <div class="summary-row total">
                         <strong>Total:</strong>
-                        <strong>$${cartData.grandTotal?.toFixed(2) || cartData.totalPrice?.toFixed(2) || '0.00'}</strong>
+                        <strong>${formatCurrency(cartData.grandTotal || cartData.totalPrice)}</strong>
                     </div>
                 </div>
             </div>
@@ -209,7 +210,7 @@ async function handleOrderSubmit(e) {
         // 1) Create payment intent
         const paymentInit = await createPaymentIntent({
             amount: orderData.total,
-            currency: 'USD',
+            currency: 'NGN',
             paymentMethod: {
                 cardNumber: cardNumberClean,
                 expiryDate,

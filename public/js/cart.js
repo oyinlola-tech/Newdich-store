@@ -1,5 +1,6 @@
 import { fetchCart, updateCartItem, removeCartItem } from '../api/cart.js';
 import { updateCartCount } from './main.js';
+import { formatCurrency } from './format.js';
 
 const cartContainer = document.getElementById('cart-container');
 
@@ -45,7 +46,7 @@ function renderCart(cart) {
                                 <img src="${item.product?.image || 'https://via.placeholder.com/80x80?text=No+Image'}" alt="${escapeHtml(item.product?.name)}">
                                 <span>${escapeHtml(item.product?.name)}</span>
                             </td>
-                            <td>$${item.product?.price?.toFixed(2) || '0.00'}</td>
+                            <td>${formatCurrency(item.product?.price)}</td>
                             <td>
                                 <div class="quantity-controls">
                                     <button class="quantity-btn decrease" data-item-id="${item.id}">-</button>
@@ -53,7 +54,7 @@ function renderCart(cart) {
                                     <button class="quantity-btn increase" data-item-id="${item.id}">+</button>
                                 </div>
                             </td>
-                            <td>$${(item.product?.price * item.quantity).toFixed(2)}</td>
+                            <td>${formatCurrency(item.product?.price * item.quantity)}</td>
                             <td>
                                 <button class="remove-item" data-item-id="${item.id}">
                                     <i class="fas fa-trash"></i>
@@ -65,7 +66,7 @@ function renderCart(cart) {
             </table>
             <div class="cart-summary">
                 <div class="cart-total">
-                    <strong>Total:</strong> $${cart.totalPrice?.toFixed(2) || '0.00'}
+                    <strong>Total:</strong> ${formatCurrency(cart.totalPrice)}
                 </div>
                 <button id="checkout-btn" class="btn-primary">Proceed to Checkout</button>
             </div>

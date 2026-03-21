@@ -1,5 +1,6 @@
 import { fetchAdminProducts, createProduct, updateProduct, deleteProduct, fetchProductById } from '../api/admin-products.js';
 import { checkAdminAuth } from './admin.js';
+import { formatCurrency } from './format.js';
 
 // Ensure admin is logged in
 if (!checkAdminAuth()) {
@@ -55,7 +56,7 @@ function renderProducts(products) {
                         <td><img src="${product.image || 'https://via.placeholder.com/50x50?text=No+Img'}" alt="${escapeHtml(product.name)}" class="product-thumb"></td>
                         <td>${escapeHtml(product.name)}</td>
                         <td>${escapeHtml(product.category)}</td>
-                        <td>$${product.price.toFixed(2)}</td>
+                        <td>${formatCurrency(product.price)}</td>
                         <td>${product.stock || 0}</td>
                         <td class="actions">
                             <button class="btn-edit" data-id="${product.id}"><i class="fas fa-edit"></i> Edit</button>

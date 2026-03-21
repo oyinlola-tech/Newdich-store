@@ -1,6 +1,7 @@
 import { fetchWishlist, removeFromWishlist } from '../api/wishlist.js';
 import { addToCart } from '../api/cart.js';
 import { updateCartCount } from './main.js';
+import { formatCurrency } from './format.js';
 
 const wishlistContainer = document.getElementById('wishlist-container');
 
@@ -38,7 +39,7 @@ function renderWishlist(items) {
                     <img src="${item.product?.image || 'https://via.placeholder.com/300x200?text=No+Image'}" alt="${escapeHtml(item.product?.name)}">
                     <div class="wishlist-info">
                         <h4>${escapeHtml(item.product?.name)}</h4>
-                        <p class="price">$${item.product?.price?.toFixed(2) || '0.00'}</p>
+                        <p class="price">${formatCurrency(item.product?.price)}</p>
                         <div class="card-actions">
                             <button class="btn-add-to-cart" data-product-id="${item.product?.id}">Add to Cart</button>
                             <button class="btn-secondary btn-remove" data-item-id="${item.id}">Remove</button>

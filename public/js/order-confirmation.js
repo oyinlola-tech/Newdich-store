@@ -1,6 +1,7 @@
 import { fetchOrderById } from '../api/orders.js';
 import { isLoggedIn } from '../api/auth.js';
 import { updateCartCount } from './main.js';
+import { formatCurrency } from './format.js';
 
 const container = document.getElementById('order-confirmation-container');
 
@@ -32,9 +33,9 @@ function renderOrderConfirmation(order) {
             <div class="order-item-details">
                 <span class="item-name">${escapeHtml(item.product?.name)}</span>
                 <span class="item-quantity">Quantity: ${item.quantity}</span>
-                <span class="item-price">$${item.price.toFixed(2)} each</span>
+            <span class="item-price">${formatCurrency(item.price)} each</span>
             </div>
-            <div class="order-item-total">$${(item.price * item.quantity).toFixed(2)}</div>
+        <div class="order-item-total">${formatCurrency(item.price * item.quantity)}</div>
         </div>
     `).join('');
 
@@ -63,7 +64,7 @@ function renderOrderConfirmation(order) {
                         <strong>Order Date:</strong> ${orderDate}
                     </div>
                     <div class="order-total">
-                        <strong>Total:</strong> $${order.total.toFixed(2)}
+                        <strong>Total:</strong> ${formatCurrency(order.total)}
                     </div>
                 </div>
 

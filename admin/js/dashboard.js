@@ -1,5 +1,6 @@
 import { fetchDashboardStats, fetchRecentOrders } from '../api/admin-stats.js';
 import { checkAdminAuth } from './admin.js';
+import { formatCurrency } from './format.js';
 
 // Ensure admin is logged in
 if (!checkAdminAuth()) {
@@ -29,9 +30,9 @@ async function loadStats() {
                 <div class="stat-value">${stats.totalUsers || 0}</div>
             </div>
             <div class="stat-card">
-                <i class="fas fa-dollar-sign"></i>
+                <i class="fas fa-naira-sign"></i>
                 <h3>Revenue</h3>
-                <div class="stat-value">$${(stats.revenue || 0).toFixed(2)}</div>
+                <div class="stat-value">${formatCurrency(stats.revenue || 0)}</div>
             </div>
         `;
     } catch (error) {
@@ -64,7 +65,7 @@ async function loadRecentOrders() {
                             <td>#${order.id}</td>
                             <td>${escapeHtml(order.customerName)}</td>
                             <td>${new Date(order.createdAt).toLocaleDateString()}</td>
-                            <td>$${order.total.toFixed(2)}</td>
+                            <td>${formatCurrency(order.total)}</td>
                             <td><span class="status-badge status-${order.status.toLowerCase()}">${order.status}</span></td>
                         </tr>
                     `).join('')}

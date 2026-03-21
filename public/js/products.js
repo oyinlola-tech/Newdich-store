@@ -1,5 +1,6 @@
 import { fetchAllProducts } from '../api/products.js';
 import { updateCartCount, handleAddToCart, handleAddToWishlist } from './main.js';
+import { formatCurrency } from './format.js';
 
 let currentProducts = [];
 let currentFilters = {
@@ -45,7 +46,7 @@ function renderProducts(products) {
         <div class="product-card" data-product-id="${product.id}">
             <img src="${product.image || 'https://via.placeholder.com/300x200?text=No+Image'}" alt="${escapeHtml(product.name)}">
             <h4>${escapeHtml(product.name)}</h4>
-            <p class="price">$${product.price.toFixed(2)}</p>
+            <p class="price">${formatCurrency(product.price)}</p>
             <div class="card-actions">
                 <button class="btn-add-to-cart" data-id="${product.id}">Add to Cart</button>
                 <button class="btn-wishlist" data-id="${product.id}"><i class="fas fa-heart"></i> Save</button>

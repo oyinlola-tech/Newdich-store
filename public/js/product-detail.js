@@ -1,5 +1,6 @@
 import { fetchProductById } from '../api/products.js';
 import { updateCartCount, handleAddToCart, handleAddToWishlist } from './main.js';
+import { formatCurrency } from './format.js';
 
 const productDetailContainer = document.getElementById('product-detail');
 
@@ -35,7 +36,7 @@ function renderProduct(product) {
             </div>
             <div class="product-detail-info">
                 <h2>${escapeHtml(product.name)}</h2>
-                <p class="price">$${product.price.toFixed(2)}</p>
+                <p class="price">${formatCurrency(product.price)}</p>
                 <p class="description">${escapeHtml(product.description)}</p>
                 ${product.category ? `<p class="category"><strong>Category:</strong> ${escapeHtml(product.category)}</p>` : ''}
                 ${product.stock !== undefined ? `<p class="stock"><strong>Stock:</strong> ${product.stock} units</p>` : ''}

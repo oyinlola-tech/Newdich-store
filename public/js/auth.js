@@ -41,7 +41,16 @@ loginForm.addEventListener('submit', async (e) => {
     errorDiv.style.display = 'none';
     
     try {
-        await loginUser({ email, password });
+        const data = await loginUser({ email, password });
+        if (data?.requiresOtp || data?.otpRequired) {
+            sessionStorage.setItem('pendingOtp', JSON.stringify({
+                email,
+                purpose: 'login',
+                otpToken: data.otpToken || null
+            }));
+            window.location.href = `otp.html?purpose=login&email=${encodeURIComponent(email)}`;
+            return;
+        }
         // After successful login, update cart count (since user may have a cart)
         await updateCartCount();
         // Redirect to intended page

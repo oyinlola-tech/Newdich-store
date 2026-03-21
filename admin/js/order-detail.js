@@ -1,5 +1,6 @@
 import { fetchOrderDetails, updateOrderStatus, addOrderNote, fetchOrderStatusHistory } from '../api/admin-orders.js';
 import { checkAdminAuth } from './admin.js';
+import { formatCurrency } from './format.js';
 
 if (!checkAdminAuth()) {
     // Redirect handled
@@ -43,7 +44,7 @@ function renderOrder(order) {
                 <strong>${escapeHtml(item.product?.name)}</strong>
                 <span>Qty: ${item.quantity}</span>
             </div>
-            <div class="detail-item-total">$${(item.price * item.quantity).toFixed(2)}</div>
+            <div class="detail-item-total">${formatCurrency(item.price * item.quantity)}</div>
         </div>
     `).join('');
 
@@ -53,7 +54,7 @@ function renderOrder(order) {
             <div class="detail-meta">
                 <span><strong>Date:</strong> ${new Date(order.createdAt).toLocaleString()}</span>
                 <span><strong>Customer:</strong> ${escapeHtml(order.customerName || order.shippingAddress?.fullName || 'N/A')}</span>
-                <span><strong>Total:</strong> $${order.total.toFixed(2)}</span>
+                <span><strong>Total:</strong> ${formatCurrency(order.total)}</span>
             </div>
         </div>
 

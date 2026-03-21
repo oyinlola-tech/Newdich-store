@@ -1,5 +1,6 @@
 import { fetchAdminOrders, fetchOrderDetails, updateOrderStatus } from '../api/admin-orders.js';
 import { checkAdminAuth } from './admin.js';
+import { formatCurrency } from './format.js';
 
 if (!checkAdminAuth()) return;
 
@@ -63,7 +64,7 @@ async function renderOrders(orders) {
                             <td>#${order.id}</td>
                             <td>${escapeHtml(order.customerName)}</td>
                             <td>${formatDate(order.createdAt)}</td>
-                            <td>$${order.total.toFixed(2)}</td>
+                            <td>${formatCurrency(order.total)}</td>
                             <td>
                                 <select class="status-select" data-order-id="${order.id}" data-current-status="${order.status}">
                                     <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
@@ -126,8 +127,8 @@ function renderOrderDetails(order) {
         <div class="order-detail-item">
             <span class="item-name">${escapeHtml(item.product?.name)}</span>
             <span class="item-quantity">x${item.quantity}</span>
-            <span class="item-price">$${item.price.toFixed(2)}</span>
-            <span class="item-total">$${(item.price * item.quantity).toFixed(2)}</span>
+            <span class="item-price">${formatCurrency(item.price)}</span>
+            <span class="item-total">${formatCurrency(item.price * item.quantity)}</span>
         </div>
     `).join('');
 
@@ -136,7 +137,7 @@ function renderOrderDetails(order) {
             <p><strong>Order ID:</strong> #${order.id}</p>
             <p><strong>Date:</strong> ${formatDate(order.createdAt)}</p>
             <p><strong>Status:</strong> ${order.status}</p>
-            <p><strong>Total:</strong> $${order.total.toFixed(2)}</p>
+            <p><strong>Total:</strong> ${formatCurrency(order.total)}</p>
             <h4>Customer Information</h4>
             <p><strong>Name:</strong> ${escapeHtml(order.shippingAddress.fullName)}</p>
             <p><strong>Email:</strong> ${escapeHtml(order.shippingAddress.email)}</p>

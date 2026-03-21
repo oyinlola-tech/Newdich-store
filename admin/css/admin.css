@@ -5,9 +5,19 @@
     box-sizing: border-box;
 }
 
+:root {
+    --admin-brand: #0f766e;
+    --admin-brand-strong: #0b5e57;
+    --admin-ink: #1f2937;
+    --admin-bg: #f6f4ef;
+    --admin-card: #ffffff;
+    --admin-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+    --admin-radius: 12px;
+}
+
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: #f5f5f5;
+    background-color: var(--admin-bg);
 }
 
 .admin-wrapper {
@@ -18,7 +28,7 @@ body {
 /* Sidebar */
 .admin-sidebar {
     width: 260px;
-    background-color: #2c3e50;
+    background-color: #11221f;
     color: #fff;
     display: flex;
     flex-direction: column;
@@ -29,7 +39,7 @@ body {
 
 .sidebar-header {
     padding: 1.5rem;
-    border-bottom: 1px solid #34495e;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 
 .sidebar-header h2 {
@@ -58,7 +68,7 @@ body {
 
 .sidebar-nav li a:hover,
 .sidebar-nav li a.active {
-    background-color: #34495e;
+    background-color: rgba(255,255,255,0.08);
 }
 
 .sidebar-nav li a i {
@@ -73,9 +83,9 @@ body {
 #logout-btn {
     width: 100%;
     padding: 0.5rem;
-    background: none;
-    border: 1px solid #e74c3c;
-    color: #e74c3c;
+    background: transparent;
+    border: 1px solid #eab308;
+    color: #eab308;
     border-radius: 4px;
     cursor: pointer;
     font-size: 1rem;
@@ -83,7 +93,7 @@ body {
 }
 
 #logout-btn:hover {
-    background-color: #e74c3c;
+    background-color: #eab308;
     color: #fff;
 }
 
@@ -97,7 +107,7 @@ body {
 .admin-header {
     background-color: #fff;
     padding: 1rem 2rem;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: var(--admin-shadow);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -116,8 +126,8 @@ body {
 }
 
 .stat-card {
-    background: #fff;
-    border-radius: 8px;
+    background: var(--admin-card);
+    border-radius: var(--admin-radius);
     padding: 1.5rem;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     text-align: center;
@@ -125,7 +135,7 @@ body {
 
 .stat-card i {
     font-size: 2rem;
-    color: #3498db;
+    color: var(--admin-brand);
     margin-bottom: 0.5rem;
 }
 
@@ -138,13 +148,13 @@ body {
 .stat-card .stat-value {
     font-size: 2rem;
     font-weight: 600;
-    color: #2c3e50;
+    color: var(--admin-ink);
 }
 
 /* Recent Orders */
 .recent-orders {
-    background: #fff;
-    border-radius: 8px;
+    background: var(--admin-card);
+    border-radius: var(--admin-radius);
     padding: 1.5rem;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
@@ -184,7 +194,7 @@ body {
 }
 
 .status-processing {
-    background-color: #3498db;
+    background-color: var(--admin-brand);
     color: #fff;
 }
 
@@ -228,7 +238,7 @@ body {
 }
 
 .btn-primary {
-    background-color: #3498db;
+    background-color: var(--admin-brand);
     color: #fff;
     padding: 0.5rem 1rem;
     border: none;
@@ -239,11 +249,11 @@ body {
 }
 
 .btn-primary:hover {
-    background-color: #2980b9;
+    background-color: var(--admin-brand-strong);
 }
 
 .btn-secondary {
-    background-color: #95a5a6;
+    background-color: #1f2937;
     color: #fff;
     padding: 0.5rem 1rem;
     border: none;
@@ -254,7 +264,7 @@ body {
 }
 
 .btn-secondary:hover {
-    background-color: #7f8c8d;
+    background-color: #111827;
 }
 
 .data-table {
@@ -299,12 +309,12 @@ body {
 }
 
 .btn-edit {
-    background-color: #f39c12;
+    background-color: #d97706;
     color: #fff;
 }
 
 .btn-edit:hover {
-    background-color: #e67e22;
+    background-color: #b45309;
 }
 
 .btn-delete {
@@ -426,7 +436,7 @@ body {
 }
 
 .btn-view {
-    background-color: #3498db;
+    background-color: var(--admin-brand);
     color: #fff;
     padding: 0.25rem 0.5rem;
     border: none;
@@ -436,7 +446,7 @@ body {
 }
 
 .btn-view:hover {
-    background-color: #2980b9;
+    background-color: var(--admin-brand-strong);
 }
 
 /* Modal larger for order details */
@@ -550,11 +560,11 @@ body {
 }
 
 .data-table tbody tr:hover {
-    background-color: #f8fafc;
+    background-color: #f3f4f6;
 }
 
 .btn-open {
-    background-color: #2ecc71;
+    background-color: var(--admin-brand);
     color: #fff;
     padding: 0.25rem 0.5rem;
     border: none;
@@ -564,7 +574,7 @@ body {
 }
 
 .btn-open:hover {
-    background-color: #27ae60;
+    background-color: var(--admin-brand-strong);
 }
 
 /* Admin Auth */

@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* Reset & Base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --brand: #0f766e;
+    --brand-strong: #0b5e57;
+    --ink: #1b1b1d;
+    --muted: #6b6f76;
+    --bg: #f8f5f0;
+    --card: #ffffff;
+    --radius: 12px;
+    --shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.6;
+    color: var(--ink);
+    background-color: var(--bg);
+}
+
+h1, h2, h3, h4 {
+    font-family: 'Playfair Display', serif;
+    letter-spacing: 0.2px;
+    color: var(--ink);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: #9ca3af;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+::selection {
+    background: rgba(15, 118, 110, 0.2);
+}
+
+.muted-note {
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+    color: var(--muted);
+}
+
+.loading,
+.error {
+    text-align: center;
+    padding: 2rem;
+    font-size: 1.1rem;
+}
+
+.error {
+    color: #b42318;
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

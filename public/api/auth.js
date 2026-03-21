@@ -15,6 +15,9 @@ export async function loginUser(credentials) {
         }
         
         const data = await response.json();
+        if (data.requiresOtp || data.otpRequired) {
+            return data;
+        }
         if (data.token) {
             localStorage.setItem('authToken', data.token);
             if (data.user) {
@@ -43,6 +46,9 @@ export async function registerUser(userData) {
         }
         
         const data = await response.json();
+        if (data.requiresOtp || data.otpRequired) {
+            return data;
+        }
         if (data.token) {
             localStorage.setItem('authToken', data.token);
             if (data.user) {
