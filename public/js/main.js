@@ -1,4 +1,5 @@
 import { fetchCart, addToCart } from '../api/cart.js';
+import { addToWishlist } from '../api/wishlist.js';
 
 export async function updateCartCount() {
     try {
@@ -40,6 +41,50 @@ export async function handleAddToCart(productId, buttonElement) {
         
         alert('Failed to add item to cart. Please try again.');
     }
+}
+
+export async function handleAddToWishlist(productId, buttonElement) {
+    try {
+        const originalText = buttonElement.textContent;
+        buttonElement.textContent = 'Saving...';
+        buttonElement.disabled = true;
+
+        await addToWishlist(productId);
+
+        showToast('Added to wishlist', 'success');
+        buttonElement.textContent = 'Saved';
+        setTimeout(() => {
+            buttonElement.textContent = originalText;
+            buttonElement.disabled = false;
+        }, 1500);
+    } catch (error) {
+        console.error('Add to wishlist error:', error);
+        showToast(error.message || 'Failed to save wishlist item', 'error');
+        buttonElement.textContent = 'Error';
+        setTimeout(() => {
+            buttonElement.textContent = 'Save';
+            buttonElement.disabled = false;
+        }, 1500);
+    }
+}
+
+function showToast(message, type = 'success') {
+    let container = document.querySelector('.toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.className = 'toast-container';
+        document.body.appendChild(container);
+    }
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.textContent = message;
+    container.appendChild(toast);
+    setTimeout(() => {
+        toast.classList.add('hide');
+    }, 2500);
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
 }
 
 function initMobileMenu() {

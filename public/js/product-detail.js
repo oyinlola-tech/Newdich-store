@@ -1,5 +1,5 @@
 import { fetchProductById } from '../api/products.js';
-import { updateCartCount, handleAddToCart } from './main.js';
+import { updateCartCount, handleAddToCart, handleAddToWishlist } from './main.js';
 
 const productDetailContainer = document.getElementById('product-detail');
 
@@ -39,7 +39,10 @@ function renderProduct(product) {
                 <p class="description">${escapeHtml(product.description)}</p>
                 ${product.category ? `<p class="category"><strong>Category:</strong> ${escapeHtml(product.category)}</p>` : ''}
                 ${product.stock !== undefined ? `<p class="stock"><strong>Stock:</strong> ${product.stock} units</p>` : ''}
-                <button id="add-to-cart-btn" class="btn-add-to-cart" data-id="${product.id}">Add to Cart</button>
+                <div class="detail-actions">
+                    <button id="add-to-cart-btn" class="btn-add-to-cart" data-id="${product.id}">Add to Cart</button>
+                    <button id="add-to-wishlist-btn" class="btn-wishlist" data-id="${product.id}"><i class="fas fa-heart"></i> Save</button>
+                </div>
             </div>
         </div>
     `;
@@ -53,6 +56,15 @@ function renderProduct(product) {
             e.preventDefault();
             const productId = addBtn.getAttribute('data-id');
             await handleAddToCart(productId, addBtn);
+        });
+    }
+
+    const wishlistBtn = document.getElementById('add-to-wishlist-btn');
+    if (wishlistBtn) {
+        wishlistBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            const productId = wishlistBtn.getAttribute('data-id');
+            await handleAddToWishlist(productId, wishlistBtn);
         });
     }
 }

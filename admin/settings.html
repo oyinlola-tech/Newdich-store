@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Settings - Newdich Store</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <div class="admin-wrapper">
+        <aside class="admin-sidebar">
+            <div class="sidebar-header">
+                <h2>Newdich Admin</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="index.html"><i class="fas fa-dashboard"></i> Dashboard</a></li>
+                    <li><a href="products.html"><i class="fas fa-box"></i> Products</a></li>
+                    <li><a href="orders.html"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+                    <li><a href="users.html"><i class="fas fa-users"></i> Users</a></li>
+                    <li><a href="settings.html" class="active"><i class="fas fa-gear"></i> Settings</a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <button id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </aside>
+
+        <main class="admin-main">
+            <header class="admin-header">
+                <div class="header-title">
+                    <h1>Settings</h1>
+                </div>
+                <div class="header-user">
+                    <span id="admin-name">Admin</span>
+                </div>
+            </header>
+
+            <div class="admin-content">
+                <div class="settings-grid">
+                    <div class="settings-card">
+                        <h3>Store Details</h3>
+                        <form class="settings-form">
+                            <div class="form-group">
+                                <label for="store-name">Store Name</label>
+                                <input type="text" id="store-name" placeholder="Newdich Store">
+                            </div>
+                            <div class="form-group">
+                                <label for="support-email">Support Email</label>
+                                <input type="email" id="support-email" placeholder="support@newdich.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="store-phone">Support Phone</label>
+                                <input type="tel" id="store-phone" placeholder="+234 800 000 0000">
+                            </div>
+                            <button type="submit" class="btn-primary">Save Changes</button>
+                        </form>
+                    </div>
+
+                    <div class="settings-card">
+                        <h3>Order Preferences</h3>
+                        <form class="settings-form">
+                            <div class="form-group">
+                                <label for="order-threshold">Low Stock Threshold</label>
+                                <input type="number" id="order-threshold" placeholder="10">
+                            </div>
+                            <div class="form-group">
+                                <label for="auto-cancel">Auto Cancel (days)</label>
+                                <input type="number" id="auto-cancel" placeholder="7">
+                            </div>
+                            <button type="submit" class="btn-primary">Update Preferences</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="js/admin.js"></script>
+</body>
+</html>

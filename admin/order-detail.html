@@ -3,26 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Newdich Store</title>
-    <!-- Google Fonts -->
+    <title>Admin Order Detail - Newdich Store</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Custom Admin CSS -->
     <link rel="stylesheet" href="css/admin.css">
 </head>
 <body>
     <div class="admin-wrapper">
-        <!-- Sidebar -->
         <aside class="admin-sidebar">
             <div class="sidebar-header">
                 <h2>Newdich Admin</h2>
             </div>
             <nav class="sidebar-nav">
                 <ul>
-                    <li><a href="index.html" class="active"><i class="fas fa-dashboard"></i> Dashboard</a></li>
+                    <li><a href="index.html"><i class="fas fa-dashboard"></i> Dashboard</a></li>
                     <li><a href="products.html"><i class="fas fa-box"></i> Products</a></li>
-                    <li><a href="orders.html"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+                    <li><a href="orders.html" class="active"><i class="fas fa-shopping-cart"></i> Orders</a></li>
                     <li><a href="users.html"><i class="fas fa-users"></i> Users</a></li>
                     <li><a href="settings.html"><i class="fas fa-gear"></i> Settings</a></li>
                 </ul>
@@ -32,31 +28,31 @@
             </div>
         </aside>
 
-        <!-- Main Content -->
         <main class="admin-main">
             <header class="admin-header">
                 <div class="header-title">
-                    <h1>Dashboard</h1>
+                    <h1>Order Detail</h1>
                 </div>
-                <div class="header-user">
-                    <span id="admin-name">Admin</span>
+                <div class="header-actions">
+                    <select id="order-status-select" class="status-select">
+                        <option value="pending">Pending</option>
+                        <option value="processing">Processing</option>
+                        <option value="completed">Completed</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                    <button id="update-status-btn" class="btn-primary">Update Status</button>
                 </div>
             </header>
 
             <div class="admin-content">
-                <div id="stats-container" class="stats-grid">
-                    <div class="loading">Loading statistics...</div>
-                </div>
-
-                <div id="recent-orders-container" class="recent-orders">
-                    <h3>Recent Orders</h3>
-                    <div class="loading">Loading recent orders...</div>
+                <div id="order-detail-container">
+                    <div class="loading">Loading order...</div>
                 </div>
             </div>
         </main>
     </div>
 
-    <script type="module" src="js/dashboard.js"></script>
+    <script type="module" src="js/order-detail.js"></script>
     <script type="module" src="js/admin.js"></script>
 </body>
 </html>

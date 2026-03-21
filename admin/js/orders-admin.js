@@ -66,6 +66,7 @@ async function renderOrders(orders) {
                             </td>
                             <td class="actions">
                                 <button class="btn-view" data-order-id="${order.id}"><i class="fas fa-eye"></i> View</button>
+                                <button class="btn-open" data-order-id="${order.id}"><i class="fas fa-arrow-right"></i> Open</button>
                             </td>
                         </tr>
                     `).join('')}
@@ -96,6 +97,13 @@ async function renderOrders(orders) {
         btn.addEventListener('click', async (e) => {
             const orderId = btn.getAttribute('data-order-id');
             await openOrderModal(orderId);
+        });
+    });
+
+    document.querySelectorAll('.btn-open').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const orderId = btn.getAttribute('data-order-id');
+            window.location.href = `order-detail.html?orderId=${orderId}`;
         });
     });
 }

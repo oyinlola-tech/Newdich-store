@@ -1,4 +1,4 @@
-import { logoutUser } from '../../public/api/auth.js';
+import { adminLogout } from '../api/admin-auth.js';
 
 // Check if user is admin (optional: we could verify via token)
 // For now, we assume the backend will enforce admin role.
@@ -7,7 +7,7 @@ import { logoutUser } from '../../public/api/auth.js';
 export function checkAdminAuth() {
     const token = localStorage.getItem('authToken');
     if (!token) {
-        window.location.href = '../public/login.html?redirect=../admin/index.html';
+        window.location.href = 'login.html?redirect=index.html';
         return false;
     }
     return true;
@@ -18,8 +18,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const logoutBtn = document.getElementById('logout-btn');
     if (logoutBtn) {
         logoutBtn.addEventListener('click', () => {
-            logoutUser();
-            window.location.href = '../public/index.html';
+            adminLogout();
+            window.location.href = 'login.html';
         });
     }
 });
