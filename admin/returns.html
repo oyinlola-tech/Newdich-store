@@ -3,17 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Orders | Newdich Store</title>
-    <!-- Google Fonts -->
+    <title>Admin - Returns | Newdich Store</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Custom Admin CSS -->
     <link rel="stylesheet" href="css/admin.css">
 </head>
 <body>
     <div class="admin-wrapper">
-        <!-- Sidebar -->
         <aside class="admin-sidebar">
             <div class="sidebar-header">
                 <h2>Newdich Admin</h2>
@@ -24,8 +20,8 @@
                     <li><a href="products.html"><i class="fas fa-box"></i> Products</a></li>
                     <li><a href="categories.html"><i class="fas fa-tags"></i> Categories</a></li>
                     <li><a href="inventory.html"><i class="fas fa-warehouse"></i> Inventory</a></li>
-                    <li><a href="orders.html" class="active"><i class="fas fa-shopping-cart"></i> Orders</a></li>
-                    <li><a href="returns.html"><i class="fas fa-undo"></i> Returns</a></li>
+                    <li><a href="orders.html"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+                    <li><a href="returns.html" class="active"><i class="fas fa-undo"></i> Returns</a></li>
                     <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
                     <li><a href="users.html"><i class="fas fa-users"></i> Users</a></li>
                 </ul>
@@ -35,11 +31,10 @@
             </div>
         </aside>
 
-        <!-- Main Content -->
         <main class="admin-main">
             <header class="admin-header">
                 <div class="header-title">
-                    <h1>Orders Management</h1>
+                    <h1>Returns Management</h1>
                 </div>
                 <div class="header-user">
                     <span id="admin-name">Admin</span>
@@ -51,16 +46,17 @@
                     <div class="filter-group">
                         <label for="status-filter">Status</label>
                         <select id="status-filter">
-                            <option value="all">All Orders</option>
+                            <option value="all">All Returns</option>
                             <option value="pending">Pending</option>
-                            <option value="processing">Processing</option>
-                            <option value="completed">Completed</option>
-                            <option value="cancelled">Cancelled</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
+                            <option value="received">Received</option>
+                            <option value="refunded">Refunded</option>
                         </select>
                     </div>
                     <div class="filter-group">
                         <label for="search-filter">Search</label>
-                        <input type="text" id="search-filter" placeholder="Order ID or Customer name">
+                        <input type="text" id="search-filter" placeholder="Return ID, order ID, or customer">
                     </div>
                     <div class="filter-actions">
                         <button id="apply-filters" class="btn-primary">Apply Filters</button>
@@ -68,37 +64,44 @@
                     </div>
                 </div>
 
-                <div id="orders-container">
-                    <div class="loading">Loading orders...</div>
+                <div id="returns-container">
+                    <div class="loading">Loading returns...</div>
                 </div>
             </div>
         </main>
     </div>
 
-    <!-- Modal for Order Details -->
-    <div id="order-modal" class="modal" style="display: none;">
+    <div id="returns-modal" class="modal" style="display: none;">
         <div class="modal-content modal-large">
             <span class="close">&times;</span>
-            <h2>Order Details</h2>
-            <div id="order-details-content">
+            <h2>Return Details</h2>
+            <div id="return-details-content">
                 <div class="loading">Loading...</div>
             </div>
-        </div>
-    </div>
-
-    <div id="orders-status-modal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <span class="close" id="orders-status-close">&times;</span>
-            <h2>Confirm Status Change</h2>
-            <p id="orders-status-text">Update status?</p>
-            <div class="form-actions">
-                <button id="orders-status-yes" class="btn-primary">Yes, Update</button>
-                <button id="orders-status-no" class="btn-secondary">Cancel</button>
+            <div class="detail-card">
+                <h3>Add Internal Note</h3>
+                <form id="return-note-form">
+                    <textarea id="return-note" rows="4" placeholder="Add an internal note for this return..."></textarea>
+                    <button type="submit" class="btn-secondary">Add Note</button>
+                </form>
+                <div id="return-note-message" class="profile-message" style="display: none;"></div>
             </div>
         </div>
     </div>
 
-    <script type="module" src="js/orders-admin.js"></script>
+    <div id="returns-status-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" id="returns-status-close">&times;</span>
+            <h2>Confirm Status Change</h2>
+            <p id="returns-status-text">Update status?</p>
+            <div class="form-actions">
+                <button id="returns-status-yes" class="btn-primary">Yes, Update</button>
+                <button id="returns-status-no" class="btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/returns-admin.js"></script>
     <script type="module" src="js/admin.js"></script>
 </body>
 </html>

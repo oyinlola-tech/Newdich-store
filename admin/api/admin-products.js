@@ -33,10 +33,14 @@ export async function fetchProductById(productId) {
 // Create a new product
 export async function createProduct(productData) {
     try {
+        const headers = getHeaders();
+        if (productData instanceof FormData) {
+            delete headers['Content-Type'];
+        }
         const response = await fetch(`${API_BASE_URL}/admin/products`, {
             method: 'POST',
-            headers: getHeaders(),
-            body: JSON.stringify(productData)
+            headers,
+            body: productData instanceof FormData ? productData : JSON.stringify(productData)
         });
         if (!response.ok) {
             const error = await response.json();
@@ -53,10 +57,14 @@ export async function createProduct(productData) {
 // Update existing product
 export async function updateProduct(productId, productData) {
     try {
+        const headers = getHeaders();
+        if (productData instanceof FormData) {
+            delete headers['Content-Type'];
+        }
         const response = await fetch(`${API_BASE_URL}/admin/products/${productId}`, {
             method: 'PUT',
-            headers: getHeaders(),
-            body: JSON.stringify(productData)
+            headers,
+            body: productData instanceof FormData ? productData : JSON.stringify(productData)
         });
         if (!response.ok) {
             const error = await response.json();

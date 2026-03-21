@@ -25,6 +25,8 @@
                     <li><a href="categories.html"><i class="fas fa-tags"></i> Categories</a></li>
                     <li><a href="inventory.html"><i class="fas fa-warehouse"></i> Inventory</a></li>
                     <li><a href="orders.html"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+                    <li><a href="returns.html"><i class="fas fa-undo"></i> Returns</a></li>
+                    <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
                     <li><a href="users.html"><i class="fas fa-users"></i> Users</a></li>
                 </ul>
             </nav>
@@ -79,8 +81,10 @@
                     <textarea id="product-description" rows="4" required></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="product-image">Image URL</label>
-                    <input type="url" id="product-image" placeholder="https://example.com/image.jpg">
+                    <label for="product-images">Product Images (up to 10)</label>
+                    <input type="file" id="product-images" accept="image/*" multiple>
+                    <p class="muted-text">Upload up to 10 images. Leave blank to keep existing images.</p>
+                    <div id="existing-images" class="muted-text"></div>
                 </div>
                 <div class="form-group">
                     <label for="product-stock">Stock Quantity</label>
