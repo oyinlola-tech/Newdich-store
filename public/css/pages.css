@@ -830,4 +830,18 @@
     .specs-grid {
         grid-template-columns: 1fr;
     }
+
+    .product-hero-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .related-products h3 {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 520px) {
+    .product-hero-stats {
+        display: none;
+    }
 }

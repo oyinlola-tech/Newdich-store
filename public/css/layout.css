@@ -42,7 +42,7 @@
 header {
     background-color: rgba(255, 255, 255, 0.92);
     box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
-    padding: 1rem 0;
+    padding: 0.8rem 0;
     position: sticky;
     top: 0;
     z-index: 100;
@@ -152,7 +152,7 @@ nav ul li a:hover::after {
 /* Hero */
 .hero {
     background: linear-gradient(135deg, #eef2f7 0%, #ffffff 100%);
-    padding: 4.5rem 0;
+    padding: 4rem 0;
     text-align: left;
     position: relative;
     overflow: hidden;
@@ -267,7 +267,7 @@ footer {
 .trust-strip {
     background: #0f172a;
     color: #e2e8f0;
-    padding: 1.25rem 0;
+    padding: 1rem 0;
 }
 
 .trust-strip-inner {
@@ -380,9 +380,8 @@ footer {
 
 /* Responsive */
 @media (max-width: 768px) {
-    .hamburger {
-        display: block;
-        order: 2;
+    .top-bar {
+        display: none;
     }
 
     header .container {
@@ -390,9 +389,32 @@ footer {
         grid-template-columns: 1fr auto;
         grid-template-areas:
             "logo hamburger"
-            "nav nav"
-            "icons icons";
-        gap: 0.75rem;
+            "icons icons"
+            "nav nav";
+        gap: 0.6rem;
+    }
+
+    .logo {
+        grid-area: logo;
+    }
+
+    .hamburger {
+        display: block;
+        grid-area: hamburger;
+        justify-self: end;
+    }
+
+    .header-icons {
+        grid-area: icons;
+        width: 100%;
+        justify-content: flex-end;
+        gap: 0.6rem;
+    }
+
+    .header-icons a {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
     }
 
     nav {
@@ -412,48 +434,28 @@ footer {
 
     nav ul {
         flex-direction: column;
-        align-items: center;
-        padding: 1rem 0;
+        align-items: flex-start;
+        padding: 0.75rem 0;
     }
 
     nav ul li {
-        margin: 0.5rem 0;
+        margin: 0;
+        width: 100%;
     }
 
     nav ul li a {
         display: block;
         width: 100%;
-        text-align: center;
-        padding: 0.25rem 0;
-    }
-
-    .header-icons {
-        grid-area: icons;
-        width: 100%;
-        justify-content: center;
-    }
-
-    .logo {
-        grid-area: logo;
         text-align: left;
-    }
-
-    .hamburger {
-        grid-area: hamburger;
-        justify-self: end;
+        padding: 0.75rem 0;
     }
 
     .hero-content h2 {
-        font-size: 2.1rem;
+        font-size: 2rem;
     }
 
     .page-hero h2 {
-        font-size: 1.8rem;
-    }
-
-    .top-bar-content {
-        justify-content: center;
-        text-align: center;
+        font-size: 1.7rem;
     }
 
     .footer-grid {
@@ -469,7 +471,33 @@ footer {
         grid-template-columns: 1fr;
     }
 
+    .hero-featured {
+        padding: 1rem;
+    }
+
+    .trust-strip {
+        padding: 0.9rem 0;
+    }
+
     .trust-strip-inner {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .trust-item {
+        padding: 0.7rem 0.8rem;
+    }
+}
+
+@media (max-width: 520px) {
+    .trust-strip {
+        display: none;
+    }
+
+    .header-icons {
+        justify-content: flex-start;
+    }
+
+    .hero-content p {
+        font-size: 1.02rem;
     }
 }

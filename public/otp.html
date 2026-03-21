@@ -74,6 +74,82 @@
         <div class="container">
             <div class="auth-container">
                 <div class="auth-card">
+                     param($m) if (<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify OTP - Newdich Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="top-bar">
+        <div class="container top-bar-content">
+            <div class="top-bar-left">
+                <span><i class="fas fa-shield-alt"></i> Secure checkout</span>
+                <span class="divider">•</span>
+                <span><i class="fas fa-truck"></i> Nationwide delivery</span>
+            </div>
+            <div class="top-bar-right">
+                <span><i class="fas fa-headset"></i> 24/7 client support</span>
+            </div>
+        </div>
+    </div>    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>Newdich Store</h1>
+            </div>
+            <button class="hamburger" aria-label="Menu">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="products.html">Products</a></li>
+                    <li><a href="wishlist.html">Wishlist</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="header-icons">
+                <a href="wishlist.html" class="wishlist-icon">
+                    <i class="fas fa-heart"></i>
+                </a>
+                <a href="cart.html" class="cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count">0</span>
+                </a>
+                <a href="account.html" class="user-icon">
+                    <i class="fas fa-user"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+    <section class="trust-strip">
+        <div class="container trust-strip-inner">
+            <div class="trust-item">
+                <i class="fas fa-shield-alt"></i>
+                <span>Secure, compliant checkout</span>
+            </div>
+            <div class="trust-item">
+                <i class="fas fa-truck"></i>
+                <span>Nationwide delivery network</span>
+            </div>
+            <div class="trust-item">
+                <i class="fas fa-award"></i>
+                <span>Quality-checked catalog</span>
+            </div>
+            <div class="trust-item">
+                <i class="fas fa-headset"></i>
+                <span>24/7 enterprise support</span>
+            </div>
+        </div>
+    </section>
+
+    <main>
+        <div class="container">
+            <div class="auth-container">
+                <div class="auth-card">
                     <h2>Verify OTP</h2>
                     <p class="muted-note">We sent a 6-digit code to your email.</p>
                     <form id="otp-form">
@@ -100,7 +176,7 @@
         <div class="container footer-grid">
             <div class="footer-brand">
                 <h3>Newdich Store</h3>
-                <p>Enterprise-grade commerce for professionals. Curated assortments, reliable fulfillment, and secure transactions built for scale.</p>
+                <p>Newdich Store delivers luxury essentials with bold design and impeccable delivery.</p>
                 <div class="footer-badges">
                     <span class="badge"><i class="fas fa-lock"></i> PCI-ready</span>
                     <span class="badge"><i class="fas fa-globe"></i> Nationwide</span>
@@ -146,6 +222,86 @@
     <script type="module" src="js/otp.js"></script>
 </body>
 </html>
+
+
+
+
+.Name -ieq 'index.html' -and $m.Value -match 'Newdich Store') { "<h2>$heroCopy</h2>" } else { $m.Value } 
+                    <p class="muted-note">We sent a 6-digit code to your email.</p>
+                    <form id="otp-form">
+                        <div class="form-group">
+                            <label for="otp-code">OTP Code</label>
+                            <input type="text" id="otp-code" maxlength="6" inputmode="numeric" placeholder="Enter 6-digit code" required>
+                        </div>
+                        <button type="submit" class="btn-primary btn-block">Verify</button>
+                    </form>
+                    <div class="auth-footer">
+                        <p><button id="resend-otp" class="btn-secondary">Resend Code</button></p>
+                    </div>
+                    <div id="otp-message" class="success-message" style="display:none;"></div>
+                    <div id="otp-error" class="error-message" style="display:none;"></div>
+                    <div class="auth-footer">
+                        <p><a href="login.html">Back to login</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+        <footer class="site-footer">
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <h3>Newdich Store</h3>
+                <p>Newdich Store delivers luxury essentials with bold design and impeccable delivery.</p>
+                <div class="footer-badges">
+                    <span class="badge"><i class="fas fa-lock"></i> PCI-ready</span>
+                    <span class="badge"><i class="fas fa-globe"></i> Nationwide</span>
+                    <span class="badge"><i class="fas fa-star"></i> Trusted by teams</span>
+                </div>
+            </div>
+            <div class="footer-column">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="products.html">Products</a></li>
+                    <li><a href="account.html">Account</a></li>
+                    <li><a href="wishlist.html">Wishlist</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="returns.html">Returns</a></li>
+                    <li><a href="cart.html">Cart</a></li>
+                    <li><a href="checkout.html">Checkout</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Access</h4>
+                <ul>
+                    <li><a href="login.html">Login</a></li>
+                    <li><a href="register.html">Register</a></li>
+                    <li><a href="forgot-password.html">Forgot Password</a></li>
+                    <li><a href="order-confirmation.html">Order Status</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="container footer-bottom">
+            <p>&copy; 2026 Newdich Store. All rights reserved.</p>
+            <div class="footer-meta">
+                <span>Powered by Newdich Technology</span>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="js/otp.js"></script>
+</body>
+</html>
+
+
+
+
 
 
 

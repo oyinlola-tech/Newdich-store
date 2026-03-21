@@ -213,6 +213,27 @@
     border-radius: 999px;
     font-size: 0.75rem;
     letter-spacing: 0.2px;
+    display: inline-flex;
+    gap: 0.4rem;
+    align-items: center;
+}
+
+.product-badge::before {
+    content: "";
+    width: 14px;
+    height: 14px;
+    display: inline-block;
+    background: currentColor;
+}
+
+.badge-featured::before {
+    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'><path d='M12 3l2.7 5.47 6.03.88-4.36 4.25 1.03 6.01L12 17.9 6.6 19.6l1.03-6.01L3.27 9.35l6.03-.88L12 3z' fill='%23000'/></svg>") no-repeat center / contain;
+    mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'><path d='M12 3l2.7 5.47 6.03.88-4.36 4.25 1.03 6.01L12 17.9 6.6 19.6l1.03-6.01L3.27 9.35l6.03-.88L12 3z' fill='%23000'/></svg>") no-repeat center / contain;
+}
+
+.badge-new::before {
+    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'><path d='M12 2l2.2 4.6 5.1.7-3.7 3.6.9 5.1-4.5-2.4-4.5 2.4.9-5.1-3.7-3.6 5.1-.7L12 2z' fill='%23000'/></svg>") no-repeat center / contain;
+    mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'><path d='M12 2l2.2 4.6 5.1.7-3.7 3.6.9 5.1-4.5-2.4-4.5 2.4.9-5.1-3.7-3.6 5.1-.7L12 2z' fill='%23000'/></svg>") no-repeat center / contain;
 }
 
 .product-quick {

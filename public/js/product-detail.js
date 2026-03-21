@@ -101,10 +101,10 @@ function renderRelatedProducts(products) {
     }
 
     relatedGrid.innerHTML = products.map(product => `
-        <div class="product-card" data-product-id="${product.id}">
+            <div class="product-card" data-product-id="${product.id}">
             <div class="product-media">
                 <img src="${product.image || 'https://via.placeholder.com/600x450?text=No+Image'}" alt="${escapeHtml(product.name)}">
-                <span class="product-badge">Recommended</span>
+                <span class="product-badge badge-new">Recommended</span>
                 <button class="product-quick btn-wishlist" data-id="${product.id}" aria-label="Save">
                     <i class="fas fa-heart"></i>
                 </button>

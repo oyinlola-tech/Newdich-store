@@ -17,6 +17,7 @@ const filterMinPrice = document.getElementById('filter-min-price');
 const filterMaxPrice = document.getElementById('filter-max-price');
 const applyFiltersBtn = document.getElementById('apply-filters');
 const resetFiltersBtn = document.getElementById('reset-filters');
+const relatedGrid = document.getElementById('products-related-grid');
 
 // Helper to escape HTML
 function escapeHtml(str) {
@@ -45,13 +46,19 @@ function renderProducts(products) {
     productsGrid.innerHTML = products.map(product => {
         const categoryLabel = product.category ? escapeHtml(product.category) : 'New Arrival';
         let badgeText = 'New';
-        if (product.featured) badgeText = 'Featured';
-        if (product.stock !== undefined && product.stock !== null && product.stock <= 5) badgeText = 'Low Stock';
+        let badgeClass = 'badge-new';
+        if (product.featured) {
+            badgeText = 'Featured';
+            badgeClass = 'badge-featured';
+        }
+        if (product.stock !== undefined && product.stock !== null && product.stock <= 5) {
+            badgeText = 'Low Stock';
+        }
         return `
         <div class="product-card" data-product-id="${product.id}">
             <div class="product-media">
                 <img src="${product.image || 'https://via.placeholder.com/600x450?text=No+Image'}" alt="${escapeHtml(product.name)}">
-                <span class="product-badge">${badgeText}</span>
+                <span class="product-badge ${badgeClass}">${badgeText}</span>
                 <button class="product-quick btn-wishlist" data-id="${product.id}" aria-label="Save">
                     <i class="fas fa-heart"></i>
                 </button>
@@ -91,6 +98,62 @@ function renderProducts(products) {
     });
 }
 
+function renderRelatedProducts(products) {
+    if (!relatedGrid) return;
+    if (!products || products.length === 0) {
+        relatedGrid.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon"><i class="fas fa-box-open"></i></div>
+                <h3>No related products yet</h3>
+                <p>Check back soon for more curated items.</p>
+            </div>
+        `;
+        return;
+    }
+
+    const related = products.slice(0, 4);
+    relatedGrid.innerHTML = related.map(product => {
+        const categoryLabel = product.category ? escapeHtml(product.category) : 'New Arrival';
+        let badgeText = 'New';
+        let badgeClass = 'badge-new';
+        if (product.featured) {
+            badgeText = 'Featured';
+            badgeClass = 'badge-featured';
+        }
+        return `
+            <div class="product-card" data-product-id="${product.id}">
+                <div class="product-media">
+                    <img src="${product.image || 'https://via.placeholder.com/600x450?text=No+Image'}" alt="${escapeHtml(product.name)}">
+                    <span class="product-badge ${badgeClass}">${badgeText}</span>
+                    <button class="product-quick btn-wishlist" data-id="${product.id}" aria-label="Save">
+                        <i class="fas fa-heart"></i>
+                    </button>
+                </div>
+                <div class="product-body">
+                    <div class="product-meta">${categoryLabel}</div>
+                    <h4 class="product-title">${escapeHtml(product.name)}</h4>
+                    <div class="product-price">${formatCurrency(product.price)}</div>
+                    <div class="product-actions">
+                        <a class="btn-add-to-cart" href="product-detail.html?id=${product.id}">View Details</a>
+                        <button class="btn-wishlist" data-id="${product.id}" aria-label="Save">
+                            <i class="fas fa-heart"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    const wishlistButtons = relatedGrid.querySelectorAll('.btn-wishlist');
+    wishlistButtons.forEach(button => {
+        button.addEventListener('click', async (e) => {
+            e.preventDefault();
+            const productId = button.getAttribute('data-id');
+            await handleAddToWishlist(productId, button);
+        });
+    });
+}
+
 // Fetch and render products based on current filters
 async function loadProducts() {
     try {
@@ -98,6 +161,7 @@ async function loadProducts() {
         const products = await fetchAllProducts(currentFilters);
         currentProducts = products;
         renderProducts(currentProducts);
+        renderRelatedProducts(currentProducts);
 
         // Populate category dropdown dynamically if needed
         if (filterCategory.options.length === 1) { // only "All Categories" present
