@@ -1,4 +1,4 @@
-import { fetchOrderDetails, updateOrderStatus } from '../api/admin-orders.js';
+import { fetchOrderDetails, updateOrderStatus, addOrderNote, fetchOrderStatusHistory } from '../api/admin-orders.js';
 import { checkAdminAuth } from './admin.js';
 
 if (!checkAdminAuth()) {
@@ -8,6 +8,18 @@ if (!checkAdminAuth()) {
 const container = document.getElementById('order-detail-container');
 const statusSelect = document.getElementById('order-status-select');
 const statusButton = document.getElementById('update-status-btn');
+const historyContainer = document.getElementById('status-history');
+const noteForm = document.getElementById('order-note-form');
+const noteInput = document.getElementById('order-note');
+const notesContainer = document.getElementById('order-notes');
+
+const confirmModal = document.getElementById('status-confirm-modal');
+const confirmClose = document.getElementById('status-confirm-close');
+const confirmYes = document.getElementById('status-confirm-yes');
+const confirmNo = document.getElementById('status-confirm-no');
+const confirmText = document.getElementById('status-confirm-text');
+
+let pendingStatus = null;
 
 function getOrderIdFromUrl() {
     const params = new URLSearchParams(window.location.search);
@@ -65,6 +77,32 @@ function renderOrder(order) {
     statusSelect.value = order.status || 'pending';
 }
 
+function renderHistory(history) {
+    if (!history || history.length === 0) {
+        historyContainer.innerHTML = '<div class="muted-text">No status changes yet.</div>';
+        return;
+    }
+    historyContainer.innerHTML = history.map(item => `
+        <div class="history-item">
+            <div class="history-status">${escapeHtml(item.status)}</div>
+            <div class="history-meta">${new Date(item.changedAt).toLocaleString()} • ${escapeHtml(item.changedBy || 'Admin')}</div>
+        </div>
+    `).join('');
+}
+
+function renderNotes(notes = []) {
+    if (!notes.length) {
+        notesContainer.innerHTML = '<div class="muted-text">No notes yet.</div>';
+        return;
+    }
+    notesContainer.innerHTML = notes.map(note => `
+        <div class="note-item">
+            <div class="note-text">${escapeHtml(note.text || note.note)}</div>
+            <div class="note-meta">${new Date(note.createdAt).toLocaleString()} • ${escapeHtml(note.author || 'Admin')}</div>
+        </div>
+    `).join('');
+}
+
 async function loadOrder() {
     const orderId = getOrderIdFromUrl();
     if (!orderId) {
@@ -74,20 +112,33 @@ async function loadOrder() {
 
     container.innerHTML = '<div class="loading">Loading order...</div>';
     try {
-        const order = await fetchOrderDetails(orderId);
+        const [order, history] = await Promise.all([
+            fetchOrderDetails(orderId),
+            fetchOrderStatusHistory(orderId)
+        ]);
         renderOrder(order);
+        renderHistory(history);
+        renderNotes(order.notes || []);
     } catch (error) {
         container.innerHTML = '<p class="error">Failed to load order details.</p>';
     }
 }
 
-statusButton.addEventListener('click', async () => {
+statusButton.addEventListener('click', () => {
+    pendingStatus = statusSelect.value;
+    confirmText.textContent = `Update order status to "${pendingStatus}"?`;
+    confirmModal.style.display = 'flex';
+});
+
+confirmYes.addEventListener('click', async () => {
     const orderId = getOrderIdFromUrl();
-    const status = statusSelect.value;
     statusButton.disabled = true;
     statusButton.textContent = 'Updating...';
+    confirmModal.style.display = 'none';
     try {
-        await updateOrderStatus(orderId, status);
+        await updateOrderStatus(orderId, pendingStatus);
+        const history = await fetchOrderStatusHistory(orderId);
+        renderHistory(history);
         statusButton.textContent = 'Updated';
         setTimeout(() => {
             statusButton.textContent = 'Update Status';
@@ -97,6 +148,33 @@ statusButton.addEventListener('click', async () => {
         statusButton.textContent = 'Update Status';
         statusButton.disabled = false;
         alert(error.message || 'Failed to update status');
+    }
+});
+
+confirmNo.addEventListener('click', () => {
+    confirmModal.style.display = 'none';
+});
+
+confirmClose.addEventListener('click', () => {
+    confirmModal.style.display = 'none';
+});
+
+window.addEventListener('click', (e) => {
+    if (e.target === confirmModal) confirmModal.style.display = 'none';
+});
+
+noteForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const text = noteInput.value.trim();
+    if (!text) return;
+    const orderId = getOrderIdFromUrl();
+    try {
+        await addOrderNote(orderId, text);
+        const order = await fetchOrderDetails(orderId);
+        renderNotes(order.notes || []);
+        noteInput.value = '';
+    } catch (error) {
+        alert(error.message || 'Failed to add note');
     }
 });
 

@@ -3,17 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Users | Newdich Store</title>
-    <!-- Google Fonts -->
+    <title>Admin - Inventory | Newdich Store</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Custom Admin CSS -->
     <link rel="stylesheet" href="css/admin.css">
 </head>
 <body>
     <div class="admin-wrapper">
-        <!-- Sidebar -->
         <aside class="admin-sidebar">
             <div class="sidebar-header">
                 <h2>Newdich Admin</h2>
@@ -23,9 +19,9 @@
                     <li><a href="index.html"><i class="fas fa-dashboard"></i> Dashboard</a></li>
                     <li><a href="products.html"><i class="fas fa-box"></i> Products</a></li>
                     <li><a href="categories.html"><i class="fas fa-tags"></i> Categories</a></li>
-                    <li><a href="inventory.html"><i class="fas fa-warehouse"></i> Inventory</a></li>
+                    <li><a href="inventory.html" class="active"><i class="fas fa-warehouse"></i> Inventory</a></li>
                     <li><a href="orders.html"><i class="fas fa-shopping-cart"></i> Orders</a></li>
-                    <li><a href="users.html" class="active"><i class="fas fa-users"></i> Users</a></li>
+                    <li><a href="users.html"><i class="fas fa-users"></i> Users</a></li>
                     <li><a href="settings.html"><i class="fas fa-gear"></i> Settings</a></li>
                 </ul>
             </nav>
@@ -34,11 +30,10 @@
             </div>
         </aside>
 
-        <!-- Main Content -->
         <main class="admin-main">
             <header class="admin-header">
                 <div class="header-title">
-                    <h1>Users Management</h1>
+                    <h1>Inventory</h1>
                 </div>
                 <div class="header-user">
                     <span id="admin-name">Admin</span>
@@ -48,60 +43,55 @@
             <div class="admin-content">
                 <div class="filters">
                     <div class="filter-group">
-                        <label for="search-user">Search</label>
-                        <input type="text" id="search-user" placeholder="Name or email">
+                        <label for="inventory-search">Search</label>
+                        <input type="text" id="inventory-search" placeholder="Product name or ID">
+                    </div>
+                    <div class="filter-group">
+                        <label for="low-stock">Low Stock</label>
+                        <select id="low-stock">
+                            <option value="">All</option>
+                            <option value="true">Low stock only</option>
+                        </select>
                     </div>
                     <div class="filter-actions">
-                        <button id="apply-search" class="btn-primary">Search</button>
-                        <button id="reset-search" class="btn-secondary">Reset</button>
+                        <button id="apply-inventory" class="btn-primary">Apply</button>
+                        <button id="reset-inventory" class="btn-secondary">Reset</button>
                     </div>
                 </div>
 
-                <div id="users-container">
-                    <div class="loading">Loading users...</div>
+                <div id="inventory-container">
+                    <div class="loading">Loading inventory...</div>
                 </div>
             </div>
         </main>
     </div>
 
-    <!-- Modal for Editing User -->
-    <div id="user-modal" class="modal" style="display: none;">
+    <div id="inventory-modal" class="modal" style="display: none;">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h2>Edit User</h2>
-            <form id="user-form">
+            <h2>Update Inventory</h2>
+            <form id="inventory-form">
                 <div class="form-group">
-                    <label for="user-name">Name</label>
-                    <input type="text" id="user-name" disabled>
+                    <label for="inventory-stock">Stock Quantity</label>
+                    <input type="number" id="inventory-stock" min="0" required>
                 </div>
                 <div class="form-group">
-                    <label for="user-email">Email</label>
-                    <input type="email" id="user-email" disabled>
-                </div>
-                <div class="form-group">
-                    <label for="user-role">Role</label>
-                    <select id="user-role">
-                        <option value="user">User</option>
-                        <option value="admin">Admin</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="user-status">Status</label>
-                    <select id="user-status">
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
+                    <label for="inventory-status">Status</label>
+                    <select id="inventory-status">
+                        <option value="in_stock">In Stock</option>
+                        <option value="low_stock">Low Stock</option>
+                        <option value="out_of_stock">Out of Stock</option>
                     </select>
                 </div>
                 <div class="form-actions">
-                    <button type="submit" class="btn-primary">Save Changes</button>
-                    <button type="button" id="cancel-modal" class="btn-secondary">Cancel</button>
+                    <button type="submit" class="btn-primary">Save</button>
+                    <button type="button" id="cancel-inventory" class="btn-secondary">Cancel</button>
                 </div>
             </form>
-            <div id="user-message" class="profile-message" style="display: none;"></div>
         </div>
     </div>
 
-    <script type="module" src="js/users-admin.js"></script>
+    <script type="module" src="js/inventory-admin.js"></script>
     <script type="module" src="js/admin.js"></script>
 </body>
 </html>

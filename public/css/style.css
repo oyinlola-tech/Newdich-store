@@ -97,6 +97,11 @@ nav ul li a:hover {
     margin-bottom: 2rem;
 }
 
+.hero-content {
+    max-width: 640px;
+    margin: 0 auto;
+}
+
 .btn-primary {
     display: inline-block;
     background-color: #ff6b6b;
@@ -135,6 +140,8 @@ nav ul li a:hover {
     overflow: hidden;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     transition: transform 0.3s;
+    display: flex;
+    flex-direction: column;
 }
 
 .product-card:hover {
@@ -242,17 +249,24 @@ footer p {
     }
 
     header .container {
-        flex-wrap: wrap;
-        justify-content: space-between;
-        align-items: center;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        grid-template-areas:
+            "logo hamburger"
+            "nav nav"
+            "icons icons";
+        gap: 0.75rem;
     }
 
     nav {
+        grid-area: nav;
         width: 100%;
         order: 3;
         max-height: 0;
         overflow: hidden;
         transition: max-height 0.3s ease-out;
+        background: #fff;
+        border-top: 1px solid #eee;
     }
 
     nav.active {
@@ -269,12 +283,27 @@ footer p {
         margin: 0.5rem 0;
     }
 
+    nav ul li a {
+        display: block;
+        width: 100%;
+        text-align: center;
+        padding: 0.25rem 0;
+    }
+
     .header-icons {
-        order: 1;
+        grid-area: icons;
+        width: 100%;
+        justify-content: center;
     }
 
     .logo {
-        order: 0;
+        grid-area: logo;
+        text-align: left;
+    }
+
+    .hamburger {
+        grid-area: hamburger;
+        justify-self: end;
     }
 }
 
@@ -788,6 +817,12 @@ footer p {
     font-size: 1.1rem;
 }
 
+.helper-text {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin: 0.5rem 0 1rem;
+}
+
 @media (max-width: 768px) {
     .checkout-layout {
         grid-template-columns: 1fr;
@@ -1177,6 +1212,11 @@ body {
     color: var(--ink);
 }
 
+input::placeholder,
+textarea::placeholder {
+    color: #9ca3af;
+}
+
 header {
     backdrop-filter: blur(6px);
 }
@@ -1196,10 +1236,16 @@ header {
     color: var(--muted);
 }
 
+.muted-note {
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+
 .card-actions {
     display: flex;
     gap: 0.5rem;
     padding: 0 1rem 1rem;
+    margin-top: auto;
 }
 
 .card-actions .btn-add-to-cart {
@@ -1433,6 +1479,29 @@ header {
 
 .wishlist-icon:hover {
     color: var(--brand);
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.product-card,
+.wishlist-card,
+.info-panel,
+.returns-form-card,
+.settings-card,
+.auth-card,
+.contact-form-container,
+.account-main,
+.account-sidebar {
+    animation: fadeUp 0.4s ease;
 }
 
 @media (max-width: 768px) {

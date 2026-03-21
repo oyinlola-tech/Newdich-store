@@ -18,6 +18,14 @@ const modal = document.getElementById('order-modal');
 const closeModal = modal.querySelector('.close');
 const orderDetailsContent = document.getElementById('order-details-content');
 
+const statusModal = document.getElementById('orders-status-modal');
+const statusClose = document.getElementById('orders-status-close');
+const statusYes = document.getElementById('orders-status-yes');
+const statusNo = document.getElementById('orders-status-no');
+const statusText = document.getElementById('orders-status-text');
+
+let pendingStatusChange = null;
+
 function escapeHtml(str) {
     if (!str) return '';
     return str.replace(/[&<>]/g, function(m) {
@@ -80,15 +88,9 @@ async function renderOrders(orders) {
         select.addEventListener('change', async (e) => {
             const orderId = select.getAttribute('data-order-id');
             const newStatus = select.value;
-            try {
-                await updateOrderStatus(orderId, newStatus);
-                // Refresh the list
-                await loadOrders();
-            } catch (error) {
-                alert(error.message || 'Failed to update status');
-                // Reset select to previous value
-                select.value = select.getAttribute('data-current-status');
-            }
+            pendingStatusChange = { orderId, newStatus, select };
+            statusText.textContent = `Update order #${orderId} to "${newStatus}"?`;
+            statusModal.style.display = 'flex';
         });
     });
 
@@ -185,6 +187,35 @@ closeModal.addEventListener('click', () => {
 
 window.addEventListener('click', (e) => {
     if (e.target === modal) modal.style.display = 'none';
+});
+
+statusYes.addEventListener('click', async () => {
+    if (!pendingStatusChange) return;
+    const { orderId, newStatus, select } = pendingStatusChange;
+    statusModal.style.display = 'none';
+    try {
+        await updateOrderStatus(orderId, newStatus);
+        await loadOrders();
+    } catch (error) {
+        alert(error.message || 'Failed to update status');
+        select.value = select.getAttribute('data-current-status');
+    } finally {
+        pendingStatusChange = null;
+    }
+});
+
+function closeStatusModal() {
+    if (pendingStatusChange?.select) {
+        pendingStatusChange.select.value = pendingStatusChange.select.getAttribute('data-current-status');
+    }
+    pendingStatusChange = null;
+    statusModal.style.display = 'none';
+}
+
+statusNo.addEventListener('click', closeStatusModal);
+statusClose.addEventListener('click', closeStatusModal);
+window.addEventListener('click', (e) => {
+    if (e.target === statusModal) closeStatusModal();
 });
 
 // Initial load

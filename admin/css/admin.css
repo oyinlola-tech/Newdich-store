@@ -662,6 +662,43 @@ body {
     gap: 0.75rem;
 }
 
+.history-list,
+.notes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.history-item,
+.note-item {
+    padding: 0.75rem;
+    border-radius: 8px;
+    background: #f8fafc;
+    border: 1px solid #eef2f7;
+}
+
+.history-status {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.history-meta,
+.note-meta {
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin-top: 0.25rem;
+}
+
+.note-text {
+    color: #2c3e50;
+}
+
+.muted-text {
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
 .view-all {
     color: #3498db;
     text-decoration: none;
@@ -670,4 +707,71 @@ body {
 
 .view-all:hover {
     text-decoration: underline;
+}
+
+.empty-state {
+    padding: 2rem;
+    background: #fff;
+    border-radius: var(--admin-radius);
+    box-shadow: var(--admin-shadow);
+    text-align: center;
+    color: #6b7280;
+}
+
+@keyframes adminFadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.stat-card,
+.recent-orders,
+.settings-card,
+.detail-card,
+.modal-content {
+    animation: adminFadeUp 0.3s ease;
+}
+
+@media (max-width: 768px) {
+    .admin-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+    .admin-content {
+        padding: 1.5rem;
+    }
+    .data-table {
+        display: block;
+        overflow-x: auto;
+    }
+}
+
+@media (max-width: 900px) {
+    .admin-wrapper {
+        flex-direction: column;
+    }
+    .admin-sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+    }
+    .admin-main {
+        margin-left: 0;
+    }
+    .sidebar-nav ul {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .sidebar-nav li {
+        flex: 1 1 50%;
+    }
+    .sidebar-nav li a {
+        justify-content: center;
+    }
 }

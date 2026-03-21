@@ -22,7 +22,6 @@
                     <li><a href="index.html">Home</a></li>
                     <li><a href="products.html">Products</a></li>
                     <li><a href="wishlist.html">Wishlist</a></li>
-                    <li><a href="returns.html">Returns</a></li>
                     <li><a href="contact.html">Contact</a></li>
                 </ul>
             </nav>
@@ -46,6 +45,7 @@
             <div class="container">
                 <h2>Returns & Refunds</h2>
                 <p>We make returns simple. Review the steps below and submit a request.</p>
+                <p class="muted-note">Return requests are available from your account for security.</p>
             </div>
         </section>
 
@@ -68,7 +68,7 @@
 
                 <div class="returns-form-card">
                     <h3>Start a Return</h3>
-                    <form>
+                    <form id="returns-form">
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="order-id">Order ID</label>
@@ -76,7 +76,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="email">Email</label>
-                                <input type="email" id="email" placeholder="you@email.com">
+                                <input type="email" id="returns-email" placeholder="you@email.com">
                             </div>
                         </div>
                         <div class="form-group">
@@ -93,6 +93,7 @@
                             <textarea id="notes" placeholder="Tell us a bit more..."></textarea>
                         </div>
                         <button type="submit" class="btn-primary">Submit Request</button>
+                        <div id="returns-message" class="contact-message" style="display: none;"></div>
                     </form>
                 </div>
             </div>
@@ -107,5 +108,6 @@
     </footer>
 
     <script type="module" src="js/main.js"></script>
+    <script type="module" src="js/returns.js"></script>
 </body>
 </html>

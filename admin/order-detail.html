@@ -18,6 +18,8 @@
                 <ul>
                     <li><a href="index.html"><i class="fas fa-dashboard"></i> Dashboard</a></li>
                     <li><a href="products.html"><i class="fas fa-box"></i> Products</a></li>
+                    <li><a href="categories.html"><i class="fas fa-tags"></i> Categories</a></li>
+                    <li><a href="inventory.html"><i class="fas fa-warehouse"></i> Inventory</a></li>
                     <li><a href="orders.html" class="active"><i class="fas fa-shopping-cart"></i> Orders</a></li>
                     <li><a href="users.html"><i class="fas fa-users"></i> Users</a></li>
                     <li><a href="settings.html"><i class="fas fa-gear"></i> Settings</a></li>
@@ -48,8 +50,39 @@
                 <div id="order-detail-container">
                     <div class="loading">Loading order...</div>
                 </div>
+
+                <div class="detail-grid">
+                    <div class="detail-card">
+                        <h3>Status History</h3>
+                        <div id="status-history" class="history-list">
+                            <div class="loading">Loading history...</div>
+                        </div>
+                    </div>
+                    <div class="detail-card">
+                        <h3>Admin Notes</h3>
+                        <form id="order-note-form">
+                            <textarea id="order-note" rows="4" placeholder="Add a note about this order..."></textarea>
+                            <button type="submit" class="btn-secondary">Add Note</button>
+                        </form>
+                        <div id="order-notes" class="notes-list">
+                            <div class="muted-text">No notes yet.</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
+    </div>
+
+    <div id="status-confirm-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" id="status-confirm-close">&times;</span>
+            <h2>Confirm Status Update</h2>
+            <p id="status-confirm-text">Are you sure you want to update this status?</p>
+            <div class="form-actions">
+                <button id="status-confirm-yes" class="btn-primary">Yes, Update</button>
+                <button id="status-confirm-no" class="btn-secondary">Cancel</button>
+            </div>
+        </div>
     </div>
 
     <script type="module" src="js/order-detail.js"></script>

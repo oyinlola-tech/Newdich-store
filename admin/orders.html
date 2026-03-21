@@ -22,6 +22,8 @@
                 <ul>
                     <li><a href="index.html"><i class="fas fa-dashboard"></i> Dashboard</a></li>
                     <li><a href="products.html"><i class="fas fa-box"></i> Products</a></li>
+                    <li><a href="categories.html"><i class="fas fa-tags"></i> Categories</a></li>
+                    <li><a href="inventory.html"><i class="fas fa-warehouse"></i> Inventory</a></li>
                     <li><a href="orders.html" class="active"><i class="fas fa-shopping-cart"></i> Orders</a></li>
                     <li><a href="users.html"><i class="fas fa-users"></i> Users</a></li>
                     <li><a href="settings.html"><i class="fas fa-gear"></i> Settings</a></li>
@@ -85,5 +87,17 @@
 
     <script type="module" src="js/orders-admin.js"></script>
     <script type="module" src="js/admin.js"></script>
+
+    <div id="orders-status-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" id="orders-status-close">&times;</span>
+            <h2>Confirm Status Change</h2>
+            <p id="orders-status-text">Update status?</p>
+            <div class="form-actions">
+                <button id="orders-status-yes" class="btn-primary">Yes, Update</button>
+                <button id="orders-status-no" class="btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

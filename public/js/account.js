@@ -61,6 +61,7 @@ function renderAccountPage(user, orders) {
                     <p>${escapeHtml(user.email)}</p>
                 </div>
                 <a href="settings.html" class="btn-secondary">Settings</a>
+                <a href="returns.html" class="btn-secondary">Returns & Refunds</a>
                 <button id="logout-btn" class="btn-secondary">Logout</button>
             </div>
             <div class="account-main">
@@ -143,6 +144,13 @@ function renderAccountPage(user, orders) {
         logoutBtn.addEventListener('click', () => {
             logoutUser();
             window.location.href = 'index.html';
+        });
+    }
+
+    const returnsLink = document.querySelector('.account-sidebar a[href="returns.html"]');
+    if (returnsLink) {
+        returnsLink.addEventListener('click', () => {
+            sessionStorage.setItem('returnsAccess', '1');
         });
     }
 }

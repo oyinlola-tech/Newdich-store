@@ -1,6 +1,7 @@
 import { fetchCart } from '../api/cart.js';
 import { submitOrder } from '../api/orders.js';
 import { isLoggedIn, getCurrentUser } from '../api/auth.js';
+import { createPaymentIntent, confirmPayment } from '../api/payments.js';
 import { updateCartCount } from './main.js';
 
 const checkoutContainer = document.getElementById('checkout-container');
@@ -99,6 +100,7 @@ function renderCheckoutForm(user) {
                             <input type="text" id="cvv" placeholder="123" required>
                         </div>
                     </div>
+                    <p class="helper-text">Payments are secured and encrypted.</p>
 
                     <button type="submit" class="btn-primary btn-block" id="place-order-btn">Place Order</button>
                 </form>
@@ -179,7 +181,7 @@ async function handleOrderSubmit(e) {
     submitBtn.textContent = 'Placing Order...';
     submitBtn.disabled = true;
 
-    // Build order data
+    // Build order data (will attach payment info after processing)
     const orderData = {
         shippingAddress: {
             fullName,
@@ -204,7 +206,32 @@ async function handleOrderSubmit(e) {
     };
 
     try {
-        const order = await submitOrder(orderData);
+        // 1) Create payment intent
+        const paymentInit = await createPaymentIntent({
+            amount: orderData.total,
+            currency: 'USD',
+            paymentMethod: {
+                cardNumber: cardNumberClean,
+                expiryDate,
+                cvv
+            },
+            customer: { fullName, email }
+        });
+
+        const paymentId = paymentInit.paymentId || paymentInit.id || paymentInit.intentId;
+        if (!paymentId) {
+            throw new Error('Payment initialization failed.');
+        }
+
+        // 2) Confirm payment
+        const paymentResult = await confirmPayment(paymentId);
+        const paymentStatus = paymentResult.status || 'confirmed';
+
+        // 3) Submit order with payment metadata
+        const order = await submitOrder({
+            ...orderData,
+            payment: { paymentId, status: paymentStatus }
+        });
         // Clear cart from localStorage or trigger backend cart clear (handled by API)
         // Redirect to order confirmation page
         window.location.href = `order-confirmation.html?orderId=${order.id}`;

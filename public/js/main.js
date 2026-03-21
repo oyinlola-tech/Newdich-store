@@ -91,8 +91,17 @@ function initMobileMenu() {
     const hamburger = document.querySelector('.hamburger');
     const nav = document.querySelector('nav');
     if (hamburger && nav) {
+        hamburger.setAttribute('aria-expanded', 'false');
         hamburger.addEventListener('click', () => {
-            nav.classList.toggle('active');
+            const isOpen = nav.classList.toggle('active');
+            hamburger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
+
+        nav.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                nav.classList.remove('active');
+                hamburger.setAttribute('aria-expanded', 'false');
+            });
         });
     }
 }
