@@ -1,4 +1,4 @@
-import { API_BASE_URL, getHeaders } from './config.js';
+﻿import { API_BASE_URL, getHeaders } from './config.js';
 
 export async function fetchFeaturedProducts(limit = 4) {
     try {
@@ -43,3 +43,4 @@ export async function fetchProductById(id) {
         throw error;
     }
 }
+

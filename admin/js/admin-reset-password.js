@@ -1,4 +1,4 @@
-import { resetAdminPassword } from '../api/admin-password.js';
+﻿import { resetAdminPassword } from '../api/admin-password.js';
 
 const form = document.getElementById('admin-reset-form');
 const message = document.getElementById('admin-reset-message');
@@ -52,3 +52,5 @@ form.addEventListener('submit', async (e) => {
         submitBtn.disabled = false;
     }
 });
+
+

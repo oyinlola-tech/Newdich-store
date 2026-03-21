@@ -1,4 +1,4 @@
-import { fetchCart } from '../api/cart.js';
+﻿import { fetchCart } from '../api/cart.js';
 import { submitOrder } from '../api/orders.js';
 import { isLoggedIn, getCurrentUser } from '../api/auth.js';
 import { createPaymentIntent, confirmPayment } from '../api/payments.js';
@@ -14,7 +14,7 @@ function getProductImage(product) {
 // Check authentication
 if (!isLoggedIn()) {
     // Redirect to login with return URL
-    window.location.href = `login.html?redirect=checkout.html`;
+    window.location.href = `/login?redirect=/checkout`;
 }
 
 let cartData = null;
@@ -29,7 +29,7 @@ async function loadCheckout() {
             checkoutContainer.innerHTML = `
                 <div class="empty-cart">
                     <p>Your cart is empty.</p>
-                    <a href="products.html" class="btn-primary">Continue Shopping</a>
+                    <a href="/products" class="btn-primary">Continue Shopping</a>
                 </div>
             `;
             return;
@@ -239,7 +239,7 @@ async function handleOrderSubmit(e) {
         });
         // Clear cart from localStorage or trigger backend cart clear (handled by API)
         // Redirect to order confirmation page
-        window.location.href = `order-confirmation.html?orderId=${order.id}`;
+        window.location.href = `/order-confirmation?orderId=${order.id}`;
     } catch (error) {
         showOrderError(error.message || 'Failed to place order. Please try again.');
         submitBtn.textContent = originalText;
@@ -270,3 +270,5 @@ document.addEventListener('DOMContentLoaded', () => {
     loadCheckout();
     updateCartCount(); // update header badge
 });
+
+

@@ -1,4 +1,4 @@
-import { API_BASE_URL, getHeaders } from './config.js';
+﻿import { API_BASE_URL, getHeaders } from './config.js';
 
 // Fetch all categories (public)
 export async function fetchCategories() {
@@ -29,3 +29,5 @@ export async function fetchCategoryById(categoryId) {
         throw error;
     }
 }
+
+

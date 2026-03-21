@@ -1,4 +1,4 @@
-import { verifyOtp, requestOtp } from '../api/otp.js';
+﻿import { verifyOtp, requestOtp } from '../api/otp.js';
 import { updateCartCount } from './main.js';
 import './footer-year.js';
 
@@ -43,7 +43,7 @@ form.addEventListener('submit', async (e) => {
             if (resetToken) {
                 sessionStorage.setItem('resetToken', resetToken);
             }
-            window.location.href = 'reset-password.html';
+            window.location.href = '/reset-password';
             return;
         }
 
@@ -59,7 +59,7 @@ form.addEventListener('submit', async (e) => {
         message.style.display = 'block';
         await updateCartCount();
         const redirect = new URLSearchParams(window.location.search).get('redirect');
-        window.location.href = redirect || 'index.html';
+        window.location.href = redirect || '/';
     } catch (error) {
         errorBox.textContent = error.message || 'Failed to verify OTP.';
         errorBox.style.display = 'block';
@@ -90,3 +90,5 @@ resendBtn.addEventListener('click', async () => {
         resendBtn.disabled = false;
     }
 });
+
+

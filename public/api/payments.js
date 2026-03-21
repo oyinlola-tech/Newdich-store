@@ -1,4 +1,4 @@
-import { API_BASE_URL, getHeaders } from './config.js';
+﻿import { API_BASE_URL, getHeaders } from './config.js';
 
 // Create a payment intent or initialize a payment
 export async function createPaymentIntent(paymentData) {
@@ -51,3 +51,5 @@ export async function fetchPaymentMethods() {
         return [];
     }
 }
+
+

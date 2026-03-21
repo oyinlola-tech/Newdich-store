@@ -1,4 +1,4 @@
-import { API_BASE_URL, getHeaders } from './config.js';
+﻿import { API_BASE_URL, getHeaders } from './config.js';
 
 // Fetch all products (admin view)
 export async function fetchAdminProducts() {
@@ -95,3 +95,5 @@ export async function deleteProduct(productId) {
         throw error;
     }
 }
+
+

@@ -1,4 +1,4 @@
-import { fetchAdminProducts, createProduct, updateProduct, deleteProduct, fetchProductById } from '../api/admin-products.js';
+﻿import { fetchAdminProducts, createProduct, updateProduct, deleteProduct, fetchProductById } from '../api/admin-products.js';
 import { fetchAdminCategories } from '../api/admin-categories.js';
 import { checkAdminAuth } from './admin.js';
 import { formatCurrency } from './format.js';
@@ -48,9 +48,11 @@ async function loadCategories() {
         const categories = await fetchAdminCategories();
         cachedCategories = categories || [];
         populateCategorySelect();
+        updateCategoryAvailability();
     } catch (error) {
         cachedCategories = [];
         populateCategorySelect();
+        updateCategoryAvailability();
     }
 }
 
@@ -74,6 +76,13 @@ function populateCategorySelect(selectedValue = '') {
         }
         categorySelect.appendChild(option);
     });
+}
+
+function updateCategoryAvailability() {
+    const noCategories = !cachedCategories.length;
+    addProductBtn.disabled = noCategories;
+    addProductBtn.textContent = noCategories ? 'Add Category First' : 'Add New Product';
+    categorySelect.disabled = noCategories;
 }
 
 // Render products table
@@ -148,6 +157,7 @@ function openAddModal() {
     productImagesInput.value = '';
     existingImagesContainer.textContent = '';
     populateCategorySelect();
+    updateCategoryAvailability();
     modal.style.display = 'flex';
 }
 
@@ -161,6 +171,7 @@ async function openEditModal(productId) {
         document.getElementById('product-name').value = product.name;
         document.getElementById('product-price').value = product.price;
         populateCategorySelect(product.category);
+        updateCategoryAvailability();
         document.getElementById('product-description').value = product.description;
         productImagesInput.value = '';
         document.getElementById('product-stock').value = product.stock || 0;
@@ -181,13 +192,25 @@ async function openEditModal(productId) {
 async function handleProductSubmit(e) {
     e.preventDefault();
 
+    if (!cachedCategories.length) {
+        alert('Please create at least one category before adding products.');
+        return;
+    }
+
+    const selectedOption = categorySelect.options[categorySelect.selectedIndex];
+    const selectedCategory = categorySelect.value.trim();
+    const categoryId = selectedOption?.dataset?.id;
+
     const productData = {
         name: document.getElementById('product-name').value.trim(),
         price: parseFloat(document.getElementById('product-price').value),
-        category: document.getElementById('product-category').value.trim(),
+        category: selectedCategory,
         description: document.getElementById('product-description').value.trim(),
         stock: parseInt(document.getElementById('product-stock').value) || 0
     };
+    if (categoryId) {
+        productData.categoryId = categoryId;
+    }
 
     if (!productData.name || isNaN(productData.price) || !productData.category || !productData.description) {
         alert('Please fill in all required fields.');
@@ -272,5 +295,8 @@ window.addEventListener('click', (e) => {
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
+    loadCategories();
     loadProducts();
 });
+
+

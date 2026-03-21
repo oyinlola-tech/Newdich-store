@@ -1,4 +1,4 @@
-import { fetchCart, updateCartItem, removeCartItem } from '../api/cart.js';
+﻿import { fetchCart, updateCartItem, removeCartItem } from '../api/cart.js';
 import { updateCartCount } from './main.js';
 import { formatCurrency } from './format.js';
 
@@ -25,7 +25,7 @@ function renderCart(cart) {
         cartContainer.innerHTML = `
             <div class="empty-cart">
                 <p>Your cart is empty.</p>
-                <a href="products.html" class="btn-primary">Continue Shopping</a>
+                <a href="/products" class="btn-primary">Continue Shopping</a>
             </div>
         `;
         return;
@@ -121,10 +121,10 @@ function renderCart(cart) {
             // Check if user is logged in (e.g., check auth token)
             const token = localStorage.getItem('authToken');
             if (token) {
-                window.location.href = 'checkout.html';
+                window.location.href = '/checkout';
             } else {
                 // Redirect to login with return URL
-                window.location.href = `login.html?redirect=checkout.html`;
+                window.location.href = `/login?redirect=/checkout`;
             }
         });
     }
@@ -173,3 +173,5 @@ document.addEventListener('DOMContentLoaded', () => {
     loadCart();
     updateCartCount();
 });
+
+

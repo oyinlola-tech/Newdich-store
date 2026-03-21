@@ -1,4 +1,4 @@
-import { fetchFeaturedProducts, fetchAllProducts } from '../api/products.js';
+﻿import { fetchFeaturedProducts, fetchAllProducts } from '../api/products.js';
 import { updateCartCount, handleAddToCart, handleAddToWishlist } from './main.js';
 import { formatCurrency } from './format.js';
 
@@ -81,7 +81,7 @@ async function loadFeaturedProducts() {
                         <h4 class="product-title">${escapeHtml(highlight.name)}</h4>
                         <div class="product-price">${formatCurrency(highlight.price)}</div>
                         <div class="product-actions">
-                            <a class="btn-add-to-cart" href="product-detail.html?id=${highlight.id}">View Details</a>
+                            <a class="btn-add-to-cart" href="/product-detail?id=${highlight.id}">View Details</a>
                             <button class="btn-wishlist" data-id="${highlight.id}" aria-label="Save">
                                 <i class="fas fa-heart"></i>
                             </button>
@@ -155,7 +155,7 @@ function renderRelatedProducts(products) {
                     <h4 class="product-title">${escapeHtml(product.name)}</h4>
                     <div class="product-price">${formatCurrency(product.price)}</div>
                     <div class="product-actions">
-                        <a class="btn-add-to-cart" href="product-detail.html?id=${product.id}">View Details</a>
+                        <a class="btn-add-to-cart" href="/product-detail?id=${product.id}">View Details</a>
                         <button class="btn-wishlist" data-id="${product.id}" aria-label="Save">
                             <i class="fas fa-heart"></i>
                         </button>
@@ -189,3 +189,5 @@ document.addEventListener('DOMContentLoaded', () => {
     loadFeaturedProducts();
     updateCartCount(); // from main.js
 });
+
+

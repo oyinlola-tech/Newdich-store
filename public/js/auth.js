@@ -1,11 +1,11 @@
-import { loginUser, isLoggedIn } from '../api/auth.js';
+﻿import { loginUser, isLoggedIn } from '../api/auth.js';
 import { requestOtp } from '../api/otp.js';
 import { updateCartCount } from './main.js';
 
 const loginForm = document.getElementById('login-form');
 const errorDiv = document.getElementById('login-error');
 
-// Get redirect URL from query parameter (default to index.html)
+// Get redirect URL from query parameter (default to /)
 function getRedirectUrl() {
     const params = new URLSearchParams(window.location.search);
     const redirect = params.get('redirect');
@@ -13,7 +13,7 @@ function getRedirectUrl() {
         // Basic security: only allow relative paths
         return redirect;
     }
-    return redirect || 'index.html';
+    return redirect || '/';
 }
 
 // Check if already logged in
@@ -56,7 +56,7 @@ loginForm.addEventListener('submit', async (e) => {
                 purpose: 'login',
                 otpToken: data.otpToken || null
             }));
-            window.location.href = `otp.html?purpose=login&email=${encodeURIComponent(email)}`;
+            window.location.href = `/otp?purpose=login&email=${encodeURIComponent(email)}`;
             return;
         }
         // After successful login, update cart count (since user may have a cart)
@@ -74,3 +74,5 @@ function showError(message) {
     errorDiv.textContent = message;
     errorDiv.style.display = 'block';
 }
+
+

@@ -1,4 +1,4 @@
-import { requestAdminPasswordReset } from '../api/admin-password.js';
+﻿import { requestAdminPasswordReset } from '../api/admin-password.js';
 
 const form = document.getElementById('admin-forgot-form');
 const message = document.getElementById('admin-forgot-message');
@@ -28,7 +28,7 @@ form.addEventListener('submit', async (e) => {
             purpose: 'reset',
             otpToken: null
         }));
-        window.location.href = `otp.html?purpose=reset&email=${encodeURIComponent(email)}`;
+        window.location.href = `/admin/otp?purpose=reset&email=${encodeURIComponent(email)}`;
     } catch (error) {
         errorBox.textContent = error.message || 'Failed to send verification code.';
         errorBox.style.display = 'block';
@@ -37,3 +37,5 @@ form.addEventListener('submit', async (e) => {
         submitBtn.disabled = false;
     }
 });
+
+

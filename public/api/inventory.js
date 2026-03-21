@@ -1,4 +1,4 @@
-import { API_BASE_URL, getHeaders } from './config.js';
+﻿import { API_BASE_URL, getHeaders } from './config.js';
 
 // Fetch inventory for a product
 export async function fetchInventory(productId) {
@@ -31,3 +31,5 @@ export async function checkAvailability(productId, quantity = 1) {
         throw error;
     }
 }
+
+

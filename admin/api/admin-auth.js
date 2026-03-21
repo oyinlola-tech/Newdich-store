@@ -1,4 +1,4 @@
-import { API_BASE_URL, getHeaders } from './config.js';
+﻿import { API_BASE_URL, getHeaders } from './config.js';
 
 // Admin login
 export async function adminLogin(credentials) {
@@ -58,3 +58,4 @@ export async function fetchAdminProfile() {
         throw error;
     }
 }
+

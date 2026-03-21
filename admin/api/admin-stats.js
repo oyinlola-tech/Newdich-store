@@ -1,4 +1,4 @@
-import { API_BASE_URL, getHeaders } from './config.js';
+﻿import { API_BASE_URL, getHeaders } from './config.js';
 
 export async function fetchDashboardStats() {
     try {
@@ -27,3 +27,4 @@ export async function fetchRecentOrders(limit = 5) {
         return [];
     }
 }
+

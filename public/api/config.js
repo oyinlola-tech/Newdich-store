@@ -1,4 +1,4 @@
-// API Configuration
+﻿// API Configuration
 export const API_BASE_URL = 'http://localhost:3000/api'; 
 
 // Common headers (includes auth token if present)
@@ -9,3 +9,4 @@ export const getHeaders = () => {
         ...(token && { 'Authorization': `Bearer ${token}` })
     };
 };
+

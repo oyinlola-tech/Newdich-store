@@ -1,4 +1,4 @@
-import { API_BASE_URL, getHeaders } from './config.js';
+﻿import { API_BASE_URL, getHeaders } from './config.js';
 
 // Get current user's profile
 export async function getUserProfile() {
@@ -34,3 +34,4 @@ export async function updateUserProfile(profileData) {
         throw error;
     }
 }
+

@@ -1,4 +1,4 @@
-import { verifyAdminOtp, requestAdminOtp } from '../api/admin-otp.js';
+﻿import { verifyAdminOtp, requestAdminOtp } from '../api/admin-otp.js';
 
 const form = document.getElementById('admin-otp-form');
 const message = document.getElementById('admin-otp-message');
@@ -41,7 +41,7 @@ form.addEventListener('submit', async (e) => {
             if (resetToken) {
                 sessionStorage.setItem('adminResetToken', resetToken);
             }
-            window.location.href = 'reset-password.html';
+            window.location.href = '/admin/reset-password';
             return;
         }
 
@@ -56,7 +56,7 @@ form.addEventListener('submit', async (e) => {
         message.textContent = 'Verified! Redirecting...';
         message.style.display = 'block';
         const redirect = new URLSearchParams(window.location.search).get('redirect');
-        window.location.href = redirect || 'index.html';
+        window.location.href = redirect || '/admin';
     } catch (error) {
         errorBox.textContent = error.message || 'Failed to verify code.';
         errorBox.style.display = 'block';
@@ -87,3 +87,5 @@ resendBtn.addEventListener('click', async () => {
         resendBtn.disabled = false;
     }
 });
+
+

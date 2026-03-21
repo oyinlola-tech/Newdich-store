@@ -1,4 +1,4 @@
-import { fetchAdminOrders, fetchOrderDetails, updateOrderStatus } from '../api/admin-orders.js';
+﻿import { fetchAdminOrders, fetchOrderDetails, updateOrderStatus } from '../api/admin-orders.js';
 import { checkAdminAuth } from './admin.js';
 import { formatCurrency } from './format.js';
 
@@ -106,7 +106,7 @@ async function renderOrders(orders) {
     document.querySelectorAll('.btn-open').forEach(btn => {
         btn.addEventListener('click', () => {
             const orderId = btn.getAttribute('data-order-id');
-            window.location.href = `order-detail.html?orderId=${orderId}`;
+            window.location.href = `/admin/order-detail?orderId=${orderId}`;
         });
     });
 }
@@ -223,3 +223,5 @@ window.addEventListener('click', (e) => {
 document.addEventListener('DOMContentLoaded', () => {
     loadOrders();
 });
+
+

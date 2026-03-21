@@ -1,4 +1,5 @@
-import { fetchAllProducts } from '../api/products.js';
+﻿import { fetchAllProducts } from '../api/products.js';
+import { fetchCategories } from '../api/categories.js';
 import { updateCartCount, handleAddToCart, handleAddToWishlist } from './main.js';
 import { formatCurrency } from './format.js';
 
@@ -138,7 +139,7 @@ function renderRelatedProducts(products) {
                     <h4 class="product-title">${escapeHtml(product.name)}</h4>
                     <div class="product-price">${formatCurrency(product.price)}</div>
                     <div class="product-actions">
-                        <a class="btn-add-to-cart" href="product-detail.html?id=${product.id}">View Details</a>
+                        <a class="btn-add-to-cart" href="/product-detail?id=${product.id}">View Details</a>
                         <button class="btn-wishlist" data-id="${product.id}" aria-label="Save">
                             <i class="fas fa-heart"></i>
                         </button>
@@ -158,6 +159,22 @@ function renderRelatedProducts(products) {
     });
 }
 
+async function loadCategories() {
+    try {
+        const categories = await fetchCategories();
+        if (filterCategory.options.length === 1) {
+            categories.forEach(cat => {
+                const option = document.createElement('option');
+                option.value = cat.name || cat.title || cat.slug || '';
+                option.textContent = cat.name || cat.title || cat.slug || 'Category';
+                filterCategory.appendChild(option);
+            });
+        }
+    } catch (error) {
+        // If categories fail, keep default "All Categories"
+    }
+}
+
 // Fetch and render products based on current filters
 async function loadProducts() {
     try {
@@ -166,17 +183,6 @@ async function loadProducts() {
         currentProducts = products;
         renderProducts(currentProducts);
         renderRelatedProducts(currentProducts);
-
-        // Populate category dropdown dynamically if needed
-        if (filterCategory.options.length === 1) { // only "All Categories" present
-            const categories = [...new Set(products.map(p => p.category).filter(c => c))];
-            categories.forEach(cat => {
-                const option = document.createElement('option');
-                option.value = cat;
-                option.textContent = cat;
-                filterCategory.appendChild(option);
-            });
-        }
     } catch (error) {
         console.error('Error loading products:', error);
         productsGrid.innerHTML = '<p class="error">Failed to load products. Please try again later.</p>';
@@ -211,9 +217,12 @@ function resetFilters() {
 
 // Event listeners
 document.addEventListener('DOMContentLoaded', () => {
+    loadCategories();
     loadProducts();
     updateCartCount(); // from main.js
 
     applyFiltersBtn.addEventListener('click', applyFilters);
     resetFiltersBtn.addEventListener('click', resetFilters);
 });
+
+

@@ -1,4 +1,4 @@
-import { getUserProfile, updateUserProfile } from '../api/user.js';
+﻿import { getUserProfile, updateUserProfile } from '../api/user.js';
 import { fetchOrders } from '../api/orders.js';
 import { isLoggedIn, logoutUser } from '../api/auth.js';
 import { updateCartCount } from './main.js';
@@ -8,7 +8,7 @@ const container = document.getElementById('account-container');
 
 // Check authentication
 if (!isLoggedIn()) {
-    window.location.href = `login.html?redirect=account.html`;
+    window.location.href = `/login?redirect=/account`;
 }
 
 // Helper to escape HTML
@@ -49,9 +49,9 @@ function renderAccountPage(user, orders) {
             <div class="order-total">
                 <strong>Total:</strong> ${formatCurrency(order.total)}
             </div>
-            <a href="order-confirmation.html?orderId=${order.id}" class="view-order-link">View Details</a>
+            <a href="/order-confirmation?orderId=${order.id}" class="view-order-link">View Details</a>
         </div>
-    `).join('') : '<p>No orders yet. <a href="products.html">Start shopping</a>.</p>';
+    `).join('') : '<p>No orders yet. <a href="/products">Start shopping</a>.</p>';
 
     const html = `
         <div class="account-page">
@@ -61,7 +61,7 @@ function renderAccountPage(user, orders) {
                     <h3>${escapeHtml(user.name)}</h3>
                     <p>${escapeHtml(user.email)}</p>
                 </div>
-                <a href="returns.html" class="btn-secondary">Returns & Refunds</a>
+                <a href="/returns" class="btn-secondary">Returns & Refunds</a>
                 <button id="logout-btn" class="btn-secondary">Logout</button>
             </div>
             <div class="account-main">
@@ -143,11 +143,11 @@ function renderAccountPage(user, orders) {
     if (logoutBtn) {
         logoutBtn.addEventListener('click', () => {
             logoutUser();
-            window.location.href = 'index.html';
+            window.location.href = '/';
         });
     }
 
-    const returnsLink = document.querySelector('.account-sidebar a[href="returns.html"]');
+    const returnsLink = document.querySelector('.account-sidebar a[href="/returns"]');
     if (returnsLink) {
         returnsLink.addEventListener('click', () => {
             sessionStorage.setItem('returnsAccess', '1');
@@ -183,3 +183,5 @@ document.addEventListener('DOMContentLoaded', () => {
     loadAccount();
     updateCartCount();
 });
+
+

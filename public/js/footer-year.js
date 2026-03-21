@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+﻿document.addEventListener('DOMContentLoaded', () => {
     const year = new Date().getFullYear();
     const targets = document.querySelectorAll('.js-year');
     if (targets.length) {
@@ -13,3 +13,5 @@ document.addEventListener('DOMContentLoaded', () => {
         el.textContent = el.textContent.replace(/\b20\d{2}\b/, String(year));
     });
 });
+
+

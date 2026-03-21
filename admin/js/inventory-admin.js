@@ -1,4 +1,4 @@
-import { fetchInventoryList, updateInventory } from '../api/admin-inventory.js';
+﻿import { fetchInventoryList, updateInventory } from '../api/admin-inventory.js';
 import { checkAdminAuth } from './admin.js';
 
 if (!checkAdminAuth()) return;
@@ -139,3 +139,5 @@ window.addEventListener('click', (e) => {
 });
 
 document.addEventListener('DOMContentLoaded', () => loadInventory({}));
+
+

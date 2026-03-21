@@ -1,4 +1,4 @@
-import { API_BASE_URL, getHeaders } from './config.js';
+﻿import { API_BASE_URL, getHeaders } from './config.js';
 
 export async function fetchPayments(filters = {}) {
     const queryParams = new URLSearchParams();
@@ -53,3 +53,5 @@ export async function updatePaymentStatus(paymentId, status) {
         throw error;
     }
 }
+
+

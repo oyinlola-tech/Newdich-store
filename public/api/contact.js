@@ -1,4 +1,4 @@
-import { API_BASE_URL } from './config.js';
+﻿import { API_BASE_URL } from './config.js';
 
 export async function sendContactMessage(formData) {
     try {
@@ -20,3 +20,4 @@ export async function sendContactMessage(formData) {
         throw error;
     }
 }
+

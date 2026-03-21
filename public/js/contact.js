@@ -1,4 +1,4 @@
-import { sendContactMessage } from '../api/contact.js';
+﻿import { sendContactMessage } from '../api/contact.js';
 import { updateCartCount } from './main.js';
 
 const contactForm = document.getElementById('contact-form');
@@ -58,3 +58,4 @@ contactForm.addEventListener('submit', async (e) => {
 document.addEventListener('DOMContentLoaded', () => {
     updateCartCount();
 });
+

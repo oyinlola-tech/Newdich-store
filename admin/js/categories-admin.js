@@ -1,4 +1,4 @@
-import { fetchAdminCategories, createCategory, updateCategory, deleteCategory } from '../api/admin-categories.js';
+﻿import { fetchAdminCategories, createCategory, updateCategory, deleteCategory } from '../api/admin-categories.js';
 import { checkAdminAuth } from './admin.js';
 
 if (!checkAdminAuth()) return;
@@ -155,3 +155,5 @@ window.addEventListener('click', (e) => {
 });
 
 document.addEventListener('DOMContentLoaded', loadCategories);
+
+

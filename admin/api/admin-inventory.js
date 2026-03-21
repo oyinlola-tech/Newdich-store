@@ -1,4 +1,4 @@
-import { API_BASE_URL, getHeaders } from './config.js';
+﻿import { API_BASE_URL, getHeaders } from './config.js';
 
 export async function fetchInventoryList(filters = {}) {
     const queryParams = new URLSearchParams();
@@ -36,3 +36,5 @@ export async function updateInventory(productId, inventoryData) {
         throw error;
     }
 }
+
+

@@ -1,4 +1,4 @@
-import { registerUser, isLoggedIn } from '../api/auth.js';
+﻿import { registerUser, isLoggedIn } from '../api/auth.js';
 import { requestOtp } from '../api/otp.js';
 import { updateCartCount } from './main.js';
 
@@ -6,14 +6,14 @@ const registerForm = document.getElementById('register-form');
 const errorDiv = document.getElementById('register-error');
 const successDiv = document.getElementById('register-success');
 
-// Get redirect URL from query parameter (default to index.html)
+// Get redirect URL from query parameter (default to /)
 function getRedirectUrl() {
     const params = new URLSearchParams(window.location.search);
     const redirect = params.get('redirect');
     if (redirect && (redirect.startsWith('http') || redirect.includes('..'))) {
         return redirect;
     }
-    return redirect || 'index.html';
+    return redirect || '/';
 }
 
 // Check if already logged in
@@ -78,7 +78,7 @@ registerForm.addEventListener('submit', async (e) => {
                 purpose: 'register',
                 otpToken: data.otpToken || null
             }));
-            window.location.href = `otp.html?purpose=register&email=${encodeURIComponent(email)}`;
+            window.location.href = `/otp?purpose=register&email=${encodeURIComponent(email)}`;
             return;
         }
         // Registration successful
@@ -107,3 +107,5 @@ function showSuccess(message) {
     successDiv.style.display = 'block';
     errorDiv.style.display = 'none';
 }
+
+

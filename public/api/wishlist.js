@@ -1,4 +1,4 @@
-import { API_BASE_URL, getHeaders } from './config.js';
+﻿import { API_BASE_URL, getHeaders } from './config.js';
 
 // Fetch current user's wishlist
 export async function fetchWishlist() {
@@ -52,3 +52,5 @@ export async function removeFromWishlist(itemId) {
         throw error;
     }
 }
+
+

@@ -1,4 +1,4 @@
-import { fetchOrderById } from '../api/orders.js';
+﻿import { fetchOrderById } from '../api/orders.js';
 import { isLoggedIn } from '../api/auth.js';
 import { updateCartCount } from './main.js';
 import { formatCurrency } from './format.js';
@@ -84,7 +84,7 @@ function renderOrderConfirmation(order) {
             </div>
 
             <div class="continue-shopping">
-                <a href="products.html" class="btn-primary">Continue Shopping</a>
+                <a href="/products" class="btn-primary">Continue Shopping</a>
             </div>
         </div>
     `;
@@ -102,7 +102,7 @@ async function loadOrder() {
 
     if (!isLoggedIn()) {
         // If not logged in, maybe redirect or show message
-        container.innerHTML = '<p class="error">Please <a href="login.html">log in</a> to view your order.</p>';
+        container.innerHTML = '<p class="error">Please <a href="/login">log in</a> to view your order.</p>';
         return;
     }
 
@@ -121,3 +121,5 @@ document.addEventListener('DOMContentLoaded', () => {
     loadOrder();
     updateCartCount(); // ensure cart count is updated (cart is now empty)
 });
+
+

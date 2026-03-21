@@ -1,4 +1,4 @@
-import { fetchContactMessages, fetchContactMessageById, updateContactStatus, replyToContactMessage } from '../api/admin-contact.js';
+﻿import { fetchContactMessages, fetchContactMessageById, updateContactStatus, replyToContactMessage } from '../api/admin-contact.js';
 import { checkAdminAuth } from './admin.js';
 
 if (!checkAdminAuth()) return;
@@ -227,3 +227,5 @@ replyForm.addEventListener('submit', async (e) => {
 document.addEventListener('DOMContentLoaded', () => {
     loadMessages();
 });
+
+

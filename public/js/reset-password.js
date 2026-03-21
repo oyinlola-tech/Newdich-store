@@ -1,4 +1,4 @@
-import { resetPassword } from '../api/password.js';
+﻿import { resetPassword } from '../api/password.js';
 import './footer-year.js';
 
 const form = document.getElementById('reset-password-form');
@@ -53,3 +53,5 @@ form.addEventListener('submit', async (e) => {
         submitBtn.disabled = false;
     }
 });
+
+

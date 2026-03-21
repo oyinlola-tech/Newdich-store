@@ -1,4 +1,4 @@
-import { fetchCart, addToCart } from '../api/cart.js';
+﻿import { fetchCart, addToCart } from '../api/cart.js';
 import { addToWishlist } from '../api/wishlist.js';
 import './footer-year.js';
 
@@ -131,3 +131,5 @@ document.addEventListener('DOMContentLoaded', () => {
     initMobileMenu();
     initScrollReveal();
 });
+
+

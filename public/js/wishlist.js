@@ -1,4 +1,4 @@
-import { fetchWishlist, removeFromWishlist } from '../api/wishlist.js';
+﻿import { fetchWishlist, removeFromWishlist } from '../api/wishlist.js';
 import { addToCart } from '../api/cart.js';
 import { updateCartCount } from './main.js';
 import { formatCurrency } from './format.js';
@@ -25,7 +25,7 @@ function renderEmptyState() {
             <div class="empty-icon"><i class="fas fa-heart"></i></div>
             <h3>Your wishlist is empty</h3>
             <p>Save items you love and they will show up here.</p>
-            <a href="products.html" class="btn-primary">Browse Products</a>
+            <a href="/products" class="btn-primary">Browse Products</a>
         </div>
     `;
 }
@@ -104,7 +104,7 @@ async function loadWishlist() {
                 <div class="empty-icon"><i class="fas fa-user"></i></div>
                 <h3>Please log in</h3>
                 <p>Sign in to see your saved items.</p>
-                <a href="login.html?redirect=wishlist.html" class="btn-primary">Login</a>
+                <a href="/login?redirect=/wishlist" class="btn-primary">Login</a>
             </div>
         `;
         return;
@@ -123,3 +123,5 @@ document.addEventListener('DOMContentLoaded', () => {
     loadWishlist();
     updateCartCount();
 });
+
+

@@ -1,4 +1,4 @@
-import { API_BASE_URL, getHeaders } from './config.js';
+﻿import { API_BASE_URL, getHeaders } from './config.js';
 
 export async function fetchCart() {
     try {
@@ -61,3 +61,4 @@ export async function removeCartItem(itemId) {
         throw error;
     }
 }
+

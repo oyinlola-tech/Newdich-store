@@ -1,4 +1,4 @@
-import { fetchDashboardStats, fetchRecentOrders } from '../api/admin-stats.js';
+﻿import { fetchDashboardStats, fetchRecentOrders } from '../api/admin-stats.js';
 import { checkAdminAuth } from './admin.js';
 import { formatCurrency } from './format.js';
 
@@ -179,7 +179,7 @@ async function loadRecentOrders() {
                 </tbody>
             </table>
             <div style="margin-top: 1rem; text-align: right;">
-                <a href="orders.html" class="view-all">View All Orders →</a>
+                <a href="/admin/orders" class="view-all">View All Orders â†’</a>
             </div>
         `;
         recentOrdersContainer.innerHTML = `<h3>Recent Orders</h3>${tableHtml}`;
@@ -202,3 +202,5 @@ document.addEventListener('DOMContentLoaded', () => {
     loadStats();
     loadRecentOrders();
 });
+
+

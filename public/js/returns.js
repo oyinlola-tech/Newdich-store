@@ -1,4 +1,4 @@
-import { submitReturnRequest } from '../api/returns.js';
+﻿import { submitReturnRequest } from '../api/returns.js';
 import { updateCartCount } from './main.js';
 
 const form = document.getElementById('returns-form');
@@ -14,7 +14,7 @@ function enforceAccess() {
     const token = localStorage.getItem('authToken');
     const allowed = sessionStorage.getItem('returnsAccess');
     if (!token || !allowed) {
-        window.location.href = 'account.html';
+        window.location.href = '/account';
         return false;
     }
     sessionStorage.removeItem('returnsAccess');
@@ -56,3 +56,5 @@ document.addEventListener('DOMContentLoaded', () => {
         updateCartCount();
     }
 });
+
+

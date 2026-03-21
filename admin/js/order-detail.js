@@ -1,4 +1,4 @@
-import { fetchOrderDetails, updateOrderStatus, addOrderNote, fetchOrderStatusHistory } from '../api/admin-orders.js';
+﻿import { fetchOrderDetails, updateOrderStatus, addOrderNote, fetchOrderStatusHistory } from '../api/admin-orders.js';
 import { checkAdminAuth } from './admin.js';
 import { formatCurrency } from './format.js';
 
@@ -86,7 +86,7 @@ function renderHistory(history) {
     historyContainer.innerHTML = history.map(item => `
         <div class="history-item">
             <div class="history-status">${escapeHtml(item.status)}</div>
-            <div class="history-meta">${new Date(item.changedAt).toLocaleString()} • ${escapeHtml(item.changedBy || 'Admin')}</div>
+            <div class="history-meta">${new Date(item.changedAt).toLocaleString()} â€¢ ${escapeHtml(item.changedBy || 'Admin')}</div>
         </div>
     `).join('');
 }
@@ -99,7 +99,7 @@ function renderNotes(notes = []) {
     notesContainer.innerHTML = notes.map(note => `
         <div class="note-item">
             <div class="note-text">${escapeHtml(note.text || note.note)}</div>
-            <div class="note-meta">${new Date(note.createdAt).toLocaleString()} • ${escapeHtml(note.author || 'Admin')}</div>
+            <div class="note-meta">${new Date(note.createdAt).toLocaleString()} â€¢ ${escapeHtml(note.author || 'Admin')}</div>
         </div>
     `).join('');
 }
@@ -180,3 +180,5 @@ noteForm.addEventListener('submit', async (e) => {
 });
 
 document.addEventListener('DOMContentLoaded', loadOrder);
+
+

@@ -1,4 +1,4 @@
-import { API_BASE_URL } from './config.js';
+﻿import { API_BASE_URL } from './config.js';
 
 export async function requestOtp(email, purpose) {
     try {
@@ -35,3 +35,4 @@ export async function verifyOtp(email, code, purpose, otpToken) {
         throw error;
     }
 }
+

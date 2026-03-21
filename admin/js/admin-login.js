@@ -1,4 +1,4 @@
-import { adminLogin } from '../api/admin-auth.js';
+﻿import { adminLogin } from '../api/admin-auth.js';
 import { requestAdminOtp } from '../api/admin-otp.js';
 
 const loginForm = document.getElementById('admin-login-form');
@@ -10,7 +10,7 @@ function getRedirectUrl() {
     if (redirect && (redirect.startsWith('http') || redirect.includes('..'))) {
         return redirect;
     }
-    return redirect || 'index.html';
+    return redirect || '/admin';
 }
 
 loginForm.addEventListener('submit', async (e) => {
@@ -45,7 +45,7 @@ loginForm.addEventListener('submit', async (e) => {
                 purpose: 'login',
                 otpToken: data.otpToken || null
             }));
-            window.location.href = `otp.html?purpose=login&email=${encodeURIComponent(email)}`;
+            window.location.href = `/admin/otp?purpose=login&email=${encodeURIComponent(email)}`;
             return;
         }
         window.location.href = getRedirectUrl();
@@ -60,3 +60,5 @@ function showError(message) {
     errorDiv.textContent = message;
     errorDiv.style.display = 'block';
 }
+
+
