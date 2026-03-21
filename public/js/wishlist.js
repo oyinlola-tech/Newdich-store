@@ -92,6 +92,19 @@ function renderWishlist(items) {
 }
 
 async function loadWishlist() {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+        wishlistContainer.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon"><i class="fas fa-user"></i></div>
+                <h3>Please log in</h3>
+                <p>Sign in to see your saved items.</p>
+                <a href="login.html?redirect=wishlist.html" class="btn-primary">Login</a>
+            </div>
+        `;
+        return;
+    }
+
     try {
         wishlistContainer.innerHTML = '<div class="loading">Loading wishlist...</div>';
         const items = await fetchWishlist();

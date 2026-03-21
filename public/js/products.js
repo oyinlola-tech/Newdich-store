@@ -31,7 +31,13 @@ function escapeHtml(str) {
 // Render products in grid
 function renderProducts(products) {
     if (!products || products.length === 0) {
-        productsGrid.innerHTML = '<p>No products found.</p>';
+        productsGrid.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon"><i class="fas fa-box-open"></i></div>
+                <h3>No products found</h3>
+                <p>Try adjusting your filters or check back soon.</p>
+            </div>
+        `;
         return;
     }
 

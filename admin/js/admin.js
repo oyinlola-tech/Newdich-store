@@ -7,7 +7,8 @@ import { adminLogout } from '../api/admin-auth.js';
 export function checkAdminAuth() {
     const token = localStorage.getItem('authToken');
     if (!token) {
-        window.location.href = 'login.html?redirect=index.html';
+        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+        window.location.href = `login.html?redirect=${encodeURIComponent(currentPage)}`;
         return false;
     }
     return true;

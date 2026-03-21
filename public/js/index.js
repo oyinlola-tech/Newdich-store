@@ -9,7 +9,13 @@ async function loadFeaturedProducts() {
         const products = await fetchFeaturedProducts(4);
         
         if (!products || products.length === 0) {
-            productGrid.innerHTML = '<p>No featured products available at the moment.</p>';
+            productGrid.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon"><i class="fas fa-box-open"></i></div>
+                    <h3>No featured products yet</h3>
+                    <p>Check back soon for new arrivals.</p>
+                </div>
+            `;
             return;
         }
         

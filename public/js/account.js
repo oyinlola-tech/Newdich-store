@@ -60,6 +60,7 @@ function renderAccountPage(user, orders) {
                     <h3>${escapeHtml(user.name)}</h3>
                     <p>${escapeHtml(user.email)}</p>
                 </div>
+                <a href="settings.html" class="btn-secondary">Settings</a>
                 <button id="logout-btn" class="btn-secondary">Logout</button>
             </div>
             <div class="account-main">

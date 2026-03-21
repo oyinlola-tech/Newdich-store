@@ -522,3 +522,152 @@ body {
     background-color: #f5f5f5;
     color: #7f8c8d;
 }
+
+/* Admin UI Polish */
+:root {
+    --admin-bg: #f4f6fb;
+    --admin-card: #ffffff;
+    --admin-radius: 12px;
+    --admin-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+}
+
+body {
+    background-color: var(--admin-bg);
+}
+
+.admin-header {
+    border-bottom: 1px solid #eef2f7;
+}
+
+.stat-card,
+.recent-orders,
+.data-table,
+.filters,
+.modal-content,
+.admin-content .settings-card {
+    box-shadow: var(--admin-shadow);
+    border-radius: var(--admin-radius);
+}
+
+.data-table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+.btn-open {
+    background-color: #2ecc71;
+    color: #fff;
+    padding: 0.25rem 0.5rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.btn-open:hover {
+    background-color: #27ae60;
+}
+
+/* Admin Auth */
+.admin-auth-body {
+    background: linear-gradient(140deg, #f1f5ff 0%, #fff1f1 100%);
+    min-height: 100vh;
+}
+
+.admin-auth-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 2rem;
+}
+
+.admin-auth-card {
+    background: #fff;
+    padding: 2.5rem;
+    border-radius: var(--admin-radius);
+    box-shadow: var(--admin-shadow);
+    width: 100%;
+    max-width: 420px;
+}
+
+.admin-auth-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.admin-auth-header p {
+    color: #6b7280;
+    margin-top: 0.5rem;
+}
+
+/* Settings */
+.settings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.settings-card {
+    background: var(--admin-card);
+    padding: 1.5rem;
+}
+
+.settings-form .form-group {
+    margin-bottom: 1rem;
+}
+
+/* Order Detail */
+.detail-card {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: var(--admin-radius);
+    box-shadow: var(--admin-shadow);
+    margin-bottom: 1.5rem;
+}
+
+.detail-meta {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    color: #6b7280;
+    margin-top: 0.5rem;
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.detail-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #eef2f7;
+    padding-bottom: 0.5rem;
+}
+
+.detail-item:last-child {
+    border-bottom: none;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.view-all {
+    color: #3498db;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.view-all:hover {
+    text-decoration: underline;
+}
