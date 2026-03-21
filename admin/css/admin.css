@@ -356,6 +356,14 @@ body {
     box-shadow: 0 12px 24px rgba(17, 24, 39, 0.2);
 }
 
+.btn-primary:disabled,
+.btn-secondary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
 .data-table {
     width: 100%;
     border-collapse: collapse;

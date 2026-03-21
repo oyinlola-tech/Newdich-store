@@ -1,26 +1,57 @@
 # Newdich Store
 
-Premium e‑commerce storefront + admin dashboard built with vanilla HTML, CSS, and JS modules.  
-This repo ships a complete public shopping flow and an admin management suite.
+Premium e-commerce storefront and admin dashboard built with vanilla HTML, CSS, and JS modules. The repo ships a complete public shopping flow, plus a full admin management suite.
 
 ## Highlights
-- Product listing + detail view
-- Cart, checkout, and order confirmation
-- Wishlist
-- Account profile + order history
-- Returns request flow (email OTP gated)
-- Admin dashboard: orders, products, users, categories, inventory
-- OTP verification (email) for:
-  - Registration
-  - Password reset
-  - Login from unknown device
-- Password reset (public + admin)
+- Public storefront: home, product listing, product detail, cart, checkout, order confirmation
+- Customer account: profile, order history, wishlist, returns
+- Auth flows: register, login, OTP verification, password reset
+- Admin: dashboard, orders, order detail, products, categories, inventory, users, returns, contact inbox
+- Image uploads: up to 10 images per product (admin)
+- Clean URLs: `/(page)` and `/admin/(page)`
+
+## Clean URL Routing
+All links and redirects use clean paths (no `.html`). Your server must rewrite these to the correct HTML files.
+
+Public routes:
+- `/` -> `public/index.html`
+- `/products` -> `public/products.html`
+- `/product-detail` -> `public/product-detail.html`
+- `/cart` -> `public/cart.html`
+- `/checkout` -> `public/checkout.html`
+- `/order-confirmation` -> `public/order-confirmation.html`
+- `/account` -> `public/account.html`
+- `/wishlist` -> `public/wishlist.html`
+- `/returns` -> `public/returns.html`
+- `/contact` -> `public/contact.html`
+- `/login` -> `public/login.html`
+- `/register` -> `public/register.html`
+- `/forgot-password` -> `public/forgot-password.html`
+- `/reset-password` -> `public/reset-password.html`
+- `/otp` -> `public/otp.html`
+- `/404` -> `public/404.html`
+
+Admin routes:
+- `/admin` -> `admin/index.html`
+- `/admin/orders` -> `admin/orders.html`
+- `/admin/order-detail` -> `admin/order-detail.html`
+- `/admin/products` -> `admin/products.html`
+- `/admin/categories` -> `admin/categories.html`
+- `/admin/inventory` -> `admin/inventory.html`
+- `/admin/users` -> `admin/users.html`
+- `/admin/returns` -> `admin/returns.html`
+- `/admin/contact` -> `admin/contact.html`
+- `/admin/login` -> `admin/login.html`
+- `/admin/forgot-password` -> `admin/forgot-password.html`
+- `/admin/reset-password` -> `admin/reset-password.html`
+- `/admin/otp` -> `admin/otp.html`
+- `/admin/404` -> `admin/404.html`
 
 ## Project Structure
 ```
 public/
   api/               # Frontend API helpers
-  css/               # Split CSS: base/layout/components/pages
+  css/               # base/layout/components/pages
   js/                # Frontend logic
   *.html             # Public pages
 
@@ -32,88 +63,88 @@ admin/
 ```
 
 ## CSS Organization
-The public styles are split for easier maintenance:
+Public styles are split for easier maintenance:
 - `public/css/base.css` (reset, tokens, typography)
 - `public/css/layout.css` (header, footer, hero)
 - `public/css/components.css` (buttons, cards, forms)
-- `public/css/pages.css` (page‑specific layouts)
+- `public/css/pages.css` (page-specific layouts)
 - `public/css/style.css` (imports the four files above)
 
-Admin styles remain in `admin/css/admin.css`.
+Admin styles live in `admin/css/admin.css`.
 
 ## Currency
-All UI uses **₦ (NGN)** and formats amounts with commas using:
+All UI uses `NGN` and formats with:
 ```
 Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' })
 ```
 
+## Categories and Products
+- Categories are created only in **Admin -> Categories**.
+- Products must use a category from the admin list.
+- If no categories exist, products cannot be saved.
+
+## Product Images
+- Admin uploads images as files (no URL input).
+- Up to **10 images per product**.
+- Upload field name: `images` (multiple files).
+- Public UI renders the first image when a gallery is provided.
+
+If your backend expects a different field name or response shape, update:
+- `admin/js/products-admin.js`
+- `admin/api/admin-products.js`
+- Public rendering helpers in `public/js/*.js`
+
 ## OTP Flow (Email)
-OTP is used for registration, password reset, and unknown device login.
+Public:
+- `POST /auth/otp/request`
+- `POST /auth/otp/verify`
 
-**Public**
-- Request OTP: `POST /auth/otp/request` (used for resend)
-- Verify OTP: `POST /auth/otp/verify`
+Admin:
+- `POST /admin/auth/otp/request`
+- `POST /admin/auth/otp/verify`
 
-**Admin**
-- Request OTP: `POST /admin/auth/otp/request` (used for resend)
-- Verify OTP: `POST /admin/auth/otp/verify`
-
-The OTP page is:
+OTP pages:
 - `public/otp.html`
 - `admin/otp.html`
 
 ## Password Reset
-**Public**
+Public:
 - `POST /auth/forgot-password`
 - `POST /auth/reset-password`
 
-**Admin**
+Admin:
 - `POST /admin/auth/forgot-password`
 - `POST /admin/auth/reset-password`
 
 The reset token can come from:
 - URL query `?token=...`
-- OTP verification response (stored in sessionStorage)
+- OTP verification response (stored in `sessionStorage`)
 
-## Key Pages
-**Public**
-- `index.html`, `products.html`, `product-detail.html`
-- `cart.html`, `checkout.html`, `order-confirmation.html`
-- `account.html`, `wishlist.html`, `returns.html`
-- `login.html`, `register.html`, `forgot-password.html`, `reset-password.html`, `otp.html`
-- `404.html`
+## Local Development
+This is a static frontend. You need a server that can rewrite clean URLs.
 
-**Admin**
-- `index.html`, `orders.html`, `order-detail.html`
-- `products.html`, `categories.html`, `inventory.html`, `users.html`
-- `login.html`, `forgot-password.html`, `reset-password.html`, `otp.html`
-
-## Running Locally
-This is a static frontend:
-1. Open any HTML file directly in your browser, or
-2. Serve with a static server (recommended).
-
-Example (Node):
+Simple option (Node `serve`):
 ```
-npx serve public
+npx serve public -s
 ```
+This serves public routes. For admin routes, configure your server to map `/admin/*` to the `admin/` folder or host admin separately under `/admin`.
+
+If you host on Netlify, add a `_redirects` file and map routes to the correct HTML.
 
 ## Environment & API
-Public API base is defined in:
-```
-public/api/config.js
-```
-Admin API base is defined in:
-```
-admin/api/config.js
-```
+Public API base:
+- `public/api/config.js`
+
+Admin API base:
+- `admin/api/config.js`
 
 Update these to your backend URL.
 
 ## Notes
-- If your backend uses different OTP/password endpoints, update:
-  - `public/api/otp.js`
-  - `public/api/password.js`
-  - `admin/api/admin-otp.js`
-  - `admin/api/admin-password.js`
-- OTP verification stores tokens in `sessionStorage`.
+- If your backend uses different endpoints, update the matching files in:
+  - `public/api/`
+  - `admin/api/`
+- OTP verification tokens are stored in `sessionStorage`.
+
+## Security
+See `SECURITY.md` for reporting guidelines.
