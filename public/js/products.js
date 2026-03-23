@@ -2,6 +2,7 @@
 import { fetchCategories } from '../api/categories.js';
 import { updateCartCount, handleAddToCart, handleAddToWishlist } from './main.js';
 import { formatCurrency } from './format.js';
+import { escapeHtml, escapeAttr, sanitizeUrl } from './sanitize.js';
 
 let currentProducts = [];
 let currentFilters = {
@@ -21,18 +22,12 @@ const resetFiltersBtn = document.getElementById('reset-filters');
 const relatedGrid = document.getElementById('products-related-grid');
 
 function getProductImage(product) {
-    return product?.image || product?.images?.[0] || 'https://via.placeholder.com/600x450?text=No+Image';
+    const url = product?.image || product?.images?.[0];
+    return sanitizeUrl(url, 'https://via.placeholder.com/600x450?text=No+Image');
 }
 
-// Helper to escape HTML
-function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-    });
+function safeId(value) {
+    return escapeAttr(value ?? '');
 }
 
 // Render products in grid
@@ -60,11 +55,11 @@ function renderProducts(products) {
             badgeText = 'Low Stock';
         }
         return `
-        <div class="product-card" data-product-id="${product.id}">
+        <div class="product-card" data-product-id="${safeId(product.id)}">
             <div class="product-media">
-                <img src="${getProductImage(product)}" alt="${escapeHtml(product.name)}">
+                <img src="${escapeAttr(getProductImage(product))}" alt="${escapeHtml(product.name)}">
                 <span class="product-badge ${badgeClass}">${badgeText}</span>
-                <button class="product-quick btn-wishlist" data-id="${product.id}" aria-label="Save">
+                <button class="product-quick btn-wishlist" data-id="${safeId(product.id)}" aria-label="Save">
                     <i class="fas fa-heart"></i>
                 </button>
             </div>
@@ -73,8 +68,8 @@ function renderProducts(products) {
                 <h4 class="product-title">${escapeHtml(product.name)}</h4>
                 <div class="product-price">${formatCurrency(product.price)}</div>
                 <div class="product-actions">
-                    <button class="btn-add-to-cart" data-id="${product.id}">Add to Cart</button>
-                    <button class="btn-wishlist" data-id="${product.id}" aria-label="Save">
+                    <button class="btn-add-to-cart" data-id="${safeId(product.id)}">Add to Cart</button>
+                    <button class="btn-wishlist" data-id="${safeId(product.id)}" aria-label="Save">
                         <i class="fas fa-heart"></i>
                     </button>
                 </div>
@@ -126,11 +121,11 @@ function renderRelatedProducts(products) {
             badgeClass = 'badge-featured';
         }
         return `
-            <div class="product-card" data-product-id="${product.id}">
+            <div class="product-card" data-product-id="${safeId(product.id)}">
                 <div class="product-media">
-                    <img src="${getProductImage(product)}" alt="${escapeHtml(product.name)}">
+                    <img src="${escapeAttr(getProductImage(product))}" alt="${escapeHtml(product.name)}">
                     <span class="product-badge ${badgeClass}">${badgeText}</span>
-                    <button class="product-quick btn-wishlist" data-id="${product.id}" aria-label="Save">
+                    <button class="product-quick btn-wishlist" data-id="${safeId(product.id)}" aria-label="Save">
                         <i class="fas fa-heart"></i>
                     </button>
                 </div>
@@ -139,8 +134,8 @@ function renderRelatedProducts(products) {
                     <h4 class="product-title">${escapeHtml(product.name)}</h4>
                     <div class="product-price">${formatCurrency(product.price)}</div>
                     <div class="product-actions">
-                        <a class="btn-add-to-cart" href="/product-detail?id=${product.id}">View Details</a>
-                        <button class="btn-wishlist" data-id="${product.id}" aria-label="Save">
+                    <a class="btn-add-to-cart" href="/product-detail?id=${escapeAttr(encodeURIComponent(product.id ?? ''))}">View Details</a>
+                    <button class="btn-wishlist" data-id="${safeId(product.id)}" aria-label="Save">
                             <i class="fas fa-heart"></i>
                         </button>
                     </div>

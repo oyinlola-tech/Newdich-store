@@ -4,11 +4,13 @@ import { isLoggedIn, getCurrentUser } from '../api/auth.js';
 import { createPaymentIntent, confirmPayment } from '../api/payments.js';
 import { updateCartCount } from './main.js';
 import { formatCurrency } from './format.js';
+import { escapeHtml, escapeAttr, sanitizeUrl } from './sanitize.js';
 
 const checkoutContainer = document.getElementById('checkout-container');
 
 function getProductImage(product) {
-    return product?.image || product?.images?.[0] || 'https://via.placeholder.com/60x60?text=No+Image';
+    const url = product?.image || product?.images?.[0];
+    return sanitizeUrl(url, 'https://via.placeholder.com/60x60?text=No+Image');
 }
 
 // Check authentication
@@ -46,10 +48,10 @@ async function loadCheckout() {
 function renderCheckoutForm(user) {
     const orderItemsHtml = cartData.items.map(item => `
         <div class="checkout-item">
-            <img src="${getProductImage(item.product)}" alt="${escapeHtml(item.product?.name)}">
+            <img src="${escapeAttr(getProductImage(item.product))}" alt="${escapeHtml(item.product?.name)}">
             <div class="checkout-item-details">
                 <span class="item-name">${escapeHtml(item.product?.name)}</span>
-                <span class="item-quantity">Qty: ${item.quantity}</span>
+                <span class="item-quantity">Qty: ${escapeHtml(item.quantity)}</span>
                 <span class="item-price">${formatCurrency(item.product?.price)}</span>
             </div>
             <div class="item-total">${formatCurrency(item.product?.price * item.quantity)}</div>
@@ -64,11 +66,11 @@ function renderCheckoutForm(user) {
                     <div class="form-row">
                         <div class="form-group">
                             <label for="fullName">Full Name</label>
-                            <input type="text" id="fullName" value="${escapeHtml(user?.name || '')}" required>
+                            <input type="text" id="fullName" value="${escapeAttr(user?.name || '')}" required>
                         </div>
                         <div class="form-group">
                             <label for="email">Email</label>
-                            <input type="email" id="email" value="${escapeHtml(user?.email || '')}" required>
+                            <input type="email" id="email" value="${escapeAttr(user?.email || '')}" required>
                         </div>
                     </div>
                     <div class="form-group">
@@ -239,7 +241,7 @@ async function handleOrderSubmit(e) {
         });
         // Clear cart from localStorage or trigger backend cart clear (handled by API)
         // Redirect to order confirmation page
-        window.location.href = `/order-confirmation?orderId=${order.id}`;
+        window.location.href = `/order-confirmation?orderId=${encodeURIComponent(order.id ?? '')}`;
     } catch (error) {
         showOrderError(error.message || 'Failed to place order. Please try again.');
         submitBtn.textContent = originalText;
@@ -253,16 +255,6 @@ function showOrderError(message) {
     errorDiv.style.display = 'block';
     // Scroll to error
     errorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
-}
-
-function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-    });
 }
 
 // Initialize

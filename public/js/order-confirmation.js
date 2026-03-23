@@ -2,11 +2,13 @@
 import { isLoggedIn } from '../api/auth.js';
 import { updateCartCount } from './main.js';
 import { formatCurrency } from './format.js';
+import { escapeHtml, escapeAttr, sanitizeUrl } from './sanitize.js';
 
 const container = document.getElementById('order-confirmation-container');
 
 function getProductImage(product) {
-    return product?.image || product?.images?.[0] || 'https://via.placeholder.com/60x60?text=No+Image';
+    const url = product?.image || product?.images?.[0];
+    return sanitizeUrl(url, 'https://via.placeholder.com/60x60?text=No+Image');
 }
 
 // Get order ID from URL
@@ -16,27 +18,16 @@ function getOrderIdFromUrl() {
     return id ? parseInt(id) : null;
 }
 
-// Helper to escape HTML
-function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-    });
-}
-
 // Render order confirmation
 function renderOrderConfirmation(order) {
     const itemsHtml = order.items.map(item => `
         <div class="order-item">
             <div class="order-item-image">
-                <img src="${getProductImage(item.product)}" alt="${escapeHtml(item.product?.name)}">
+                <img src="${escapeAttr(getProductImage(item.product))}" alt="${escapeHtml(item.product?.name)}">
             </div>
             <div class="order-item-details">
                 <span class="item-name">${escapeHtml(item.product?.name)}</span>
-                <span class="item-quantity">Quantity: ${item.quantity}</span>
+                <span class="item-quantity">Quantity: ${escapeHtml(item.quantity)}</span>
             <span class="item-price">${formatCurrency(item.price)} each</span>
             </div>
         <div class="order-item-total">${formatCurrency(item.price * item.quantity)}</div>
@@ -58,7 +49,7 @@ function renderOrderConfirmation(order) {
                 <i class="fas fa-check-circle"></i>
             </div>
             <h2>Thank You for Your Order!</h2>
-            <p class="order-number">Order #${order.id}</p>
+            <p class="order-number">Order #${escapeHtml(order.id)}</p>
             <p>We've received your order and will process it soon.</p>
 
             <div class="order-details">

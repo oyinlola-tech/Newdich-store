@@ -3,23 +3,13 @@ import { fetchOrders } from '../api/orders.js';
 import { isLoggedIn, logoutUser } from '../api/auth.js';
 import { updateCartCount } from './main.js';
 import { formatCurrency } from './format.js';
+import { escapeHtml, escapeAttr } from './sanitize.js';
 
 const container = document.getElementById('account-container');
 
 // Check authentication
 if (!isLoggedIn()) {
     window.location.href = `/login?redirect=/account`;
-}
-
-// Helper to escape HTML
-function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-    });
 }
 
 // Format date
@@ -32,16 +22,16 @@ function formatDate(dateString) {
 // Render account page
 function renderAccountPage(user, orders) {
     const orderHistoryHtml = orders && orders.length > 0 ? orders.map(order => `
-        <div class="order-item" data-order-id="${order.id}">
+        <div class="order-item" data-order-id="${escapeAttr(order.id)}">
             <div class="order-header">
-                <span class="order-number">Order #${order.id}</span>
+                <span class="order-number">Order #${escapeHtml(order.id)}</span>
                 <span class="order-date">${formatDate(order.createdAt)}</span>
             </div>
             <div class="order-items-preview">
                 ${order.items.map(item => `
                     <div class="preview-item">
                         <span class="item-name">${escapeHtml(item.product?.name)}</span>
-                        <span class="item-qty">x${item.quantity}</span>
+                        <span class="item-qty">x${escapeHtml(item.quantity)}</span>
                         <span class="item-price">${formatCurrency(item.price)}</span>
                     </div>
                 `).join('')}
@@ -49,7 +39,7 @@ function renderAccountPage(user, orders) {
             <div class="order-total">
                 <strong>Total:</strong> ${formatCurrency(order.total)}
             </div>
-            <a href="/order-confirmation?orderId=${order.id}" class="view-order-link">View Details</a>
+            <a href="/order-confirmation?orderId=${escapeAttr(encodeURIComponent(order.id ?? ''))}" class="view-order-link">View Details</a>
         </div>
     `).join('') : '<p>No orders yet. <a href="/products">Start shopping</a>.</p>';
 
@@ -70,15 +60,15 @@ function renderAccountPage(user, orders) {
                     <form id="profile-form">
                         <div class="form-group">
                             <label for="name">Name</label>
-                            <input type="text" id="name" value="${escapeHtml(user.name)}" required>
+                            <input type="text" id="name" value="${escapeAttr(user.name)}" required>
                         </div>
                         <div class="form-group">
                             <label for="email">Email</label>
-                            <input type="email" id="email" value="${escapeHtml(user.email)}" required>
+                            <input type="email" id="email" value="${escapeAttr(user.email)}" required>
                         </div>
                         <div class="form-group">
                             <label for="phone">Phone (optional)</label>
-                            <input type="tel" id="phone" value="${escapeHtml(user.phone || '')}">
+                            <input type="tel" id="phone" value="${escapeAttr(user.phone || '')}">
                         </div>
                         <div class="form-actions">
                             <button type="submit" class="btn-primary">Update Profile</button>
@@ -127,8 +117,8 @@ function renderAccountPage(user, orders) {
             // Optionally update the sidebar name/email
             const userInfo = document.querySelector('.user-info');
             if (userInfo) {
-                userInfo.querySelector('h3').textContent = escapeHtml(updatedUser.name);
-                userInfo.querySelector('p').textContent = escapeHtml(updatedUser.email);
+                userInfo.querySelector('h3').textContent = updatedUser.name || '';
+                userInfo.querySelector('p').textContent = updatedUser.email || '';
             }
         } catch (error) {
             showMessage(profileMessage, error.message || 'Failed to update profile.', 'error');

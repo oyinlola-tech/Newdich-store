@@ -1,6 +1,7 @@
 ﻿import { fetchAdminOrders, fetchOrderDetails, updateOrderStatus } from '../api/admin-orders.js';
 import { checkAdminAuth } from './admin.js';
 import { formatCurrency } from './format.js';
+import { escapeHtml, escapeAttr } from './sanitize.js';
 
 if (!checkAdminAuth()) return;
 

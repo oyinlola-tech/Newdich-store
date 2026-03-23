@@ -1,5 +1,6 @@
 ﻿import { fetchAdminUsers, fetchUserById, updateUser } from '../api/admin-users.js';
 import { checkAdminAuth } from './admin.js';
+import { escapeHtml, escapeAttr } from './sanitize.js';
 
 if (!checkAdminAuth()) return;
 
@@ -18,15 +19,14 @@ const userMessage = document.getElementById('user-message');
 
 let currentUserId = null;
 
-function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-    });
+function safeRoleClass(role) {
+    return role === 'admin' ? 'admin' : 'user';
 }
+
+function safeStatusClass(status) {
+    return status === 'active' ? 'active' : 'inactive';
+}
+
 
 function formatDate(dateString) {
     if (!dateString) return 'N/A';
@@ -53,15 +53,15 @@ async function renderUsers(users) {
                 </thead>
                 <tbody>
                     ${users.map(user => `
-                        <tr data-user-id="${user.id}">
-                            <td>${user.id}</td>
+                        <tr data-user-id="${escapeAttr(user.id)}">
+                            <td>${escapeHtml(user.id)}</td>
                             <td>${escapeHtml(user.name)}</td>
                             <td>${escapeHtml(user.email)}</td>
-                            <td><span class="role-badge ${user.role === 'admin' ? 'admin' : 'user'}">${user.role}</span></td>
-                            <td><span class="status-badge ${user.status === 'active' ? 'active' : 'inactive'}">${user.status}</span></td>
+                            <td><span class="role-badge ${safeRoleClass(user.role)}">${escapeHtml(user.role)}</span></td>
+                            <td><span class="status-badge ${safeStatusClass(user.status)}">${escapeHtml(user.status)}</span></td>
                             <td>${formatDate(user.createdAt)}</td>
                             <td class="actions">
-                                <button class="btn-edit" data-id="${user.id}"><i class="fas fa-edit"></i> Edit</button>
+                                <button class="btn-edit" data-id="${escapeAttr(user.id)}"><i class="fas fa-edit"></i> Edit</button>
                             </td>
                         </tr>
                     `).join('')}

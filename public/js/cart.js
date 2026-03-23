@@ -1,22 +1,17 @@
 ﻿import { fetchCart, updateCartItem, removeCartItem } from '../api/cart.js';
 import { updateCartCount } from './main.js';
 import { formatCurrency } from './format.js';
+import { escapeHtml, escapeAttr, sanitizeUrl } from './sanitize.js';
 
 const cartContainer = document.getElementById('cart-container');
 
 function getProductImage(product) {
-    return product?.image || product?.images?.[0] || 'https://via.placeholder.com/80x80?text=No+Image';
+    const url = product?.image || product?.images?.[0];
+    return sanitizeUrl(url, 'https://via.placeholder.com/80x80?text=No+Image');
 }
 
-// Helper to escape HTML
-function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-    });
+function safeId(value) {
+    return escapeAttr(value ?? '');
 }
 
 // Render cart items
@@ -45,22 +40,22 @@ function renderCart(cart) {
                 </thead>
                 <tbody>
                     ${cart.items.map(item => `
-                        <tr data-item-id="${item.id}">
+                        <tr data-item-id="${safeId(item.id)}">
                             <td class="product-info">
-                                <img src="${getProductImage(item.product)}" alt="${escapeHtml(item.product?.name)}">
+                                <img src="${escapeAttr(getProductImage(item.product))}" alt="${escapeHtml(item.product?.name)}">
                                 <span>${escapeHtml(item.product?.name)}</span>
                             </td>
                             <td>${formatCurrency(item.product?.price)}</td>
                             <td>
                                 <div class="quantity-controls">
-                                    <button class="quantity-btn decrease" data-item-id="${item.id}">-</button>
-                                    <input type="number" class="quantity-input" value="${item.quantity}" min="1" data-item-id="${item.id}">
-                                    <button class="quantity-btn increase" data-item-id="${item.id}">+</button>
+                                    <button class="quantity-btn decrease" data-item-id="${safeId(item.id)}">-</button>
+                                    <input type="number" class="quantity-input" value="${escapeAttr(item.quantity)}" min="1" data-item-id="${safeId(item.id)}">
+                                    <button class="quantity-btn increase" data-item-id="${safeId(item.id)}">+</button>
                                 </div>
                             </td>
                             <td>${formatCurrency(item.product?.price * item.quantity)}</td>
                             <td>
-                                <button class="remove-item" data-item-id="${item.id}">
+                                <button class="remove-item" data-item-id="${safeId(item.id)}">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </td>

@@ -2,21 +2,17 @@
 import { addToCart } from '../api/cart.js';
 import { updateCartCount } from './main.js';
 import { formatCurrency } from './format.js';
+import { escapeHtml, escapeAttr, sanitizeUrl } from './sanitize.js';
 
 const wishlistContainer = document.getElementById('wishlist-container');
 
 function getProductImage(product) {
-    return product?.image || product?.images?.[0] || 'https://via.placeholder.com/300x200?text=No+Image';
+    const url = product?.image || product?.images?.[0];
+    return sanitizeUrl(url, 'https://via.placeholder.com/300x200?text=No+Image');
 }
 
-function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-    });
+function safeId(value) {
+    return escapeAttr(value ?? '');
 }
 
 function renderEmptyState() {
@@ -39,14 +35,14 @@ function renderWishlist(items) {
     wishlistContainer.innerHTML = `
         <div class="wishlist-grid">
             ${items.map(item => `
-                <div class="wishlist-card" data-item-id="${item.id}">
-                    <img src="${getProductImage(item.product)}" alt="${escapeHtml(item.product?.name)}">
+                <div class="wishlist-card" data-item-id="${safeId(item.id)}">
+                    <img src="${escapeAttr(getProductImage(item.product))}" alt="${escapeHtml(item.product?.name)}">
                     <div class="wishlist-info">
                         <h4>${escapeHtml(item.product?.name)}</h4>
                         <p class="price">${formatCurrency(item.product?.price)}</p>
                         <div class="card-actions">
-                            <button class="btn-add-to-cart" data-product-id="${item.product?.id}">Add to Cart</button>
-                            <button class="btn-secondary btn-remove" data-item-id="${item.id}">Remove</button>
+                            <button class="btn-add-to-cart" data-product-id="${safeId(item.product?.id)}">Add to Cart</button>
+                            <button class="btn-secondary btn-remove" data-item-id="${safeId(item.id)}">Remove</button>
                         </div>
                     </div>
                 </div>
