@@ -2,7 +2,7 @@
 import { checkAdminAuth } from './admin.js';
 import { formatCurrency } from './format.js';
 import { escapeHtml, escapeAttr } from './sanitize.js';
-import { navigateTo } from './security.js';
+import { navigateToRoute } from './security.js';
 
 if (!checkAdminAuth()) return;
 
@@ -98,7 +98,7 @@ async function renderOrders(orders) {
     document.querySelectorAll('.btn-open').forEach(btn => {
         btn.addEventListener('click', () => {
             const orderId = btn.getAttribute('data-order-id');
-            navigateTo(`/admin/order-detail?orderId=${encodeURIComponent(orderId)}`, '/admin/order-detail');
+            navigateToRoute('adminOrderDetail', { orderId });
         });
     });
 }

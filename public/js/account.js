@@ -5,14 +5,14 @@ import { changePassword } from '../api/password-change.js';
 import { updateCartCount } from './main.js';
 import { formatCurrency } from './format.js';
 import { escapeHtml, escapeAttr } from './sanitize.js';
-import { navigateTo } from './security.js';
+import { navigateToRoute } from './security.js';
 import { initPasswordToggles } from './password-toggle.js';
 
 const container = document.getElementById('account-container');
 
 // Check authentication
 if (!isLoggedIn()) {
-    navigateTo('/login?redirect=/account');
+    navigateToRoute('login', { redirect: '/account' });
 }
 
 // Format date
@@ -159,7 +159,7 @@ function renderAccountPage(user, orders) {
     if (logoutBtn) {
         logoutBtn.addEventListener('click', () => {
             logoutUser();
-            navigateTo('/');
+            navigateToRoute('home');
         });
     }
 

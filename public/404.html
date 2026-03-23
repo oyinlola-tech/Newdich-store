@@ -8,6 +8,64 @@
     <title>Page Not Found - Newdich Store</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        .notfound-hero {
+            padding: 4rem 0 5rem;
+        }
+        .notfound-wrap {
+            display: grid;
+            gap: 2.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            align-items: center;
+        }
+        .notfound-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 2.5rem;
+            box-shadow: var(--shadow);
+        }
+        .notfound-code {
+            font-size: clamp(3.5rem, 8vw, 6rem);
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            color: var(--brand);
+            margin-bottom: 0.5rem;
+        }
+        .notfound-title {
+            font-size: clamp(1.5rem, 3vw, 2.4rem);
+            margin-bottom: 0.75rem;
+        }
+        .notfound-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+        .notfound-links {
+            display: grid;
+            gap: 0.75rem;
+        }
+        .notfound-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            background: #f6f8fc;
+            border: 1px solid var(--border);
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .notfound-link:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-soft);
+        }
+        .notfound-link i {
+            color: var(--brand);
+        }
+    </style>
 </head>
 <body>
     <div class="top-bar">
@@ -73,13 +131,34 @@
     </section>
 
     <main>
-        <section class="page-hero">
-            <div class="container">
-                <h2>We lost that page</h2>
-                <p>Looks like the page moved or doesn’t exist. Let’s get you back to the collection.</p>
-                <div class="card-actions" style="justify-content: center;">
-                    <a href="/" class="btn-primary">Go Home</a>
-                    <a href="/products" class="btn-secondary">Shop Now</a>
+        <section class="notfound-hero">
+            <div class="container notfound-wrap">
+                <div class="notfound-card">
+                    <div class="notfound-code">404</div>
+                    <h2 class="notfound-title">We lost that page</h2>
+                    <p>It may have moved, been renamed, or never existed. Let’s get you back to the collection.</p>
+                    <div class="notfound-actions">
+                        <a href="/" class="btn-primary">Go Home</a>
+                        <a href="/products" class="btn-secondary">Browse Products</a>
+                    </div>
+                </div>
+                <div class="notfound-links">
+                    <a class="notfound-link" href="/products">
+                        <i class="fas fa-box-open"></i>
+                        <span>Shop the latest arrivals</span>
+                    </a>
+                    <a class="notfound-link" href="/contact">
+                        <i class="fas fa-headset"></i>
+                        <span>Contact support</span>
+                    </a>
+                    <a class="notfound-link" href="/account">
+                        <i class="fas fa-user"></i>
+                        <span>Go to your account</span>
+                    </a>
+                    <a class="notfound-link" href="/returns">
+                        <i class="fas fa-undo"></i>
+                        <span>Returns & refunds</span>
+                    </a>
                 </div>
             </div>
         </section>

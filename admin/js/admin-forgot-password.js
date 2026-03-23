@@ -1,5 +1,5 @@
 import { requestAdminPasswordReset } from '../api/admin-password.js';
-import { navigateTo } from './security.js';
+import { navigateToRoute } from './security.js';
 import { isValidEmail } from './validators.js';
 
 const form = document.getElementById('admin-forgot-form');
@@ -35,7 +35,7 @@ form.addEventListener('submit', async (e) => {
             purpose: 'reset',
             otpToken: null
         }));
-        navigateTo(`/admin/otp?purpose=reset&email=${encodeURIComponent(email)}`);
+        navigateToRoute('adminOtp', { purpose: 'reset', email });
     } catch (error) {
         errorBox.textContent = error.message || 'Failed to send verification code.';
         errorBox.style.display = 'block';
