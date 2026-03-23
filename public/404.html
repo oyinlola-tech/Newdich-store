@@ -9,8 +9,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
     <style>
+        body {
+            background: radial-gradient(circle at top right, rgba(27, 92, 255, 0.08), transparent 45%),
+                        radial-gradient(circle at 10% 20%, rgba(255, 153, 0, 0.08), transparent 40%);
+        }
         .notfound-hero {
             padding: 4rem 0 5rem;
+            position: relative;
+            overflow: hidden;
         }
         .notfound-wrap {
             display: grid;
@@ -24,6 +30,18 @@
             border-radius: var(--radius);
             padding: 2.5rem;
             box-shadow: var(--shadow);
+        }
+        .notfound-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 0.9rem;
+            border-radius: 999px;
+            background: rgba(27, 92, 255, 0.1);
+            color: var(--brand);
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
         }
         .notfound-code {
             font-size: clamp(3.5rem, 8vw, 6rem);
@@ -41,6 +59,31 @@
             flex-wrap: wrap;
             gap: 0.75rem;
             margin-top: 1.5rem;
+        }
+        .notfound-side {
+            display: grid;
+            gap: 1.5rem;
+        }
+        .notfound-visual {
+            padding: 1.5rem;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #f9fbff 0%, #eef2ff 100%);
+            border: 1px solid rgba(27, 92, 255, 0.2);
+            box-shadow: var(--shadow-soft);
+        }
+        .notfound-visual svg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .notfound-quick {
+            display: grid;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+        .notfound-quick strong {
+            color: var(--text);
         }
         .notfound-links {
             display: grid;
@@ -134,6 +177,7 @@
         <section class="notfound-hero">
             <div class="container notfound-wrap">
                 <div class="notfound-card">
+                    <span class="notfound-tag"><i class="fas fa-compass"></i> Page Not Found</span>
                     <div class="notfound-code">404</div>
                     <h2 class="notfound-title">We lost that page</h2>
                     <p>It may have moved, been renamed, or never existed. Let’s get you back to the collection.</p>
@@ -142,23 +186,47 @@
                         <a href="/products" class="btn-secondary">Browse Products</a>
                     </div>
                 </div>
-                <div class="notfound-links">
-                    <a class="notfound-link" href="/products">
-                        <i class="fas fa-box-open"></i>
-                        <span>Shop the latest arrivals</span>
-                    </a>
-                    <a class="notfound-link" href="/contact">
-                        <i class="fas fa-headset"></i>
-                        <span>Contact support</span>
-                    </a>
-                    <a class="notfound-link" href="/account">
-                        <i class="fas fa-user"></i>
-                        <span>Go to your account</span>
-                    </a>
-                    <a class="notfound-link" href="/returns">
-                        <i class="fas fa-undo"></i>
-                        <span>Returns & refunds</span>
-                    </a>
+                <div class="notfound-side">
+                    <div class="notfound-visual" aria-hidden="true">
+                        <svg viewBox="0 0 420 260" xmlns="http://www.w3.org/2000/svg" role="presentation">
+                            <defs>
+                                <linearGradient id="nfGlow" x1="0" y1="0" x2="1" y2="1">
+                                    <stop offset="0%" stop-color="#1b5cff" stop-opacity="0.9"/>
+                                    <stop offset="100%" stop-color="#6b8cff" stop-opacity="0.6"/>
+                                </linearGradient>
+                            </defs>
+                            <rect width="420" height="260" rx="24" fill="#ffffff" opacity="0.85"/>
+                            <circle cx="320" cy="80" r="52" fill="url(#nfGlow)"/>
+                            <circle cx="320" cy="80" r="20" fill="#ffffff" opacity="0.6"/>
+                            <path d="M40 210 C120 160, 180 200, 250 150 C300 120, 340 140, 380 110" stroke="#1b5cff" stroke-width="4" fill="none" opacity="0.5"/>
+                            <path d="M60 190 C120 140, 210 170, 260 130 C310 100, 350 120, 390 90" stroke="#ff8a00" stroke-width="3" fill="none" opacity="0.35"/>
+                            <rect x="60" y="60" width="160" height="18" rx="9" fill="#e9efff"/>
+                            <rect x="60" y="90" width="200" height="18" rx="9" fill="#e9efff"/>
+                            <rect x="60" y="120" width="120" height="18" rx="9" fill="#e9efff"/>
+                        </svg>
+                    </div>
+                    <div class="notfound-quick">
+                        <strong>Popular paths:</strong>
+                        <span>Try recent arrivals, your wishlist, or reach support if you need help.</span>
+                    </div>
+                    <div class="notfound-links">
+                        <a class="notfound-link" href="/products">
+                            <i class="fas fa-box-open"></i>
+                            <span>Shop the latest arrivals</span>
+                        </a>
+                        <a class="notfound-link" href="/contact">
+                            <i class="fas fa-headset"></i>
+                            <span>Contact support</span>
+                        </a>
+                        <a class="notfound-link" href="/account">
+                            <i class="fas fa-user"></i>
+                            <span>Go to your account</span>
+                        </a>
+                        <a class="notfound-link" href="/returns">
+                            <i class="fas fa-undo"></i>
+                            <span>Returns & refunds</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </section>
