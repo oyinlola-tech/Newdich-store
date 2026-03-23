@@ -1,5 +1,5 @@
 ﻿import { verifyAdminOtp, requestAdminOtp } from '../api/admin-otp.js';
-import { sanitizeRedirect } from './security.js';
+import { sanitizeRedirect, cleanRedirectParam } from './security.js';
 
 const form = document.getElementById('admin-otp-form');
 const message = document.getElementById('admin-otp-message');
@@ -13,6 +13,8 @@ function getParams() {
         purpose: params.get('purpose') || 'login'
     };
 }
+
+cleanRedirectParam('/admin');
 
 form.addEventListener('submit', async (e) => {
     e.preventDefault();

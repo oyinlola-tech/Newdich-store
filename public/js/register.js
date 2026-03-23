@@ -1,11 +1,13 @@
 ﻿import { registerUser, isLoggedIn } from '../api/auth.js';
 import { requestOtp } from '../api/otp.js';
 import { updateCartCount } from './main.js';
-import { getSafeRedirect } from './security.js';
+import { getSafeRedirect, cleanRedirectParam } from './security.js';
 
 const registerForm = document.getElementById('register-form');
 const errorDiv = document.getElementById('register-error');
 const successDiv = document.getElementById('register-success');
+
+cleanRedirectParam('/');
 
 // Check if already logged in
 if (isLoggedIn()) {

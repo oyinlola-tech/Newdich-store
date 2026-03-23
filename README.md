@@ -156,3 +156,21 @@ Security hardening included in this frontend:
 - CSP and referrer meta tags are present in all HTML pages.
 - Reset tokens are removed from the URL and stored in `sessionStorage` on load.
 - Admin gating in the UI is for UX only; the backend must enforce auth and roles.
+
+## Production Security Requirements (Backend)
+To fully secure the app in production, the backend must implement:
+- **HttpOnly, Secure, SameSite cookies** for auth tokens (avoid JS‑accessible storage).
+- **CSRF protection** for state‑changing requests when using cookies.
+- **Ownership checks** for orders, returns, payments, and profile data.
+- **Role enforcement** on all admin routes (do not trust client checks).
+- **Rate limiting** for OTP and login endpoints.
+
+## Security Headers (Production)
+The CSP meta tag is a fallback. Set headers at the server/CDN layer. A Netlify `_headers` file is included:
+- `_headers`
+
+Update `connect-src` to point at your **HTTPS** API in production and remove `http://localhost:3000`.
+
+## Dependency Hygiene
+This repo is static HTML/JS, so no lockfiles are required today. If you add a build step later, add a lockfile
+(`package-lock.json` / `pnpm-lock.yaml` / `yarn.lock`) and enable dependency scanning.

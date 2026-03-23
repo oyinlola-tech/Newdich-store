@@ -1,9 +1,11 @@
 ﻿import { adminLogin } from '../api/admin-auth.js';
 import { requestAdminOtp } from '../api/admin-otp.js';
-import { getSafeRedirect } from './security.js';
+import { getSafeRedirect, cleanRedirectParam } from './security.js';
 
 const loginForm = document.getElementById('admin-login-form');
 const errorDiv = document.getElementById('admin-login-error');
+
+cleanRedirectParam('/admin');
 
 loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();

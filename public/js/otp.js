@@ -1,6 +1,6 @@
 ﻿import { verifyOtp, requestOtp } from '../api/otp.js';
 import { updateCartCount } from './main.js';
-import { sanitizeRedirect } from './security.js';
+import { sanitizeRedirect, cleanRedirectParam } from './security.js';
 import './footer-year.js';
 
 const form = document.getElementById('otp-form');
@@ -15,6 +15,8 @@ function getParams() {
         purpose: params.get('purpose') || 'login'
     };
 }
+
+cleanRedirectParam('/');
 
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
