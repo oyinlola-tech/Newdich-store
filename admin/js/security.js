@@ -1,9 +1,35 @@
+const ADMIN_ALLOWLIST = new Set([
+    '/admin',
+    '/admin/orders',
+    '/admin/order-detail',
+    '/admin/products',
+    '/admin/categories',
+    '/admin/inventory',
+    '/admin/users',
+    '/admin/returns',
+    '/admin/contact',
+    '/admin/login',
+    '/admin/forgot-password',
+    '/admin/reset-password',
+    '/admin/otp',
+    '/admin/404'
+]);
+
+function getPathname(path) {
+    try {
+        return new URL(path, window.location.origin).pathname;
+    } catch (error) {
+        return '';
+    }
+}
+
 export function sanitizeRedirect(redirect, fallback = '/admin') {
     if (!redirect) return fallback;
-    if (redirect.startsWith('/') && !redirect.startsWith('//') && !redirect.includes('..') && !redirect.includes('\\')) {
-        return redirect;
+    if (!redirect.startsWith('/') || redirect.startsWith('//') || redirect.includes('..') || redirect.includes('\\')) {
+        return fallback;
     }
-    return fallback;
+    const pathname = getPathname(redirect);
+    return ADMIN_ALLOWLIST.has(pathname) ? redirect : fallback;
 }
 
 export function getSafeRedirect(fallback = '/admin') {

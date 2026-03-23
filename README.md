@@ -174,3 +174,10 @@ Update `connect-src` to point at your **HTTPS** API in production and remove `ht
 ## Dependency Hygiene
 This repo is static HTML/JS, so no lockfiles are required today. If you add a build step later, add a lockfile
 (`package-lock.json` / `pnpm-lock.yaml` / `yarn.lock`) and enable dependency scanning.
+
+## Validation Helpers
+To keep email validation consistent and safe (ReDoS‑free), use the shared validators:
+- Public: `public/js/validators.js` (`isValidEmail`)
+- Admin: `admin/js/validators.js` (`isValidEmail`)
+
+When adding new forms that accept an email address, import and use `isValidEmail` instead of ad‑hoc regexes.
