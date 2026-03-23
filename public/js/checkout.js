@@ -239,7 +239,7 @@ async function handleOrderSubmit(e) {
             ...orderData,
             payment: { paymentId, status: paymentStatus }
         });
-        // Clear cart from localStorage or trigger backend cart clear (handled by API)
+        // Clear cart from sessionStorage or trigger backend cart clear (handled by API)
         // Redirect to order confirmation page
         window.location.href = `/order-confirmation?orderId=${encodeURIComponent(order.id ?? '')}`;
     } catch (error) {

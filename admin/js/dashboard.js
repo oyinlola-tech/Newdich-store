@@ -1,6 +1,7 @@
 ﻿import { fetchDashboardStats, fetchRecentOrders } from '../api/admin-stats.js';
 import { checkAdminAuth } from './admin.js';
 import { formatCurrency } from './format.js';
+import { escapeHtml } from './sanitize.js';
 
 // Ensure admin is logged in
 if (!checkAdminAuth()) {
@@ -123,22 +124,22 @@ async function loadStats() {
             <div class="stat-card">
                 <i class="fas fa-shopping-cart"></i>
                 <h3>Total Orders</h3>
-                <div class="stat-value">${stats.totalOrders || 0}</div>
+                <div class="stat-value">${escapeHtml(stats.totalOrders || 0)}</div>
             </div>
             <div class="stat-card">
                 <i class="fas fa-box"></i>
                 <h3>Total Products</h3>
-                <div class="stat-value">${stats.totalProducts || 0}</div>
+                <div class="stat-value">${escapeHtml(stats.totalProducts || 0)}</div>
             </div>
             <div class="stat-card">
                 <i class="fas fa-users"></i>
                 <h3>Total Users</h3>
-                <div class="stat-value">${stats.totalUsers || 0}</div>
+                <div class="stat-value">${escapeHtml(stats.totalUsers || 0)}</div>
             </div>
             <div class="stat-card">
                 <i class="fas fa-naira-sign"></i>
                 <h3>Revenue</h3>
-                <div class="stat-value">${formatCurrency(stats.revenue || 0)}</div>
+                <div class="stat-value">${escapeHtml(formatCurrency(stats.revenue || 0))}</div>
             </div>
         `;
         updateKpiVisuals(stats || {});
@@ -169,11 +170,11 @@ async function loadRecentOrders() {
                 <tbody>
                     ${orders.map(order => `
                         <tr>
-                            <td>#${order.id}</td>
+                            <td>#${escapeHtml(order.id)}</td>
                             <td>${escapeHtml(order.customerName)}</td>
                             <td>${new Date(order.createdAt).toLocaleDateString()}</td>
                             <td>${formatCurrency(order.total)}</td>
-                            <td><span class="status-badge status-${order.status.toLowerCase()}">${order.status}</span></td>
+                            <td><span class="status-badge status-${safeStatusClass(order.status)}">${escapeHtml(order.status)}</span></td>
                         </tr>
                     `).join('')}
                 </tbody>
@@ -188,14 +189,10 @@ async function loadRecentOrders() {
     }
 }
 
-function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-    });
+function safeStatusClass(status) {
+    const normalized = String(status || '').toLowerCase();
+    const allowed = ['pending', 'processing', 'completed', 'cancelled'];
+    return allowed.includes(normalized) ? normalized : 'pending';
 }
 
 document.addEventListener('DOMContentLoaded', () => {

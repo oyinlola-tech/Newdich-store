@@ -1,5 +1,6 @@
 ﻿import { fetchContactMessages, fetchContactMessageById, updateContactStatus, replyToContactMessage } from '../api/admin-contact.js';
 import { checkAdminAuth } from './admin.js';
+import { escapeHtml, escapeAttr } from './sanitize.js';
 
 if (!checkAdminAuth()) return;
 
@@ -24,16 +25,6 @@ const statusText = document.getElementById('contact-status-text');
 let currentFilters = { status: 'all', search: '' };
 let pendingStatusChange = null;
 let activeMessageId = null;
-
-function escapeHtml(str) {
-    if (!str) return '';
-    return String(str).replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-    });
-}
 
 function formatDate(dateString) {
     if (!dateString) return 'N/A';
@@ -79,14 +70,14 @@ async function renderMessages(messages) {
                             <td>${escapeHtml(message.subject || 'General')}</td>
                             <td>${formatDate(message.createdAt || message.sentAt)}</td>
                             <td>
-                                <select class="status-select" data-message-id="${escapeHtml(messageId)}" data-current-status="${escapeHtml(status)}">
+                                <select class="status-select" data-message-id="${escapeAttr(messageId)}" data-current-status="${escapeAttr(status)}">
                                     <option value="open" ${status === 'open' ? 'selected' : ''}>Open</option>
                                     <option value="pending" ${status === 'pending' ? 'selected' : ''}>Pending</option>
                                     <option value="resolved" ${status === 'resolved' ? 'selected' : ''}>Resolved</option>
                                 </select>
                             </td>
                             <td class="actions">
-                                <button class="btn-view" data-message-id="${escapeHtml(messageId)}"><i class="fas fa-eye"></i> View</button>
+                                <button class="btn-view" data-message-id="${escapeAttr(messageId)}"><i class="fas fa-eye"></i> View</button>
                             </td>
                         </tr>
                     `;

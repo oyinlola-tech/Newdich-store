@@ -1,5 +1,6 @@
 ﻿import { fetchInventoryList, updateInventory } from '../api/admin-inventory.js';
 import { checkAdminAuth } from './admin.js';
+import { escapeHtml, escapeAttr } from './sanitize.js';
 
 if (!checkAdminAuth()) return;
 
@@ -15,16 +16,6 @@ const cancelBtn = document.getElementById('cancel-inventory');
 const form = document.getElementById('inventory-form');
 
 let currentProductId = null;
-
-function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-    });
-}
 
 function renderInventory(items) {
     if (!items || items.length === 0) {
@@ -45,13 +36,13 @@ function renderInventory(items) {
             </thead>
             <tbody>
                 ${items.map(item => `
-                    <tr data-id="${item.productId}">
-                        <td>${item.productId}</td>
+                    <tr data-id="${escapeAttr(item.productId)}">
+                        <td>${escapeHtml(item.productId)}</td>
                         <td>${escapeHtml(item.productName || '')}</td>
-                        <td>${item.stock ?? 0}</td>
+                        <td>${escapeHtml(item.stock ?? 0)}</td>
                         <td>${escapeHtml(item.status || 'in_stock')}</td>
                         <td class="actions">
-                            <button class="btn-edit" data-id="${item.productId}"><i class="fas fa-edit"></i> Update</button>
+                            <button class="btn-edit" data-id="${escapeAttr(item.productId)}"><i class="fas fa-edit"></i> Update</button>
                         </td>
                     </tr>
                 `).join('')}

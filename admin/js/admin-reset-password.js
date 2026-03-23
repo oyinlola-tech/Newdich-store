@@ -5,8 +5,24 @@ const message = document.getElementById('admin-reset-message');
 const errorBox = document.getElementById('admin-reset-error');
 
 function getToken() {
-    const params = new URLSearchParams(window.location.search);
-    return params.get('token') || sessionStorage.getItem('adminResetToken');
+    const url = new URL(window.location.href);
+    const hashParams = new URLSearchParams(url.hash.replace(/^#/, ''));
+    const hashToken = hashParams.get('token');
+    const queryToken = url.searchParams.get('token');
+    const storedToken = sessionStorage.getItem('adminResetToken');
+    const token = hashToken || queryToken || storedToken;
+
+    if (token && token !== storedToken) {
+        sessionStorage.setItem('adminResetToken', token);
+    }
+
+    if (hashToken || queryToken) {
+        url.hash = '';
+        url.searchParams.delete('token');
+        history.replaceState({}, document.title, url.pathname + url.search);
+    }
+
+    return token;
 }
 
 form.addEventListener('submit', async (e) => {

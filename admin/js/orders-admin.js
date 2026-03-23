@@ -28,16 +28,6 @@ const statusText = document.getElementById('orders-status-text');
 
 let pendingStatusChange = null;
 
-function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-    });
-}
-
 function formatDate(dateString) {
     return new Date(dateString).toLocaleString();
 }
@@ -62,12 +52,12 @@ async function renderOrders(orders) {
                 <tbody>
                     ${orders.map(order => `
                         <tr>
-                            <td>#${order.id}</td>
+                            <td>#${escapeHtml(order.id)}</td>
                             <td>${escapeHtml(order.customerName)}</td>
                             <td>${formatDate(order.createdAt)}</td>
                             <td>${formatCurrency(order.total)}</td>
                             <td>
-                                <select class="status-select" data-order-id="${order.id}" data-current-status="${order.status}">
+                                <select class="status-select" data-order-id="${escapeAttr(order.id)}" data-current-status="${escapeAttr(order.status)}">
                                     <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
                                     <option value="processing" ${order.status === 'processing' ? 'selected' : ''}>Processing</option>
                                     <option value="completed" ${order.status === 'completed' ? 'selected' : ''}>Completed</option>
@@ -75,8 +65,8 @@ async function renderOrders(orders) {
                                 </select>
                             </td>
                             <td class="actions">
-                                <button class="btn-view" data-order-id="${order.id}"><i class="fas fa-eye"></i> View</button>
-                                <button class="btn-open" data-order-id="${order.id}"><i class="fas fa-arrow-right"></i> Open</button>
+                                <button class="btn-view" data-order-id="${escapeAttr(order.id)}"><i class="fas fa-eye"></i> View</button>
+                                <button class="btn-open" data-order-id="${escapeAttr(order.id)}"><i class="fas fa-arrow-right"></i> Open</button>
                             </td>
                         </tr>
                     `).join('')}
@@ -107,7 +97,7 @@ async function renderOrders(orders) {
     document.querySelectorAll('.btn-open').forEach(btn => {
         btn.addEventListener('click', () => {
             const orderId = btn.getAttribute('data-order-id');
-            window.location.href = `/admin/order-detail?orderId=${orderId}`;
+            window.location.href = `/admin/order-detail?orderId=${encodeURIComponent(orderId)}`;
         });
     });
 }
@@ -127,7 +117,7 @@ function renderOrderDetails(order) {
     const itemsHtml = order.items.map(item => `
         <div class="order-detail-item">
             <span class="item-name">${escapeHtml(item.product?.name)}</span>
-            <span class="item-quantity">x${item.quantity}</span>
+            <span class="item-quantity">x${escapeHtml(item.quantity)}</span>
             <span class="item-price">${formatCurrency(item.price)}</span>
             <span class="item-total">${formatCurrency(item.price * item.quantity)}</span>
         </div>
@@ -135,9 +125,9 @@ function renderOrderDetails(order) {
 
     const html = `
         <div class="order-info">
-            <p><strong>Order ID:</strong> #${order.id}</p>
+            <p><strong>Order ID:</strong> #${escapeHtml(order.id)}</p>
             <p><strong>Date:</strong> ${formatDate(order.createdAt)}</p>
-            <p><strong>Status:</strong> ${order.status}</p>
+            <p><strong>Status:</strong> ${escapeHtml(order.status)}</p>
             <p><strong>Total:</strong> ${formatCurrency(order.total)}</p>
             <h4>Customer Information</h4>
             <p><strong>Name:</strong> ${escapeHtml(order.shippingAddress.fullName)}</p>

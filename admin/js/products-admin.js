@@ -2,6 +2,7 @@
 import { fetchAdminCategories } from '../api/admin-categories.js';
 import { checkAdminAuth } from './admin.js';
 import { formatCurrency } from './format.js';
+import { escapeHtml, escapeAttr, sanitizeUrl } from './sanitize.js';
 
 // Ensure admin is logged in
 if (!checkAdminAuth()) {
@@ -23,19 +24,9 @@ const addProductBtn = document.getElementById('add-product-btn');
 const closeModal = document.querySelector('.close');
 const cancelModal = document.getElementById('cancel-modal');
 
-// Helper to escape HTML
-function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-    });
-}
-
 function getPrimaryImage(product) {
-    return product?.image || product?.images?.[0];
+    const url = product?.image || product?.images?.[0];
+    return sanitizeUrl(url, '');
 }
 
 function getImageCount(product) {
@@ -107,19 +98,19 @@ function renderProducts(products) {
             </thead>
             <tbody>
                 ${products.map(product => `
-                    <tr data-product-id="${product.id}">
-                        <td>${product.id}</td>
+                    <tr data-product-id="${escapeAttr(product.id)}">
+                        <td>${escapeHtml(product.id)}</td>
                         <td>
-                            <img src="${getPrimaryImage(product) || 'https://via.placeholder.com/50x50?text=No+Img'}" alt="${escapeHtml(product.name)}" class="product-thumb">
+                            <img src="${escapeAttr(getPrimaryImage(product) || 'https://via.placeholder.com/50x50?text=No+Img')}" alt="${escapeHtml(product.name)}" class="product-thumb">
                             <div class="muted-text">(${getImageCount(product)})</div>
                         </td>
                         <td>${escapeHtml(product.name)}</td>
                         <td>${escapeHtml(product.category)}</td>
                         <td>${formatCurrency(product.price)}</td>
-                        <td>${product.stock || 0}</td>
+                        <td>${escapeHtml(product.stock || 0)}</td>
                         <td class="actions">
-                            <button class="btn-edit" data-id="${product.id}"><i class="fas fa-edit"></i> Edit</button>
-                            <button class="btn-delete" data-id="${product.id}"><i class="fas fa-trash"></i> Delete</button>
+                            <button class="btn-edit" data-id="${escapeAttr(product.id)}"><i class="fas fa-edit"></i> Edit</button>
+                            <button class="btn-delete" data-id="${escapeAttr(product.id)}"><i class="fas fa-trash"></i> Delete</button>
                         </td>
                     </tr>
                 `).join('')}

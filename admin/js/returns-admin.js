@@ -1,5 +1,6 @@
 ﻿import { fetchReturnRequests, fetchReturnById, updateReturnStatus, addReturnNote } from '../api/admin-returns.js';
 import { checkAdminAuth } from './admin.js';
+import { escapeHtml, escapeAttr } from './sanitize.js';
 
 if (!checkAdminAuth()) return;
 
@@ -24,16 +25,6 @@ const statusText = document.getElementById('returns-status-text');
 let currentFilters = { status: 'all', search: '' };
 let pendingStatusChange = null;
 let activeReturnId = null;
-
-function escapeHtml(str) {
-    if (!str) return '';
-    return String(str).replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-    });
-}
 
 function formatDate(dateString) {
     if (!dateString) return 'N/A';
@@ -72,7 +63,7 @@ function renderItemsList(items = []) {
             ${items.map(item => `
                 <div class="order-detail-item">
                     <span class="item-name">${escapeHtml(item.product?.name || item.name || 'Item')}</span>
-                    <span class="item-quantity">x${item.quantity || 1}</span>
+                    <span class="item-quantity">x${escapeHtml(item.quantity || 1)}</span>
                     <span class="item-price">${escapeHtml(item.price ?? 'N/A')}</span>
                     <span class="item-total">${escapeHtml(item.total ?? '')}</span>
                 </div>
@@ -110,7 +101,7 @@ async function renderReturns(returnsList) {
                             <td>${escapeHtml(getCustomerName(returnItem))}</td>
                             <td>${formatDate(returnItem?.createdAt || returnItem?.requestedAt)}</td>
                             <td>
-                                <select class="status-select" data-return-id="${escapeHtml(returnId)}" data-current-status="${escapeHtml(status)}">
+                                <select class="status-select" data-return-id="${escapeAttr(returnId)}" data-current-status="${escapeAttr(status)}">
                                     <option value="pending" ${status === 'pending' ? 'selected' : ''}>Pending</option>
                                     <option value="approved" ${status === 'approved' ? 'selected' : ''}>Approved</option>
                                     <option value="rejected" ${status === 'rejected' ? 'selected' : ''}>Rejected</option>
@@ -119,7 +110,7 @@ async function renderReturns(returnsList) {
                                 </select>
                             </td>
                             <td class="actions">
-                                <button class="btn-view" data-return-id="${escapeHtml(returnId)}"><i class="fas fa-eye"></i> View</button>
+                                <button class="btn-view" data-return-id="${escapeAttr(returnId)}"><i class="fas fa-eye"></i> View</button>
                             </td>
                         </tr>
                     `;

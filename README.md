@@ -117,7 +117,7 @@ Admin:
 - `POST /admin/auth/reset-password`
 
 The reset token can come from:
-- URL query `?token=...`
+- URL hash `#token=...` (preferred)
 - OTP verification response (stored in `sessionStorage`)
 
 ## Local Development
@@ -145,6 +145,14 @@ Update these to your backend URL.
   - `public/api/`
   - `admin/api/`
 - OTP verification tokens are stored in `sessionStorage`.
+- Auth tokens and user/admin profiles are stored in `sessionStorage` (per-session only).
 
 ## Security
 See `SECURITY.md` for reporting guidelines.
+
+Security hardening included in this frontend:
+- Safe redirect helper only allows relative paths.
+- DOM rendering uses HTML/attribute escaping helpers in `public/js/sanitize.js` and `admin/js/sanitize.js`.
+- CSP and referrer meta tags are present in all HTML pages.
+- Reset tokens are removed from the URL and stored in `sessionStorage` on load.
+- Admin gating in the UI is for UX only; the backend must enforce auth and roles.

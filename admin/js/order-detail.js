@@ -1,6 +1,7 @@
 ﻿import { fetchOrderDetails, updateOrderStatus, addOrderNote, fetchOrderStatusHistory } from '../api/admin-orders.js';
 import { checkAdminAuth } from './admin.js';
 import { formatCurrency } from './format.js';
+import { escapeHtml } from './sanitize.js';
 
 if (!checkAdminAuth()) {
     // Redirect handled
@@ -27,22 +28,12 @@ function getOrderIdFromUrl() {
     return params.get('orderId');
 }
 
-function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-    });
-}
-
 function renderOrder(order) {
     const itemsHtml = order.items.map(item => `
         <div class="detail-item">
             <div class="detail-item-info">
                 <strong>${escapeHtml(item.product?.name)}</strong>
-                <span>Qty: ${item.quantity}</span>
+                <span>Qty: ${escapeHtml(item.quantity)}</span>
             </div>
             <div class="detail-item-total">${formatCurrency(item.price * item.quantity)}</div>
         </div>
@@ -50,7 +41,7 @@ function renderOrder(order) {
 
     container.innerHTML = `
         <div class="detail-card">
-            <h2>Order #${order.id}</h2>
+            <h2>Order #${escapeHtml(order.id)}</h2>
             <div class="detail-meta">
                 <span><strong>Date:</strong> ${new Date(order.createdAt).toLocaleString()}</span>
                 <span><strong>Customer:</strong> ${escapeHtml(order.customerName || order.shippingAddress?.fullName || 'N/A')}</span>

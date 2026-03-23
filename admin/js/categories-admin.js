@@ -1,5 +1,6 @@
 ﻿import { fetchAdminCategories, createCategory, updateCategory, deleteCategory } from '../api/admin-categories.js';
 import { checkAdminAuth } from './admin.js';
+import { escapeHtml, escapeAttr } from './sanitize.js';
 
 if (!checkAdminAuth()) return;
 
@@ -12,16 +13,6 @@ const closeBtn = modal.querySelector('.close');
 const cancelBtn = document.getElementById('cancel-category');
 
 let currentEditId = null;
-
-function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-    });
-}
 
 function renderCategories(categories) {
     if (!categories || categories.length === 0) {
@@ -42,14 +33,14 @@ function renderCategories(categories) {
             </thead>
             <tbody>
                 ${categories.map(cat => `
-                    <tr data-id="${cat.id}">
-                        <td>${cat.id}</td>
+                    <tr data-id="${escapeAttr(cat.id)}">
+                        <td>${escapeHtml(cat.id)}</td>
                         <td>${escapeHtml(cat.name)}</td>
                         <td>${escapeHtml(cat.slug || '')}</td>
                         <td>${escapeHtml(cat.description || '')}</td>
                         <td class="actions">
-                            <button class="btn-edit" data-id="${cat.id}"><i class="fas fa-edit"></i> Edit</button>
-                            <button class="btn-delete" data-id="${cat.id}"><i class="fas fa-trash"></i> Delete</button>
+                            <button class="btn-edit" data-id="${escapeAttr(cat.id)}"><i class="fas fa-edit"></i> Edit</button>
+                            <button class="btn-delete" data-id="${escapeAttr(cat.id)}"><i class="fas fa-trash"></i> Delete</button>
                         </td>
                     </tr>
                 `).join('')}
