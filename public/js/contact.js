@@ -1,5 +1,6 @@
 ﻿import { sendContactMessage } from '../api/contact.js';
 import { updateCartCount } from './main.js';
+import { isValidEmail } from './validators.js';
 
 const contactForm = document.getElementById('contact-form');
 const messageDiv = document.getElementById('contact-message');
@@ -29,9 +30,8 @@ contactForm.addEventListener('submit', async (e) => {
         return;
     }
     
-    // Simple email validation
-    const emailRegex = /^[^\s@]+@([^\s@]+\.)+[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    // Simple email validation (avoid expensive regex backtracking)
+    if (!isValidEmail(email)) {
         showMessage('error', 'Please enter a valid email address.');
         return;
     }

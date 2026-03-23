@@ -21,3 +21,8 @@ export function cleanRedirectParam(fallback = '/admin') {
         history.replaceState({}, document.title, url.pathname + url.search + url.hash);
     }
 }
+
+export function navigateTo(path, fallback = '/admin') {
+    const safePath = sanitizeRedirect(path, fallback);
+    window.location.assign(safePath);
+}

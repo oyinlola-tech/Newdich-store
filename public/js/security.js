@@ -21,3 +21,8 @@ export function cleanRedirectParam(fallback = '/') {
         history.replaceState({}, document.title, url.pathname + url.search + url.hash);
     }
 }
+
+export function navigateTo(path, fallback = '/') {
+    const safePath = sanitizeRedirect(path, fallback);
+    window.location.assign(safePath);
+}
