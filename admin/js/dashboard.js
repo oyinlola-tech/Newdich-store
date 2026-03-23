@@ -19,6 +19,8 @@ const kpiChangeIconEl = document.getElementById('kpi-change-icon');
 const kpiLineEl = document.getElementById('kpi-line');
 const kpiLineSecondaryEl = document.getElementById('kpi-line-secondary');
 const kpiGlowEl = document.getElementById('kpi-glow');
+const salesChartEl = document.getElementById('sales-chart');
+const topCategoriesEl = document.getElementById('top-categories');
 
 function normalizeSeries(series) {
     if (!Array.isArray(series)) return [];
@@ -119,6 +121,74 @@ function updateKpiVisuals(stats) {
     }
 }
 
+function resolveSalesSeries(stats) {
+    return normalizeSeries(
+        stats.salesTrend ||
+        stats.revenueTrend ||
+        stats.dailyRevenue ||
+        stats.dailySales ||
+        []
+    );
+}
+
+function resolveSalesLabels(stats, count) {
+    const labels = stats.salesLabels || stats.revenueLabels || stats.dailyLabels;
+    if (Array.isArray(labels) && labels.length) return labels;
+    return Array.from({ length: count }, (_, i) => `Day ${i + 1}`);
+}
+
+function renderSalesChart(stats) {
+    if (!salesChartEl) return;
+    const series = resolveSalesSeries(stats);
+    if (!series.length) {
+        salesChartEl.innerHTML = '<div class="empty-state">No sales data yet.</div>';
+        return;
+    }
+
+    const max = Math.max(...series, 1);
+    const labels = resolveSalesLabels(stats, series.length);
+    const barsHtml = series
+        .map((value) => {
+            const height = Math.max(5, Math.round((value / max) * 100));
+            return `<span style="height: ${height}%"></span>`;
+        })
+        .join('');
+    const labelsHtml = labels
+        .slice(0, series.length)
+        .map((label) => `<span>${escapeHtml(label)}</span>`)
+        .join('');
+
+    salesChartEl.innerHTML = `
+        <div class="chart-bars">${barsHtml}</div>
+        <div class="chart-labels">${labelsHtml}</div>
+    `;
+}
+
+function resolveTopCategories(stats) {
+    if (Array.isArray(stats.topCategories)) return stats.topCategories;
+    if (Array.isArray(stats.categories)) return stats.categories;
+    if (Array.isArray(stats.categoryBreakdown)) return stats.categoryBreakdown;
+    return [];
+}
+
+function renderTopCategories(stats) {
+    if (!topCategoriesEl) return;
+    const categories = resolveTopCategories(stats);
+    if (!categories.length) {
+        topCategoriesEl.innerHTML = '<span class="muted-text">No category data yet.</span>';
+        return;
+    }
+
+    topCategoriesEl.innerHTML = categories
+        .slice(0, 6)
+        .map((item) => {
+            const name = typeof item === 'string' ? item : item?.name || item?.category || 'Category';
+            const value = typeof item === 'object' ? item?.share || item?.percent || item?.revenue : null;
+            return `<span>${escapeHtml(value ? `${name} • ${value}` : name)}</span>`;
+        })
+        .join('');
+}
+
 async function loadStats() {
     try {
         const stats = await fetchDashboardStats();
@@ -145,8 +215,16 @@ async function loadStats() {
             </div>
         `;
         updateKpiVisuals(stats || {});
+        renderSalesChart(stats || {});
+        renderTopCategories(stats || {});
     } catch (error) {
         statsContainer.innerHTML = '<div class="error">Failed to load stats</div>';
+        if (salesChartEl) {
+            salesChartEl.innerHTML = '<div class="error">Failed to load sales overview</div>';
+        }
+        if (topCategoriesEl) {
+            topCategoriesEl.innerHTML = '<span class="error">Failed to load categories</span>';
+        }
     }
 }
 
