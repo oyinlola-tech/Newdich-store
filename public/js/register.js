@@ -2,6 +2,7 @@
 import { requestOtp } from '../api/otp.js';
 import { updateCartCount } from './main.js';
 import { getSafeRedirect, cleanRedirectParam, navigateTo } from './security.js';
+import { initPasswordToggles } from './password-toggle.js';
 import { isValidEmail } from './validators.js';
 
 const registerForm = document.getElementById('register-form');
@@ -9,6 +10,7 @@ const errorDiv = document.getElementById('register-error');
 const successDiv = document.getElementById('register-success');
 
 cleanRedirectParam('/');
+initPasswordToggles();
 
 // Check if already logged in
 if (isLoggedIn()) {

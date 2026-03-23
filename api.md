@@ -32,6 +32,9 @@ Backend requirements (production):
 - `POST /auth/forgot-password` — Request password reset (body: `email`)
 - `POST /auth/reset-password` — Reset password (body: `token`, `password`)
 
+### Password Change **Auth**
+- `POST /auth/change-password` — Change password (body: `currentPassword`, `newPassword`)
+
 ### Products
 - `GET /products?featured=true&limit={n}` — Featured products
 - `GET /products` — List products (optional query: `category`, `search`, `minPrice`, `maxPrice`)

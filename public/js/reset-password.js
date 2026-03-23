@@ -1,4 +1,5 @@
-﻿import { resetPassword } from '../api/password.js';
+import { resetPassword } from '../api/password.js';
+import { initPasswordToggles } from './password-toggle.js';
 import './footer-year.js';
 
 const form = document.getElementById('reset-password-form');
@@ -25,6 +26,8 @@ function getToken() {
 
     return token;
 }
+
+initPasswordToggles();
 
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -69,5 +72,3 @@ form.addEventListener('submit', async (e) => {
         submitBtn.disabled = false;
     }
 });
-
-

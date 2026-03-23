@@ -1,10 +1,12 @@
 ﻿import { getUserProfile, updateUserProfile } from '../api/user.js';
 import { fetchOrders } from '../api/orders.js';
 import { isLoggedIn, logoutUser } from '../api/auth.js';
+import { changePassword } from '../api/password-change.js';
 import { updateCartCount } from './main.js';
 import { formatCurrency } from './format.js';
 import { escapeHtml, escapeAttr } from './sanitize.js';
 import { navigateTo } from './security.js';
+import { initPasswordToggles } from './password-toggle.js';
 
 const container = document.getElementById('account-container');
 
@@ -78,6 +80,28 @@ function renderAccountPage(user, orders) {
                     <div id="profile-message" class="profile-message" style="display: none;"></div>
                 </div>
 
+                <div class="profile-section">
+                    <h3>Change Password</h3>
+                    <form id="password-form">
+                        <div class="form-group">
+                            <label for="current-password">Current Password</label>
+                            <input type="password" id="current-password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="new-password">New Password</label>
+                            <input type="password" id="new-password" minlength="6" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm-new-password">Confirm New Password</label>
+                            <input type="password" id="confirm-new-password" minlength="6" required>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary">Update Password</button>
+                        </div>
+                    </form>
+                    <div id="password-message" class="profile-message" style="display: none;"></div>
+                </div>
+
                 <div class="orders-section">
                     <h3>Order History</h3>
                     <div class="orders-list">
@@ -89,6 +113,7 @@ function renderAccountPage(user, orders) {
     `;
 
     container.innerHTML = html;
+    initPasswordToggles(container);
 
     // Attach profile update handler
     const profileForm = document.getElementById('profile-form');
@@ -144,6 +169,46 @@ function renderAccountPage(user, orders) {
             sessionStorage.setItem('returnsAccess', '1');
         });
     }
+
+    // Change password handler
+    const passwordForm = document.getElementById('password-form');
+    const passwordMessage = document.getElementById('password-message');
+
+    passwordForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const currentPassword = document.getElementById('current-password').value;
+        const newPassword = document.getElementById('new-password').value;
+        const confirmPassword = document.getElementById('confirm-new-password').value;
+
+        if (!currentPassword || !newPassword || !confirmPassword) {
+            showMessage(passwordMessage, 'Please fill in all fields.', 'error');
+            return;
+        }
+        if (newPassword.length < 6) {
+            showMessage(passwordMessage, 'New password must be at least 6 characters.', 'error');
+            return;
+        }
+        if (newPassword !== confirmPassword) {
+            showMessage(passwordMessage, 'New passwords do not match.', 'error');
+            return;
+        }
+
+        const submitBtn = passwordForm.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = 'Updating...';
+        submitBtn.disabled = true;
+
+        try {
+            await changePassword(currentPassword, newPassword);
+            showMessage(passwordMessage, 'Password updated successfully.', 'success');
+            passwordForm.reset();
+        } catch (error) {
+            showMessage(passwordMessage, error.message || 'Failed to update password.', 'error');
+        } finally {
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+        }
+    });
 }
 
 function showMessage(element, message, type) {

@@ -146,6 +146,7 @@ Update these to your backend URL.
   - `admin/api/`
 - OTP verification tokens are stored in `sessionStorage`.
 - Auth tokens and user/admin profiles are stored in `sessionStorage` (per-session only).
+- Account page supports password changes via `POST /auth/change-password`.
 
 ## Security
 See `SECURITY.md` for reporting guidelines.

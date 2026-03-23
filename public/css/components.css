@@ -386,6 +386,28 @@
     margin-bottom: 1rem;
 }
 
+.password-field {
+    position: relative;
+}
+
+.password-field .password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    color: inherit;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.password-field .password-toggle:focus {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+}
+
 .form-group label {
     display: block;
     margin-bottom: 0.5rem;

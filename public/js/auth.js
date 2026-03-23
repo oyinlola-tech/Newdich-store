@@ -2,11 +2,13 @@
 import { requestOtp } from '../api/otp.js';
 import { updateCartCount } from './main.js';
 import { getSafeRedirect, cleanRedirectParam, navigateTo } from './security.js';
+import { initPasswordToggles } from './password-toggle.js';
 
 const loginForm = document.getElementById('login-form');
 const errorDiv = document.getElementById('login-error');
 
 cleanRedirectParam('/');
+initPasswordToggles();
 
 // Check if already logged in
 if (isLoggedIn()) {
