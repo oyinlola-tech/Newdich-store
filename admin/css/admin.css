@@ -765,6 +765,10 @@ body {
     transition: background 0.2s ease, transform 0.2s ease;
 }
 
+.password-field .password-toggle i {
+    font-size: 0.95rem;
+}
+
 .password-field .password-toggle:hover {
     background: rgba(15, 23, 42, 0.15);
     transform: translateY(-50%) scale(1.02);
@@ -1024,6 +1028,16 @@ body {
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: #6b7280;
+    position: relative;
+    z-index: 1;
+}
+
+.chart-legend {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    color: #6b7280;
+    font-size: 0.85rem;
     position: relative;
     z-index: 1;
 }

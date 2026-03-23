@@ -1,4 +1,5 @@
 ﻿import { fetchDashboardStats, fetchRecentOrders } from '../api/admin-stats.js';
+import { fetchAdminProfile } from '../api/admin-auth.js';
 import { checkAdminAuth } from './admin.js';
 import { formatCurrency } from './format.js';
 import { escapeHtml } from './sanitize.js';
@@ -21,6 +22,9 @@ const kpiLineSecondaryEl = document.getElementById('kpi-line-secondary');
 const kpiGlowEl = document.getElementById('kpi-glow');
 const salesChartEl = document.getElementById('sales-chart');
 const topCategoriesEl = document.getElementById('top-categories');
+const salesCardEl = document.getElementById('sales-card');
+const categoriesCardEl = document.getElementById('categories-card');
+const salesLegendEl = document.getElementById('sales-legend');
 
 function normalizeSeries(series) {
     if (!Array.isArray(series)) return [];
@@ -131,6 +135,10 @@ function resolveSalesSeries(stats) {
     );
 }
 
+function resolveSalesLabel(stats) {
+    return stats.salesLabel || stats.revenueLabel || stats.trendLabel || 'Sales';
+}
+
 function resolveSalesLabels(stats, count) {
     const labels = stats.salesLabels || stats.revenueLabels || stats.dailyLabels;
     if (Array.isArray(labels) && labels.length) return labels;
@@ -141,9 +149,10 @@ function renderSalesChart(stats) {
     if (!salesChartEl) return;
     const series = resolveSalesSeries(stats);
     if (!series.length) {
-        salesChartEl.innerHTML = '<div class="empty-state">No sales data yet.</div>';
+        if (salesCardEl) salesCardEl.style.display = 'none';
         return;
     }
+    if (salesCardEl) salesCardEl.style.display = '';
 
     const max = Math.max(...series, 1);
     const labels = resolveSalesLabels(stats, series.length);
@@ -162,6 +171,11 @@ function renderSalesChart(stats) {
         <div class="chart-bars">${barsHtml}</div>
         <div class="chart-labels">${labelsHtml}</div>
     `;
+
+    if (salesLegendEl) {
+        const label = resolveSalesLabel(stats);
+        salesLegendEl.innerHTML = `<span><i class="legend-dot legend-primary"></i> ${escapeHtml(label)}</span>`;
+    }
 }
 
 function resolveTopCategories(stats) {
@@ -175,9 +189,10 @@ function renderTopCategories(stats) {
     if (!topCategoriesEl) return;
     const categories = resolveTopCategories(stats);
     if (!categories.length) {
-        topCategoriesEl.innerHTML = '<span class="muted-text">No category data yet.</span>';
+        if (categoriesCardEl) categoriesCardEl.style.display = 'none';
         return;
     }
+    if (categoriesCardEl) categoriesCardEl.style.display = '';
 
     topCategoriesEl.innerHTML = categories
         .slice(0, 6)
@@ -219,12 +234,19 @@ async function loadStats() {
         renderTopCategories(stats || {});
     } catch (error) {
         statsContainer.innerHTML = '<div class="error">Failed to load stats</div>';
-        if (salesChartEl) {
-            salesChartEl.innerHTML = '<div class="error">Failed to load sales overview</div>';
-        }
-        if (topCategoriesEl) {
-            topCategoriesEl.innerHTML = '<span class="error">Failed to load categories</span>';
-        }
+        if (salesCardEl) salesCardEl.style.display = 'none';
+        if (categoriesCardEl) categoriesCardEl.style.display = 'none';
+    }
+}
+
+async function loadAdminName() {
+    const nameEl = document.getElementById('admin-name');
+    if (!nameEl) return;
+    try {
+        const admin = await fetchAdminProfile();
+        nameEl.textContent = admin?.name || admin?.fullName || admin?.email || 'Admin';
+    } catch (error) {
+        nameEl.textContent = 'Admin';
     }
 }
 
@@ -278,6 +300,7 @@ function safeStatusClass(status) {
 document.addEventListener('DOMContentLoaded', () => {
     loadStats();
     loadRecentOrders();
+    loadAdminName();
     initPasswordToggles();
 
     const passwordForm = document.getElementById('admin-password-form');

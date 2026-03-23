@@ -413,6 +413,10 @@
     transition: background 0.2s ease, transform 0.2s ease;
 }
 
+.password-field .password-toggle i {
+    font-size: 0.95rem;
+}
+
 .password-field .password-toggle:hover {
     background: rgba(15, 23, 42, 0.15);
     transform: translateY(-50%) scale(1.02);
