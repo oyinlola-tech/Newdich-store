@@ -1,6 +1,6 @@
 ﻿import { verifyOtp, requestOtp } from '../api/otp.js';
 import { updateCartCount } from './main.js';
-import { sanitizeRedirect, cleanRedirectParam } from './security.js';
+import { getSafeRedirect, cleanRedirectParam } from './security.js';
 import './footer-year.js';
 
 const form = document.getElementById('otp-form');
@@ -61,8 +61,7 @@ form.addEventListener('submit', async (e) => {
         message.textContent = 'Verified! Redirecting...';
         message.style.display = 'block';
         await updateCartCount();
-        const redirect = new URLSearchParams(window.location.search).get('redirect');
-        window.location.href = sanitizeRedirect(redirect, '/');
+        window.location.href = getSafeRedirect('/');
     } catch (error) {
         errorBox.textContent = error.message || 'Failed to verify OTP.';
         errorBox.style.display = 'block';

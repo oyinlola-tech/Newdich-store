@@ -1,5 +1,5 @@
 ﻿import { verifyAdminOtp, requestAdminOtp } from '../api/admin-otp.js';
-import { sanitizeRedirect, cleanRedirectParam } from './security.js';
+import { getSafeRedirect, cleanRedirectParam } from './security.js';
 
 const form = document.getElementById('admin-otp-form');
 const message = document.getElementById('admin-otp-message');
@@ -58,8 +58,7 @@ form.addEventListener('submit', async (e) => {
         sessionStorage.removeItem('pendingAdminOtp');
         message.textContent = 'Verified! Redirecting...';
         message.style.display = 'block';
-        const redirect = new URLSearchParams(window.location.search).get('redirect');
-        window.location.href = sanitizeRedirect(redirect, '/admin');
+        window.location.href = getSafeRedirect('/admin');
     } catch (error) {
         errorBox.textContent = error.message || 'Failed to verify code.';
         errorBox.style.display = 'block';
