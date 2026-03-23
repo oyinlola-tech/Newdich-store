@@ -1,13 +1,19 @@
 ﻿import { fetchFeaturedProducts, fetchAllProducts } from '../api/products.js';
 import { updateCartCount, handleAddToCart, handleAddToWishlist } from './main.js';
 import { formatCurrency } from './format.js';
+import { escapeHtml, escapeAttr, sanitizeUrl } from './sanitize.js';
 
 const productGrid = document.getElementById('featured-products-grid');
 const heroFeaturedCard = document.getElementById('hero-featured-card');
 const relatedGrid = document.getElementById('home-related-grid');
 
 function getProductImage(product) {
-    return product?.image || product?.images?.[0] || 'https://via.placeholder.com/600x450?text=No+Image';
+    const url = product?.image || product?.images?.[0];
+    return sanitizeUrl(url, 'https://via.placeholder.com/600x450?text=No+Image');
+}
+
+function safeId(value) {
+    return escapeAttr(value ?? '');
 }
 
 function getBadgeMeta(product) {
@@ -44,11 +50,11 @@ async function loadFeaturedProducts() {
             const categoryLabel = product.category ? escapeHtml(product.category) : 'New Arrival';
             const { badgeText, badgeClass } = getBadgeMeta(product);
             return `
-            <div class="product-card" data-product-id="${product.id}">
+            <div class="product-card" data-product-id="${safeId(product.id)}">
                 <div class="product-media">
-                    <img src="${getProductImage(product)}" alt="${escapeHtml(product.name)}">
+                    <img src="${escapeAttr(getProductImage(product))}" alt="${escapeHtml(product.name)}">
                     <span class="product-badge ${badgeClass}">${badgeText}</span>
-                    <button class="product-quick btn-wishlist" data-id="${product.id}" aria-label="Save">
+                    <button class="product-quick btn-wishlist" data-id="${safeId(product.id)}" aria-label="Save">
                         <i class="fas fa-heart"></i>
                     </button>
                 </div>
@@ -57,8 +63,8 @@ async function loadFeaturedProducts() {
                     <h4 class="product-title">${escapeHtml(product.name)}</h4>
                     <div class="product-price">${formatCurrency(product.price)}</div>
                     <div class="product-actions">
-                        <button class="btn-add-to-cart" data-id="${product.id}">Add to Cart</button>
-                        <button class="btn-wishlist" data-id="${product.id}" aria-label="Save">
+                        <button class="btn-add-to-cart" data-id="${safeId(product.id)}">Add to Cart</button>
+                        <button class="btn-wishlist" data-id="${safeId(product.id)}" aria-label="Save">
                             <i class="fas fa-heart"></i>
                         </button>
                     </div>
@@ -73,7 +79,7 @@ async function loadFeaturedProducts() {
                 const { badgeText, badgeClass } = getBadgeMeta(highlight);
                 heroFeaturedCard.innerHTML = `
                     <div class="product-media">
-                        <img src="${getProductImage(highlight)}" alt="${escapeHtml(highlight.name)}">
+                        <img src="${escapeAttr(getProductImage(highlight))}" alt="${escapeHtml(highlight.name)}">
                         <span class="product-badge ${badgeClass}">${badgeText}</span>
                     </div>
                     <div class="product-body">
@@ -81,8 +87,8 @@ async function loadFeaturedProducts() {
                         <h4 class="product-title">${escapeHtml(highlight.name)}</h4>
                         <div class="product-price">${formatCurrency(highlight.price)}</div>
                         <div class="product-actions">
-                            <a class="btn-add-to-cart" href="/product-detail?id=${highlight.id}">View Details</a>
-                            <button class="btn-wishlist" data-id="${highlight.id}" aria-label="Save">
+                            <a class="btn-add-to-cart" href="/product-detail?id=${escapeAttr(encodeURIComponent(highlight.id ?? ''))}">View Details</a>
+                            <button class="btn-wishlist" data-id="${safeId(highlight.id)}" aria-label="Save">
                                 <i class="fas fa-heart"></i>
                             </button>
                         </div>
@@ -142,11 +148,11 @@ function renderRelatedProducts(products) {
         const categoryLabel = product.category ? escapeHtml(product.category) : 'New Arrival';
         const { badgeText, badgeClass } = getBadgeMeta(product);
         return `
-            <div class="product-card" data-product-id="${product.id}">
+            <div class="product-card" data-product-id="${safeId(product.id)}">
                 <div class="product-media">
-                    <img src="${getProductImage(product)}" alt="${escapeHtml(product.name)}">
+                <img src="${escapeAttr(getProductImage(product))}" alt="${escapeHtml(product.name)}">
                     <span class="product-badge ${badgeClass}">${badgeText}</span>
-                    <button class="product-quick btn-wishlist" data-id="${product.id}" aria-label="Save">
+                <button class="product-quick btn-wishlist" data-id="${safeId(product.id)}" aria-label="Save">
                         <i class="fas fa-heart"></i>
                     </button>
                 </div>
@@ -155,8 +161,8 @@ function renderRelatedProducts(products) {
                     <h4 class="product-title">${escapeHtml(product.name)}</h4>
                     <div class="product-price">${formatCurrency(product.price)}</div>
                     <div class="product-actions">
-                        <a class="btn-add-to-cart" href="/product-detail?id=${product.id}">View Details</a>
-                        <button class="btn-wishlist" data-id="${product.id}" aria-label="Save">
+                    <a class="btn-add-to-cart" href="/product-detail?id=${escapeAttr(encodeURIComponent(product.id ?? ''))}">View Details</a>
+                    <button class="btn-wishlist" data-id="${safeId(product.id)}" aria-label="Save">
                             <i class="fas fa-heart"></i>
                         </button>
                     </div>
@@ -172,16 +178,6 @@ function renderRelatedProducts(products) {
             const productId = button.getAttribute('data-id');
             await handleAddToWishlist(productId, button);
         });
-    });
-}
-
-function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
     });
 }
 

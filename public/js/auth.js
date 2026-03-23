@@ -1,25 +1,15 @@
 ﻿import { loginUser, isLoggedIn } from '../api/auth.js';
 import { requestOtp } from '../api/otp.js';
 import { updateCartCount } from './main.js';
+import { getSafeRedirect } from './security.js';
 
 const loginForm = document.getElementById('login-form');
 const errorDiv = document.getElementById('login-error');
 
-// Get redirect URL from query parameter (default to /)
-function getRedirectUrl() {
-    const params = new URLSearchParams(window.location.search);
-    const redirect = params.get('redirect');
-    if (redirect && (redirect.startsWith('http') || redirect.includes('..'))) {
-        // Basic security: only allow relative paths
-        return redirect;
-    }
-    return redirect || '/';
-}
-
 // Check if already logged in
 if (isLoggedIn()) {
     // If already logged in, redirect to the intended page
-    window.location.href = getRedirectUrl();
+    window.location.href = getSafeRedirect('/');
 }
 
 loginForm.addEventListener('submit', async (e) => {
@@ -62,7 +52,7 @@ loginForm.addEventListener('submit', async (e) => {
         // After successful login, update cart count (since user may have a cart)
         await updateCartCount();
         // Redirect to intended page
-        window.location.href = getRedirectUrl();
+        window.location.href = getSafeRedirect('/');
     } catch (error) {
         showError(error.message || 'Invalid email or password. Please try again.');
         submitBtn.textContent = originalText;

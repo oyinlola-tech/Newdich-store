@@ -121,8 +121,8 @@ function renderAccountPage(user, orders) {
 
         try {
             const updatedUser = await updateUserProfile({ name, email, phone });
-            // Update stored user in localStorage
-            localStorage.setItem('user', JSON.stringify(updatedUser));
+            // Update stored user in sessionStorage
+            sessionStorage.setItem('user', JSON.stringify(updatedUser));
             showMessage(profileMessage, 'Profile updated successfully!', 'success');
             // Optionally update the sidebar name/email
             const userInfo = document.querySelector('.user-info');

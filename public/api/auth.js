@@ -19,9 +19,9 @@ export async function loginUser(credentials) {
             return data;
         }
         if (data.token) {
-            localStorage.setItem('authToken', data.token);
+            sessionStorage.setItem('authToken', data.token);
             if (data.user) {
-                localStorage.setItem('user', JSON.stringify(data.user));
+                sessionStorage.setItem('user', JSON.stringify(data.user));
             }
         }
         return data;
@@ -50,9 +50,9 @@ export async function registerUser(userData) {
             return data;
         }
         if (data.token) {
-            localStorage.setItem('authToken', data.token);
+            sessionStorage.setItem('authToken', data.token);
             if (data.user) {
-                localStorage.setItem('user', JSON.stringify(data.user));
+                sessionStorage.setItem('user', JSON.stringify(data.user));
             }
         }
         return data;
@@ -64,18 +64,18 @@ export async function registerUser(userData) {
 
 // Logout user
 export function logoutUser() {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('user');
+    sessionStorage.removeItem('authToken');
+    sessionStorage.removeItem('user');
 }
 
 // Check if user is logged in
 export function isLoggedIn() {
-    return !!localStorage.getItem('authToken');
+    return !!sessionStorage.getItem('authToken');
 }
 
-// Get current user from localStorage
+// Get current user from sessionStorage
 export function getCurrentUser() {
-    const userStr = localStorage.getItem('user');
+    const userStr = sessionStorage.getItem('user');
     if (userStr) {
         try {
             return JSON.parse(userStr);

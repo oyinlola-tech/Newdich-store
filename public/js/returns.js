@@ -11,7 +11,7 @@ function showMessage(message, type) {
 }
 
 function enforceAccess() {
-    const token = localStorage.getItem('authToken');
+    const token = sessionStorage.getItem('authToken');
     const allowed = sessionStorage.getItem('returnsAccess');
     if (!token || !allowed) {
         window.location.href = '/account';

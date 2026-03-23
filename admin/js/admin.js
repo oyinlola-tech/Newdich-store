@@ -2,10 +2,10 @@
 
 // Check if user is admin (optional: we could verify via token)
 // For now, we assume the backend will enforce admin role.
-// But we can also check user role from localStorage if stored.
+// But we can also check user role from sessionStorage if stored.
 
 export function checkAdminAuth() {
-    const token = localStorage.getItem('authToken');
+    const token = sessionStorage.getItem('authToken');
     if (!token) {
         const currentPage = window.location.pathname.split('/').pop() || '/admin';
         window.location.href = `/admin/login?redirect=${encodeURIComponent(currentPage)}`;

@@ -17,9 +17,9 @@ export async function adminLogin(credentials) {
             return data;
         }
         if (data.token) {
-            localStorage.setItem('authToken', data.token);
+            sessionStorage.setItem('authToken', data.token);
             if (data.admin) {
-                localStorage.setItem('admin', JSON.stringify(data.admin));
+                sessionStorage.setItem('admin', JSON.stringify(data.admin));
             }
         }
         return data;
@@ -39,8 +39,8 @@ export async function adminLogout() {
     } catch (error) {
         console.error('Admin logout error:', error);
     } finally {
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('admin');
+        sessionStorage.removeItem('authToken');
+        sessionStorage.removeItem('admin');
     }
 }
 

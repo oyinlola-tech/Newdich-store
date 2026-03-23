@@ -1,25 +1,16 @@
 ﻿import { registerUser, isLoggedIn } from '../api/auth.js';
 import { requestOtp } from '../api/otp.js';
 import { updateCartCount } from './main.js';
+import { getSafeRedirect } from './security.js';
 
 const registerForm = document.getElementById('register-form');
 const errorDiv = document.getElementById('register-error');
 const successDiv = document.getElementById('register-success');
 
-// Get redirect URL from query parameter (default to /)
-function getRedirectUrl() {
-    const params = new URLSearchParams(window.location.search);
-    const redirect = params.get('redirect');
-    if (redirect && (redirect.startsWith('http') || redirect.includes('..'))) {
-        return redirect;
-    }
-    return redirect || '/';
-}
-
 // Check if already logged in
 if (isLoggedIn()) {
     // If already logged in, redirect
-    window.location.href = getRedirectUrl();
+    window.location.href = getSafeRedirect('/');
 }
 
 registerForm.addEventListener('submit', async (e) => {
@@ -87,7 +78,7 @@ registerForm.addEventListener('submit', async (e) => {
         await updateCartCount();
         // Redirect after a short delay to show success message
         setTimeout(() => {
-            window.location.href = getRedirectUrl();
+            window.location.href = getSafeRedirect('/');
         }, 1500);
     } catch (error) {
         showError(error.message || 'Registration failed. Please try again.');

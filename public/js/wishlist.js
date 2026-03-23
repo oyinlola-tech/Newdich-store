@@ -97,7 +97,7 @@ function renderWishlist(items) {
 }
 
 async function loadWishlist() {
-    const token = localStorage.getItem('authToken');
+    const token = sessionStorage.getItem('authToken');
     if (!token) {
         wishlistContainer.innerHTML = `
             <div class="empty-state">

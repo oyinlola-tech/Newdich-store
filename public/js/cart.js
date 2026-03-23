@@ -119,7 +119,7 @@ function renderCart(cart) {
     if (checkoutBtn) {
         checkoutBtn.addEventListener('click', () => {
             // Check if user is logged in (e.g., check auth token)
-            const token = localStorage.getItem('authToken');
+            const token = sessionStorage.getItem('authToken');
             if (token) {
                 window.location.href = '/checkout';
             } else {
