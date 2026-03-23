@@ -2,7 +2,7 @@
 import { updateCartCount } from './main.js';
 import { formatCurrency } from './format.js';
 import { escapeHtml, escapeAttr, sanitizeUrl } from './sanitize.js';
-import { navigateTo } from './security.js';
+import { navigateToRoute } from './security.js';
 
 const cartContainer = document.getElementById('cart-container');
 
@@ -117,10 +117,10 @@ function renderCart(cart) {
             // Check if user is logged in (e.g., check auth token)
             const token = sessionStorage.getItem('authToken');
             if (token) {
-                navigateTo('/checkout');
+                navigateToRoute('checkout');
             } else {
                 // Redirect to login with return URL
-                navigateTo('/login?redirect=/checkout');
+                navigateToRoute('login', { redirect: '/checkout' });
             }
         });
     }

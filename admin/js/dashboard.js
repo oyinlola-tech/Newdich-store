@@ -25,6 +25,9 @@ const topCategoriesEl = document.getElementById('top-categories');
 const salesCardEl = document.getElementById('sales-card');
 const categoriesCardEl = document.getElementById('categories-card');
 const salesLegendEl = document.getElementById('sales-legend');
+const salesSubtitleEl = document.getElementById('sales-subtitle');
+const categoriesSubtitleEl = document.getElementById('categories-subtitle');
+const kpiSubtitleEl = document.getElementById('kpi-subtitle');
 
 function normalizeSeries(series) {
     if (!Array.isArray(series)) return [];
@@ -139,6 +142,18 @@ function resolveSalesLabel(stats) {
     return stats.salesLabel || stats.revenueLabel || stats.trendLabel || 'Sales';
 }
 
+function resolveSalesSubtitle(stats) {
+    return stats.salesSubtitle || stats.salesWindow || stats.trendWindow || '';
+}
+
+function resolveCategoriesSubtitle(stats) {
+    return stats.categoriesSubtitle || stats.categorySubtitle || stats.categoryWindow || '';
+}
+
+function resolveKpiSubtitle(stats) {
+    return stats.kpiSubtitle || stats.kpiLabel || '';
+}
+
 function resolveSalesLabels(stats, count) {
     const labels = stats.salesLabels || stats.revenueLabels || stats.dailyLabels;
     if (Array.isArray(labels) && labels.length) return labels;
@@ -150,6 +165,7 @@ function renderSalesChart(stats) {
     const series = resolveSalesSeries(stats);
     if (!series.length) {
         if (salesCardEl) salesCardEl.style.display = 'none';
+        if (salesLegendEl) salesLegendEl.innerHTML = '';
         return;
     }
     if (salesCardEl) salesCardEl.style.display = '';
@@ -175,6 +191,12 @@ function renderSalesChart(stats) {
     if (salesLegendEl) {
         const label = resolveSalesLabel(stats);
         salesLegendEl.innerHTML = `<span><i class="legend-dot legend-primary"></i> ${escapeHtml(label)}</span>`;
+    }
+
+    if (salesSubtitleEl) {
+        const subtitle = resolveSalesSubtitle(stats);
+        salesSubtitleEl.textContent = subtitle;
+        salesSubtitleEl.style.display = subtitle ? '' : 'none';
     }
 }
 
@@ -202,6 +224,12 @@ function renderTopCategories(stats) {
             return `<span>${escapeHtml(value ? `${name} • ${value}` : name)}</span>`;
         })
         .join('');
+
+    if (categoriesSubtitleEl) {
+        const subtitle = resolveCategoriesSubtitle(stats);
+        categoriesSubtitleEl.textContent = subtitle;
+        categoriesSubtitleEl.style.display = subtitle ? '' : 'none';
+    }
 }
 
 async function loadStats() {
@@ -232,6 +260,11 @@ async function loadStats() {
         updateKpiVisuals(stats || {});
         renderSalesChart(stats || {});
         renderTopCategories(stats || {});
+        if (kpiSubtitleEl) {
+            const subtitle = resolveKpiSubtitle(stats || {});
+            kpiSubtitleEl.textContent = subtitle;
+            kpiSubtitleEl.style.display = subtitle ? '' : 'none';
+        }
     } catch (error) {
         statsContainer.innerHTML = '<div class="error">Failed to load stats</div>';
         if (salesCardEl) salesCardEl.style.display = 'none';

@@ -1,6 +1,6 @@
 ﻿import { verifyOtp, requestOtp } from '../api/otp.js';
 import { updateCartCount } from './main.js';
-import { getSafeRedirect, cleanRedirectParam, navigateTo } from './security.js';
+import { getSafeRedirectRoute, cleanRedirectParam, navigateToRoute } from './security.js';
 import './footer-year.js';
 
 const form = document.getElementById('otp-form');
@@ -46,7 +46,7 @@ form.addEventListener('submit', async (e) => {
             if (resetToken) {
                 sessionStorage.setItem('resetToken', resetToken);
             }
-            navigateTo('/reset-password');
+            navigateToRoute('resetPassword');
             return;
         }
 
@@ -61,7 +61,8 @@ form.addEventListener('submit', async (e) => {
         message.textContent = 'Verified! Redirecting...';
         message.style.display = 'block';
         await updateCartCount();
-        navigateTo(getSafeRedirect('/'));
+        const { routeKey, params } = getSafeRedirectRoute('home');
+        navigateToRoute(routeKey, params);
     } catch (error) {
         errorBox.textContent = error.message || 'Failed to verify OTP.';
         errorBox.style.display = 'block';

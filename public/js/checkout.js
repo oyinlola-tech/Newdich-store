@@ -5,7 +5,7 @@ import { createPaymentIntent, confirmPayment } from '../api/payments.js';
 import { updateCartCount } from './main.js';
 import { formatCurrency } from './format.js';
 import { escapeHtml, escapeAttr, sanitizeUrl } from './sanitize.js';
-import { navigateTo } from './security.js';
+import { navigateToRoute } from './security.js';
 
 const checkoutContainer = document.getElementById('checkout-container');
 
@@ -17,7 +17,7 @@ function getProductImage(product) {
 // Check authentication
 if (!isLoggedIn()) {
     // Redirect to login with return URL
-    navigateTo('/login?redirect=/checkout');
+    navigateToRoute('login', { redirect: '/checkout' });
 }
 
 let cartData = null;
@@ -242,7 +242,7 @@ async function handleOrderSubmit(e) {
         });
         // Clear cart from sessionStorage or trigger backend cart clear (handled by API)
         // Redirect to order confirmation page
-        navigateTo(`/order-confirmation?orderId=${encodeURIComponent(order.id ?? '')}`);
+        navigateToRoute('orderConfirmation', { orderId: order.id ?? '' });
     } catch (error) {
         showOrderError(error.message || 'Failed to place order. Please try again.');
         submitBtn.textContent = originalText;

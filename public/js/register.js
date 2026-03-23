@@ -1,7 +1,7 @@
 ﻿import { registerUser, isLoggedIn } from '../api/auth.js';
 import { requestOtp } from '../api/otp.js';
 import { updateCartCount } from './main.js';
-import { getSafeRedirect, cleanRedirectParam, navigateTo } from './security.js';
+import { getSafeRedirectRoute, cleanRedirectParam, navigateToRoute } from './security.js';
 import { initPasswordToggles } from './password-toggle.js';
 import { isValidEmail } from './validators.js';
 
@@ -15,7 +15,8 @@ initPasswordToggles();
 // Check if already logged in
 if (isLoggedIn()) {
     // If already logged in, redirect
-    navigateTo(getSafeRedirect('/'));
+    const { routeKey, params } = getSafeRedirectRoute('home');
+    navigateToRoute(routeKey, params);
 }
 
 registerForm.addEventListener('submit', async (e) => {
@@ -73,7 +74,7 @@ registerForm.addEventListener('submit', async (e) => {
                 purpose: 'register',
                 otpToken: data.otpToken || null
             }));
-            navigateTo(`/otp?purpose=register&email=${encodeURIComponent(email)}`);
+            navigateToRoute('otp', { purpose: 'register', email });
             return;
         }
         // Registration successful
@@ -82,7 +83,8 @@ registerForm.addEventListener('submit', async (e) => {
         await updateCartCount();
         // Redirect after a short delay to show success message
         setTimeout(() => {
-            navigateTo(getSafeRedirect('/'));
+            const { routeKey, params } = getSafeRedirectRoute('home');
+            navigateToRoute(routeKey, params);
         }, 1500);
     } catch (error) {
         showError(error.message || 'Registration failed. Please try again.');

@@ -1,5 +1,5 @@
 import { requestPasswordReset } from '../api/password.js';
-import { navigateTo } from './security.js';
+import { navigateToRoute } from './security.js';
 import './footer-year.js';
 
 const form = document.getElementById('forgot-password-form');
@@ -30,7 +30,7 @@ form.addEventListener('submit', async (e) => {
             purpose: 'reset',
             otpToken: null
         }));
-        navigateTo(`/otp?purpose=reset&email=${encodeURIComponent(email)}`);
+        navigateToRoute('otp', { purpose: 'reset', email });
     } catch (error) {
         errorBox.textContent = error.message || 'Failed to send reset link.';
         errorBox.style.display = 'block';
