@@ -1,6 +1,6 @@
 ﻿import { adminLogin } from '../api/admin-auth.js';
 import { requestAdminOtp } from '../api/admin-otp.js';
-import { getSafeRedirect, cleanRedirectParam } from './security.js';
+import { getSafeRedirect, cleanRedirectParam, navigateTo } from './security.js';
 
 const loginForm = document.getElementById('admin-login-form');
 const errorDiv = document.getElementById('admin-login-error');
@@ -39,10 +39,10 @@ loginForm.addEventListener('submit', async (e) => {
                 purpose: 'login',
                 otpToken: data.otpToken || null
             }));
-            window.location.href = `/admin/otp?purpose=login&email=${encodeURIComponent(email)}`;
+            navigateTo(`/admin/otp?purpose=login&email=${encodeURIComponent(email)}`);
             return;
         }
-        window.location.href = getSafeRedirect('/admin');
+        navigateTo(getSafeRedirect('/admin'));
     } catch (error) {
         showError(error.message || 'Invalid credentials. Please try again.');
         submitBtn.textContent = originalText;

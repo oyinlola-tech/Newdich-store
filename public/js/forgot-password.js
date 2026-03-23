@@ -1,4 +1,5 @@
-﻿import { requestPasswordReset } from '../api/password.js';
+import { requestPasswordReset } from '../api/password.js';
+import { navigateTo } from './security.js';
 import './footer-year.js';
 
 const form = document.getElementById('forgot-password-form');
@@ -29,7 +30,7 @@ form.addEventListener('submit', async (e) => {
             purpose: 'reset',
             otpToken: null
         }));
-        window.location.href = `/otp?purpose=reset&email=${encodeURIComponent(email)}`;
+        navigateTo(`/otp?purpose=reset&email=${encodeURIComponent(email)}`);
     } catch (error) {
         errorBox.textContent = error.message || 'Failed to send reset link.';
         errorBox.style.display = 'block';
@@ -38,5 +39,3 @@ form.addEventListener('submit', async (e) => {
         submitBtn.disabled = false;
     }
 });
-
-

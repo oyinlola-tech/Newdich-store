@@ -1,7 +1,7 @@
 ﻿import { loginUser, isLoggedIn } from '../api/auth.js';
 import { requestOtp } from '../api/otp.js';
 import { updateCartCount } from './main.js';
-import { getSafeRedirect, cleanRedirectParam } from './security.js';
+import { getSafeRedirect, cleanRedirectParam, navigateTo } from './security.js';
 
 const loginForm = document.getElementById('login-form');
 const errorDiv = document.getElementById('login-error');
@@ -11,7 +11,7 @@ cleanRedirectParam('/');
 // Check if already logged in
 if (isLoggedIn()) {
     // If already logged in, redirect to the intended page
-    window.location.href = getSafeRedirect('/');
+    navigateTo(getSafeRedirect('/'));
 }
 
 loginForm.addEventListener('submit', async (e) => {
@@ -48,13 +48,13 @@ loginForm.addEventListener('submit', async (e) => {
                 purpose: 'login',
                 otpToken: data.otpToken || null
             }));
-            window.location.href = `/otp?purpose=login&email=${encodeURIComponent(email)}`;
+            navigateTo(`/otp?purpose=login&email=${encodeURIComponent(email)}`);
             return;
         }
         // After successful login, update cart count (since user may have a cart)
         await updateCartCount();
         // Redirect to intended page
-        window.location.href = getSafeRedirect('/');
+        navigateTo(getSafeRedirect('/'));
     } catch (error) {
         showError(error.message || 'Invalid email or password. Please try again.');
         submitBtn.textContent = originalText;

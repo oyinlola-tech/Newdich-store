@@ -1,7 +1,7 @@
 ﻿import { registerUser, isLoggedIn } from '../api/auth.js';
 import { requestOtp } from '../api/otp.js';
 import { updateCartCount } from './main.js';
-import { getSafeRedirect, cleanRedirectParam } from './security.js';
+import { getSafeRedirect, cleanRedirectParam, navigateTo } from './security.js';
 import { isValidEmail } from './validators.js';
 
 const registerForm = document.getElementById('register-form');
@@ -13,7 +13,7 @@ cleanRedirectParam('/');
 // Check if already logged in
 if (isLoggedIn()) {
     // If already logged in, redirect
-    window.location.href = getSafeRedirect('/');
+    navigateTo(getSafeRedirect('/'));
 }
 
 registerForm.addEventListener('submit', async (e) => {
@@ -71,7 +71,7 @@ registerForm.addEventListener('submit', async (e) => {
                 purpose: 'register',
                 otpToken: data.otpToken || null
             }));
-            window.location.href = `/otp?purpose=register&email=${encodeURIComponent(email)}`;
+            navigateTo(`/otp?purpose=register&email=${encodeURIComponent(email)}`);
             return;
         }
         // Registration successful
@@ -80,7 +80,7 @@ registerForm.addEventListener('submit', async (e) => {
         await updateCartCount();
         // Redirect after a short delay to show success message
         setTimeout(() => {
-            window.location.href = getSafeRedirect('/');
+            navigateTo(getSafeRedirect('/'));
         }, 1500);
     } catch (error) {
         showError(error.message || 'Registration failed. Please try again.');

@@ -4,12 +4,13 @@ import { isLoggedIn, logoutUser } from '../api/auth.js';
 import { updateCartCount } from './main.js';
 import { formatCurrency } from './format.js';
 import { escapeHtml, escapeAttr } from './sanitize.js';
+import { navigateTo } from './security.js';
 
 const container = document.getElementById('account-container');
 
 // Check authentication
 if (!isLoggedIn()) {
-    window.location.href = `/login?redirect=/account`;
+    navigateTo('/login?redirect=/account');
 }
 
 // Format date
@@ -133,7 +134,7 @@ function renderAccountPage(user, orders) {
     if (logoutBtn) {
         logoutBtn.addEventListener('click', () => {
             logoutUser();
-            window.location.href = '/';
+            navigateTo('/');
         });
     }
 

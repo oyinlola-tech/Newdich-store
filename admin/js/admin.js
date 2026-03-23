@@ -1,14 +1,15 @@
-﻿import { adminLogout } from '../api/admin-auth.js';
+import { adminLogout } from '../api/admin-auth.js';
+import { navigateTo } from './security.js';
 
 // Check if user is admin (optional: we could verify via token)
-// For now, we assume the backend will enforce admin role.
-// But we can also check user role from sessionStorage if stored.
+// For now, I assume the backend will enforce admin role.
+// But I can also check user role from sessionStorage if stored.
 
 export function checkAdminAuth() {
     const token = sessionStorage.getItem('authToken');
     if (!token) {
         const currentPage = window.location.pathname.split('/').pop() || '/admin';
-        window.location.href = `/admin/login?redirect=${encodeURIComponent(currentPage)}`;
+        navigateTo(`/admin/login?redirect=${encodeURIComponent(currentPage)}`, '/admin/login');
         return false;
     }
     return true;
@@ -20,9 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (logoutBtn) {
         logoutBtn.addEventListener('click', () => {
             adminLogout();
-            window.location.href = '/admin/login';
+            navigateTo('/admin/login');
         });
     }
 });
-
-

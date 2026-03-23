@@ -1,5 +1,6 @@
 ﻿import { submitReturnRequest } from '../api/returns.js';
 import { updateCartCount } from './main.js';
+import { navigateTo } from './security.js';
 
 const form = document.getElementById('returns-form');
 const messageBox = document.getElementById('returns-message');
@@ -14,7 +15,7 @@ function enforceAccess() {
     const token = sessionStorage.getItem('authToken');
     const allowed = sessionStorage.getItem('returnsAccess');
     if (!token || !allowed) {
-        window.location.href = '/account';
+        navigateTo('/account');
         return false;
     }
     sessionStorage.removeItem('returnsAccess');
