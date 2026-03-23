@@ -2,6 +2,8 @@
 import { checkAdminAuth } from './admin.js';
 import { formatCurrency } from './format.js';
 import { escapeHtml } from './sanitize.js';
+import { changeAdminPassword } from '../api/admin-password-change.js';
+import { initPasswordToggles } from './password-toggle.js';
 
 // Ensure admin is logged in
 if (!checkAdminAuth()) {
@@ -198,6 +200,60 @@ function safeStatusClass(status) {
 document.addEventListener('DOMContentLoaded', () => {
     loadStats();
     loadRecentOrders();
+    initPasswordToggles();
+
+    const passwordForm = document.getElementById('admin-password-form');
+    const passwordMessage = document.getElementById('admin-password-message');
+    if (passwordForm) {
+        passwordForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const currentPassword = document.getElementById('admin-current-password').value;
+            const newPassword = document.getElementById('admin-new-password').value;
+            const confirmPassword = document.getElementById('admin-confirm-password').value;
+
+            passwordMessage.style.display = 'none';
+            passwordMessage.className = 'success-message';
+
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                passwordMessage.textContent = 'Please fill in all fields.';
+                passwordMessage.className = 'error-message';
+                passwordMessage.style.display = 'block';
+                return;
+            }
+            if (newPassword.length < 6) {
+                passwordMessage.textContent = 'New password must be at least 6 characters.';
+                passwordMessage.className = 'error-message';
+                passwordMessage.style.display = 'block';
+                return;
+            }
+            if (newPassword !== confirmPassword) {
+                passwordMessage.textContent = 'New passwords do not match.';
+                passwordMessage.className = 'error-message';
+                passwordMessage.style.display = 'block';
+                return;
+            }
+
+            const submitBtn = passwordForm.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Updating...';
+            submitBtn.disabled = true;
+
+            try {
+                await changeAdminPassword(currentPassword, newPassword);
+                passwordMessage.textContent = 'Password updated successfully.';
+                passwordMessage.className = 'success-message';
+                passwordMessage.style.display = 'block';
+                passwordForm.reset();
+            } catch (error) {
+                passwordMessage.textContent = error.message || 'Failed to update password.';
+                passwordMessage.className = 'error-message';
+                passwordMessage.style.display = 'block';
+            } finally {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+    }
 });
 
 

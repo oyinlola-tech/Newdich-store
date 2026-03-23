@@ -2,11 +2,13 @@
 import { requestAdminOtp } from '../api/admin-otp.js';
 import { getSafeRedirect, cleanRedirectParam, navigateTo } from './security.js';
 import { isValidEmail } from './validators.js';
+import { initPasswordToggles } from './password-toggle.js';
 
 const loginForm = document.getElementById('admin-login-form');
 const errorDiv = document.getElementById('admin-login-error');
 
 cleanRedirectParam('/admin');
+initPasswordToggles();
 
 loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();

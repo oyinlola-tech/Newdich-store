@@ -96,6 +96,9 @@ Backend requirements (production):
 - `POST /admin/auth/forgot-password` — Request reset (body: `email`)
 - `POST /admin/auth/reset-password` — Reset password (body: `token`, `password`)
 
+### Admin Password Change **Auth**
+- `POST /admin/auth/change-password` — Change password (body: `currentPassword`, `newPassword`)
+
 ### Admin Products **Auth**
 - `GET /admin/products` — List products
 - `GET /admin/products/{productId}` — Product details

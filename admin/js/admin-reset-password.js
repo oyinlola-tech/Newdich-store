@@ -1,4 +1,5 @@
-﻿import { resetAdminPassword } from '../api/admin-password.js';
+import { resetAdminPassword } from '../api/admin-password.js';
+import { initPasswordToggles } from './password-toggle.js';
 
 const form = document.getElementById('admin-reset-form');
 const message = document.getElementById('admin-reset-message');
@@ -24,6 +25,8 @@ function getToken() {
 
     return token;
 }
+
+initPasswordToggles();
 
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -68,5 +71,3 @@ form.addEventListener('submit', async (e) => {
         submitBtn.disabled = false;
     }
 });
-
-

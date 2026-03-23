@@ -12,12 +12,15 @@ export function initPasswordToggles(root = document) {
         const toggle = document.createElement('button');
         toggle.type = 'button';
         toggle.className = 'password-toggle';
-        toggle.textContent = 'Show';
         toggle.setAttribute('aria-label', 'Show password');
+
+        const icon = document.createElement('i');
+        icon.className = 'fas fa-eye';
+        toggle.appendChild(icon);
         toggle.addEventListener('click', () => {
             const isHidden = input.type === 'password';
             input.type = isHidden ? 'text' : 'password';
-            toggle.textContent = isHidden ? 'Hide' : 'Show';
+            icon.className = isHidden ? 'fas fa-eye-slash' : 'fas fa-eye';
             toggle.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
         });
 
