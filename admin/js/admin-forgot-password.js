@@ -1,4 +1,6 @@
-﻿import { requestAdminPasswordReset } from '../api/admin-password.js';
+import { requestAdminPasswordReset } from '../api/admin-password.js';
+import { navigateTo } from './security.js';
+import { isValidEmail } from './validators.js';
 
 const form = document.getElementById('admin-forgot-form');
 const message = document.getElementById('admin-forgot-message');
@@ -15,6 +17,11 @@ form.addEventListener('submit', async (e) => {
         errorBox.style.display = 'block';
         return;
     }
+    if (!isValidEmail(email)) {
+        errorBox.textContent = 'Please enter a valid email address.';
+        errorBox.style.display = 'block';
+        return;
+    }
 
     const submitBtn = form.querySelector('button[type="submit"]');
     const originalText = submitBtn.textContent;
@@ -28,7 +35,7 @@ form.addEventListener('submit', async (e) => {
             purpose: 'reset',
             otpToken: null
         }));
-        window.location.href = `/admin/otp?purpose=reset&email=${encodeURIComponent(email)}`;
+        navigateTo(`/admin/otp?purpose=reset&email=${encodeURIComponent(email)}`);
     } catch (error) {
         errorBox.textContent = error.message || 'Failed to send verification code.';
         errorBox.style.display = 'block';
@@ -37,5 +44,3 @@ form.addEventListener('submit', async (e) => {
         submitBtn.disabled = false;
     }
 });
-
-

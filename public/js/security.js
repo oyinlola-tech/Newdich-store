@@ -1,9 +1,37 @@
+const PUBLIC_ALLOWLIST = new Set([
+    '/',
+    '/products',
+    '/product-detail',
+    '/cart',
+    '/checkout',
+    '/order-confirmation',
+    '/account',
+    '/wishlist',
+    '/returns',
+    '/contact',
+    '/login',
+    '/register',
+    '/forgot-password',
+    '/reset-password',
+    '/otp',
+    '/404'
+]);
+
+function getPathname(path) {
+    try {
+        return new URL(path, window.location.origin).pathname;
+    } catch (error) {
+        return '';
+    }
+}
+
 export function sanitizeRedirect(redirect, fallback = '/') {
     if (!redirect) return fallback;
-    if (redirect.startsWith('/') && !redirect.startsWith('//') && !redirect.includes('..') && !redirect.includes('\\')) {
-        return redirect;
+    if (!redirect.startsWith('/') || redirect.startsWith('//') || redirect.includes('..') || redirect.includes('\\')) {
+        return fallback;
     }
-    return fallback;
+    const pathname = getPathname(redirect);
+    return PUBLIC_ALLOWLIST.has(pathname) ? redirect : fallback;
 }
 
 export function getSafeRedirect(fallback = '/') {

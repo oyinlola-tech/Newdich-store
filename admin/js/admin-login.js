@@ -1,6 +1,7 @@
 ﻿import { adminLogin } from '../api/admin-auth.js';
 import { requestAdminOtp } from '../api/admin-otp.js';
 import { getSafeRedirect, cleanRedirectParam, navigateTo } from './security.js';
+import { isValidEmail } from './validators.js';
 
 const loginForm = document.getElementById('admin-login-form');
 const errorDiv = document.getElementById('admin-login-error');
@@ -15,6 +16,10 @@ loginForm.addEventListener('submit', async (e) => {
 
     if (!email || !password) {
         showError('Please fill in all fields.');
+        return;
+    }
+    if (!isValidEmail(email)) {
+        showError('Please enter a valid email address.');
         return;
     }
 
