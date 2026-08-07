@@ -22,6 +22,12 @@ export class ProductVariantController {
     if (!body.name || typeof body.name !== 'string') {
       return reply.status(400).send({ message: 'name is required.' });
     }
+    if (body.priceDelta !== undefined && typeof body.priceDelta !== 'number') {
+      return reply.status(400).send({ message: 'priceDelta must be a number.' });
+    }
+    if (body.stock !== undefined && (typeof body.stock !== 'number' || body.stock < 0)) {
+      return reply.status(400).send({ message: 'stock must be a non-negative number.' });
+    }
     const variant = await this.variantService.create(productId, {
       name: body.name,
       sku: body.sku,
