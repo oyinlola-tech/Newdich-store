@@ -7,6 +7,12 @@ export class ContactController {
 
   async create(request: FastifyRequest, reply: FastifyReply) {
     const body = request.body as { name?: string; email?: string; subject?: string; message?: string };
+    if (!body.name || !body.email || !body.message) {
+      return reply.status(400).send({ message: 'name, email and message are required.' });
+    }
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(body.email)) {
+      return reply.status(400).send({ message: 'A valid email address is required.' });
+    }
     try {
       const message = await this.contactService.create({
         name: body.name ?? '',
@@ -58,6 +64,9 @@ export class ContactController {
   async reply(request: FastifyRequest, reply: FastifyReply) {
     const { id } = request.params as { id: string };
     const body = request.body as { reply?: string };
+    if (!body.reply || body.reply.trim().length === 0) {
+      return reply.status(400).send({ message: 'reply is required.' });
+    }
     try {
       const message = await this.contactService.reply(id, body.reply ?? '');
       return reply.send({ message });

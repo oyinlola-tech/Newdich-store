@@ -55,6 +55,15 @@ export class CouponController {
   async update(request: FastifyRequest, reply: FastifyReply) {
     const { id } = request.params as { id: string };
     const body = request.body as Record<string, unknown>;
+    if (body.discountType !== undefined && body.discountType !== 'PERCENTAGE' && body.discountType !== 'FIXED') {
+      return reply.status(400).send({ message: 'discountType must be PERCENTAGE or FIXED.' });
+    }
+    if (body.discountValue !== undefined && typeof body.discountValue !== 'number') {
+      return reply.status(400).send({ message: 'discountValue must be a number.' });
+    }
+    if (body.status !== undefined && !['ACTIVE', 'EXPIRED', 'DISABLED'].includes(body.status as string)) {
+      return reply.status(400).send({ message: 'status must be ACTIVE, EXPIRED or DISABLED.' });
+    }
     try {
       const coupon = await this.couponService.update(id, {
         discountType: body.discountType as 'PERCENTAGE' | 'FIXED' | undefined,
