@@ -1,0 +1,45 @@
+services:
+  db:
+    image: mysql:8.4
+    container_name: newdich-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: newdich_store
+      MYSQL_USER: newdich
+      MYSQL_PASSWORD: newdich_password
+    ports:
+      - '3306:3306'
+    volumes:
+      - newdich_mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: .
+    container_name: newdich-backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      HOST: 0.0.0.0
+      DATABASE_URL: mysql://newdich:newdich_password@db:3306/newdich_store
+      JWT_SECRET: change-me-before-production
+      ADMIN_EMAIL: admin@newdich.com
+      ADMIN_PASSWORD: ChangeMe_Admin123
+      ADMIN_NAME: Super Admin
+      PUBLIC_BASE_URL: http://localhost:3000
+    ports:
+      - '3000:3000'
+    volumes:
+      - newdich_uploads:/app/uploads
+
+volumes:
+  newdich_mysql_data:
+  newdich_uploads:
