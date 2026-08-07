@@ -30,4 +30,5 @@ export interface CategoryRepositoryPort {
   create(input: CreateCategoryInput): Promise<Category>;
   update(id: string, input: UpdateCategoryInput): Promise<Category>;
   delete(id: string): Promise<void>;
+  countProducts(categoryId: string): Promise<number>;
 }

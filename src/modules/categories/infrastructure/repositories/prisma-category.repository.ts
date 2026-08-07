@@ -40,6 +40,10 @@ export class PrismaCategoryRepository implements CategoryRepositoryPort {
     return this.prisma.category.update({ where: { id }, data: input });
   }
 
+  countProducts(categoryId: string): Promise<number> {
+    return this.prisma.categoryProduct.count({ where: { categoryId } });
+  }
+
   async delete(id: string): Promise<void> {
     await this.prisma.category.delete({ where: { id } });
   }
