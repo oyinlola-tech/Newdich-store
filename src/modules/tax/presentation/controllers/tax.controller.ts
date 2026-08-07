@@ -35,6 +35,12 @@ export class TaxController {
   async update(request: FastifyRequest, reply: FastifyReply) {
     const { id } = request.params as { id: string };
     const body = request.body as { country?: string; state?: string | null; rate?: number; isDefault?: boolean };
+    if (body.country !== undefined && (!body.country || body.country.trim().length === 0)) {
+      return reply.status(400).send({ message: 'country cannot be empty.' });
+    }
+    if (body.rate !== undefined && (typeof body.rate !== 'number' || body.rate < 0 || body.rate > 100)) {
+      return reply.status(400).send({ message: 'rate must be a number between 0 and 100.' });
+    }
     const rule = await this.taxService.update(id, {
       country: body.country,
       state: body.state,
