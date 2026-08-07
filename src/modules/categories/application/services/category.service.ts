@@ -1,7 +1,7 @@
 import { CategoryStatus, type Category } from '@prisma/client';
 import type { CategoryRepositoryPort } from '../ports/category.repository.js';
 import { CategorySlugValueObject } from '../../domain/value-objects/category-slug.value-object.js';
-import { CategoryAlreadyExistsError, CategoryNotFoundError } from '../../domain/errors/category.error.js';
+import { CategoryAlreadyExistsError, CategoryHasProductsError, CategoryNotFoundError } from '../../domain/errors/category.error.js';
 import type { CreateCategoryDto, UpdateCategoryDto } from '../../presentation/dto/category.dto.js';
 
 export class CategoryService {
@@ -78,6 +78,10 @@ export class CategoryService {
 
   async delete(id: string): Promise<void> {
     await this.ensureExists(id);
+    const linked = await this.categoryRepository.countProducts(id);
+    if (linked > 0) {
+      throw new CategoryHasProductsError();
+    }
     await this.categoryRepository.delete(id);
   }
 

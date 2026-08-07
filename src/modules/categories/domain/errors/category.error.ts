@@ -11,3 +11,9 @@ export class CategoryAlreadyExistsError extends ConflictError {
     super('CATEGORY_ALREADY_EXISTS', 'A category with this name already exists.');
   }
 }
+
+export class CategoryHasProductsError extends ConflictError {
+  constructor() {
+    super('CATEGORY_HAS_PRODUCTS', 'Category cannot be deleted because it still has products linked to it.');
+  }
+}
