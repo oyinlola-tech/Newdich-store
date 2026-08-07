@@ -10,10 +10,13 @@ export function registerOrderRoutes(app: FastifyInstance, container: Container):
   const admin = isAdmin(container);
 
   app.get('/orders', { preHandler: [auth] }, controller.listMine.bind(controller));
+  app.post('/orders', { preHandler: [auth] }, controller.createCustomerOrder.bind(controller));
   app.get('/orders/:id', { preHandler: [auth] }, controller.getMine.bind(controller));
   app.get('/orders/track/:orderNumber', controller.track.bind(controller));
 
   app.get('/admin/orders', { preHandler: [admin] }, controller.adminList.bind(controller));
   app.get('/admin/orders/:id', { preHandler: [admin] }, controller.adminGet.bind(controller));
   app.put('/admin/orders/:id/status', { preHandler: [admin] }, controller.updateStatus.bind(controller));
+  app.post('/admin/orders/:id/notes', { preHandler: [admin] }, controller.adminAddNote.bind(controller));
+  app.get('/admin/orders/:id/status-history', { preHandler: [admin] }, controller.adminStatusHistory.bind(controller));
 }

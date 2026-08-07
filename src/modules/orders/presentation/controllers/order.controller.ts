@@ -23,13 +23,59 @@ export class OrderController {
     return reply.send({ order: toOrderOutput(order) });
   }
 
+  async createCustomerOrder(request: FastifyRequest, reply: FastifyReply) {
+    const userId = request.user!.id;
+    const body = request.body as {
+      shippingAddress?: Record<string, unknown>;
+      items?: { productId: string; name?: string; quantity?: number; price?: number }[];
+      total?: number;
+      payment?: { paymentId?: string; status?: string };
+      note?: string;
+    };
+
+    if (!Array.isArray(body.items) || body.items.length === 0 || typeof body.total !== 'number') {
+      return reply.status(400).send({ message: 'items and total are required.' });
+    }
+
+    const order = await this.orderService.createCustomerOrder(userId, body);
+    return reply.status(201).send({ order: toOrderOutput(order) });
+  }
+
+  async adminAddNote(request: FastifyRequest, reply: FastifyReply) {
+    const { id } = request.params as { id: string };
+    const body = request.body as { note?: string };
+    if (!body.note || typeof body.note !== 'string' || body.note.trim().length === 0) {
+      return reply.status(400).send({ message: 'note is required.' });
+    }
+    const order = await this.orderService.addNote(id, body.note.trim());
+    return reply.send({ order: toOrderOutput(order), message: 'Note added.' });
+  }
+
+  async adminStatusHistory(request: FastifyRequest, reply: FastifyReply) {
+    const { id } = request.params as { id: string };
+    const order = await this.orderService.getById(id);
+    if (!order) {
+      return reply.status(404).send({ message: 'Order not found.' });
+    }
+    return reply.send({ history: order.statusHistory });
+  }
+
   async track(request: FastifyRequest, reply: FastifyReply) {
     const { orderNumber } = request.params as { orderNumber: string };
     const order = await this.orderService.getByNumber(orderNumber);
     if (!order) {
       return reply.status(404).send({ message: 'Order not found.' });
     }
-    return reply.send({ order: toOrderOutput(order) });
+    return reply.send({
+      order: {
+        orderNumber: order.orderNumber,
+        status: order.status,
+        placedAt: order.placedAt,
+        updatedAt: order.updatedAt,
+        items: order.items.map((item) => ({ name: item.name, quantity: item.quantity })),
+        shipmentStatus: order.shipment ? (order.shipment as { status?: string }).status ?? null : null
+      }
+    });
   }
 
   async adminList(request: FastifyRequest, reply: FastifyReply) {
