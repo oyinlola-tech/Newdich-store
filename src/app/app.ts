@@ -41,13 +41,24 @@ export async function createApp(): Promise<{ app: FastifyInstance; container: Re
     prefix: '/uploads/'
   });
 
+  await app.register(fastifyStatic, {
+    root: join(__dirname, '..', '..', 'public'),
+    prefix: '/'
+  });
+
   await registerSwagger(app);
 
   const container = buildContainer();
   const logger = container.get<AppLogger>('logger');
 
   registerErrorHandler(app, logger);
-  registerRoutes(app, container);
+  await app.register(
+    (api, _opts, done) => {
+      registerRoutes(api, container);
+      done();
+    },
+    { prefix: appConfig.API_PREFIX }
+  );
 
   return { app, container };
 }
