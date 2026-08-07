@@ -1,0 +1,46 @@
+import { requestAdminPasswordReset } from '../../api/accounts/admin-password.js';
+import { navigateToRoute } from '../main/security.js';
+import { isValidEmail } from './validators.js';
+
+const form = document.getElementById('admin-forgot-form');
+const message = document.getElementById('admin-forgot-message');
+const errorBox = document.getElementById('admin-forgot-error');
+
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    message.style.display = 'none';
+    errorBox.style.display = 'none';
+
+    const email = document.getElementById('admin-email').value.trim();
+    if (!email) {
+        errorBox.textContent = 'Please enter your email.';
+        errorBox.style.display = 'block';
+        return;
+    }
+    if (!isValidEmail(email)) {
+        errorBox.textContent = 'Please enter a valid email address.';
+        errorBox.style.display = 'block';
+        return;
+    }
+
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = 'Sending code...';
+    submitBtn.disabled = true;
+
+    try {
+        await requestAdminPasswordReset(email);
+        sessionStorage.setItem('pendingAdminOtp', JSON.stringify({
+            email,
+            purpose: 'reset',
+            otpToken: null
+        }));
+        navigateToRoute('adminOtp', { purpose: 'reset', email });
+    } catch (error) {
+        errorBox.textContent = error.message || 'Failed to send verification code.';
+        errorBox.style.display = 'block';
+    } finally {
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+    }
+});

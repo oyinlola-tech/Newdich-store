@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:; img-src 'self' data: https://via.placeholder.com; connect-src 'self' http://localhost:3000; base-uri 'self'; form-action 'self'; frame-ancestors 'none'">
+    <meta name="referrer" content="no-referrer">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Returns | Newdich Store</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/admins/css/admin.css">
+</head>
+<body>
+    <div class="admin-wrapper">
+        <aside class="admin-sidebar">
+            <div class="sidebar-header">
+                <h2>Newdich Admin</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="/admin"><i class="fas fa-dashboard"></i> Dashboard</a></li>
+                    <li><a href="/admin/products"><i class="fas fa-box"></i> Products</a></li>
+                    <li><a href="/admin/categories"><i class="fas fa-tags"></i> Categories</a></li>
+                    <li><a href="/admin/inventory"><i class="fas fa-warehouse"></i> Inventory</a></li>
+                    <li><a href="/admin/orders"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+                    <li><a href="/admin/returns" class="active"><i class="fas fa-undo"></i> Returns</a></li>
+                    <li><a href="/admin/contact"><i class="fas fa-envelope"></i> Contact</a></li>
+                    <li><a href="/admin/users"><i class="fas fa-users"></i> Users</a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <button id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </aside>
+
+        <main class="admin-main">
+            <header class="admin-header">
+                <div class="header-title">
+                    <h1>Returns Management</h1>
+                </div>
+                <div class="header-user">
+                    <span id="admin-name">Admin</span>
+                </div>
+            </header>
+
+            <div class="admin-content">
+                <div class="filters">
+                    <div class="filter-group">
+                        <label for="status-filter">Status</label>
+                        <select id="status-filter">
+                            <option value="all">All Returns</option>
+                            <option value="pending">Pending</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
+                            <option value="received">Received</option>
+                            <option value="refunded">Refunded</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="search-filter">Search</label>
+                        <input type="text" id="search-filter" placeholder="Return ID, order ID, or customer">
+                    </div>
+                    <div class="filter-actions">
+                        <button id="apply-filters" class="btn-primary">Apply Filters</button>
+                        <button id="reset-filters" class="btn-secondary">Reset</button>
+                    </div>
+                </div>
+
+                <div id="returns-container">
+                    <div class="loading">Loading returns...</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="returns-modal" class="modal" style="display: none;">
+        <div class="modal-content modal-large">
+            <span class="close">&times;</span>
+            <h2>Return Details</h2>
+            <div id="return-details-content">
+                <div class="loading">Loading...</div>
+            </div>
+            <div class="detail-card">
+                <h3>Add Internal Note</h3>
+                <form id="return-note-form">
+                    <textarea id="return-note" rows="4" placeholder="Add an internal note for this return..."></textarea>
+                    <button type="submit" class="btn-secondary">Add Note</button>
+                </form>
+                <div id="return-note-message" class="profile-message" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="returns-status-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" id="returns-status-close">&times;</span>
+            <h2>Confirm Status Change</h2>
+            <p id="returns-status-text">Update status?</p>
+            <div class="form-actions">
+                <button id="returns-status-yes" class="btn-primary">Yes, Update</button>
+                <button id="returns-status-no" class="btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="/admins/js/products/returns-admin.js"></script>
+    <script type="module" src="/admins/js/main/admin.js"></script>
+</body>
+</html>
+
+

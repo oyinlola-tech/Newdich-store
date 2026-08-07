@@ -1,0 +1,142 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:; img-src 'self' data: https://via.placeholder.com; connect-src 'self' http://localhost:3000; base-uri 'self'; form-action 'self'; frame-ancestors 'none'">
+    <meta name="referrer" content="no-referrer">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Newdich Store</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Custom Admin CSS -->
+    <link rel="stylesheet" href="/admins/css/admin.css">
+</head>
+<body>
+    <div class="admin-wrapper">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="sidebar-header">
+                <h2>Newdich Admin</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="/admin" class="active"><i class="fas fa-dashboard"></i> Dashboard</a></li>
+                    <li><a href="/admin/products"><i class="fas fa-box"></i> Products</a></li>
+                    <li><a href="/admin/categories"><i class="fas fa-tags"></i> Categories</a></li>
+                    <li><a href="/admin/inventory"><i class="fas fa-warehouse"></i> Inventory</a></li>
+                    <li><a href="/admin/orders"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+                    <li><a href="/admin/returns"><i class="fas fa-undo"></i> Returns</a></li>
+                    <li><a href="/admin/contact"><i class="fas fa-envelope"></i> Contact</a></li>
+                    <li><a href="/admin/users"><i class="fas fa-users"></i> Users</a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <button id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <header class="admin-header">
+                <div class="header-title">
+                    <h1>Dashboard</h1>
+                </div>
+                <div class="header-user">
+                    <span id="admin-name">Admin</span>
+                </div>
+            </header>
+
+            <div class="admin-content">
+                <div id="stats-container" class="stats-grid">
+                    <div class="loading">Loading statistics...</div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="dashboard-card" id="sales-card">
+                        <div class="card-head">
+                            <h3>Sales Overview</h3>
+                            <span id="sales-subtitle" class="muted-text"></span>
+                        </div>
+                        <div id="sales-chart" class="chart-placeholder">
+                            <div class="loading">Loading sales overview...</div>
+                        </div>
+                        <div id="sales-legend" class="chart-legend"></div>
+                    </div>
+
+                    <div class="dashboard-card kpi-card">
+                        <div class="card-head">
+                            <div>
+                                <h3>Revenue Velocity</h3>
+                                <span id="kpi-subtitle" class="muted-text"></span>
+                            </div>
+                            <div class="kpi-value">
+                                <span id="kpi-amount" class="kpi-amount">â‚¦0</span>
+                                <span id="kpi-change" class="kpi-change positive"><i id="kpi-change-icon" class="fas fa-arrow-up"></i> <span id="kpi-change-value">0%</span></span>
+                            </div>
+                        </div>
+                        <div class="kpi-chart">
+                            <svg viewBox="0 0 240 80" aria-hidden="true">
+                                <path id="kpi-glow" class="chart-glow" d=""></path>
+                                <path id="kpi-line-secondary" class="chart-line-secondary" d=""></path>
+                                <path id="kpi-line" class="chart-line" d=""></path>
+                            </svg>
+                        </div>
+                        <div class="kpi-legend">
+                            <span><i class="legend-dot legend-primary"></i> Revenue</span>
+                            <span><i class="legend-dot legend-secondary"></i> Forecast</span>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card" id="categories-card">
+                        <div class="card-head">
+                            <h3>Top Categories</h3>
+                            <span id="categories-subtitle" class="muted-text"></span>
+                        </div>
+                        <div id="top-categories" class="pill-list">
+                            <span class="muted-text">Loading categories...</span>
+                        </div>
+                        <p class="muted-text">Keep these aligned with your active catalog categories.</p>
+                    </div>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-head">
+                        <h3>Change Password</h3>
+                        <span class="muted-text">Secure your admin account</span>
+                    </div>
+                    <form id="admin-password-form">
+                        <div class="form-group">
+                            <label for="admin-current-password">Current Password</label>
+                            <input type="password" id="admin-current-password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="admin-new-password">New Password</label>
+                            <input type="password" id="admin-new-password" minlength="6" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="admin-confirm-password">Confirm New Password</label>
+                            <input type="password" id="admin-confirm-password" minlength="6" required>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary">Update Password</button>
+                        </div>
+                    </form>
+                    <div id="admin-password-message" class="success-message" style="display: none;"></div>
+                </div>
+
+                <div id="recent-orders-container" class="recent-orders">
+                    <h3>Recent Orders</h3>
+                    <div class="loading">Loading recent orders...</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="/admins/js/main/dashboard.js"></script>
+    <script type="module" src="/admins/js/main/admin.js"></script>
+</body>
+</html>
+
+
