@@ -118,6 +118,14 @@ export class StaffService {
     return this.userRepository.listStaff();
   }
 
+  async getById(id: string): Promise<User | null> {
+    const user = await this.userRepository.findById(id);
+    if (!user || (user.role !== 'STAFF' && user.role !== 'ADMIN')) {
+      return null;
+    }
+    return user;
+  }
+
   async updateStaff(
     id: string,
     input: {

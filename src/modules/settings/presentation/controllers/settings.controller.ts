@@ -16,16 +16,24 @@ export class SettingsController {
     const body = request.body as { key?: string; value?: unknown } | Record<string, unknown>;
 
     if (body && typeof body === 'object' && 'key' in body && typeof body.key === 'string' && 'value' in body) {
+      if (!this.settingsService.isAllowedKey(body.key)) {
+        return reply.status(400).send({ message: `Unknown setting key: ${body.key}` });
+      }
       await this.settingsService.set(body.key, body.value);
       return reply.send({ message: 'Setting updated successfully.' });
     }
 
     const updates = body as Record<string, unknown>;
+    let updated = 0;
     for (const [key, value] of Object.entries(updates)) {
+      if (!this.settingsService.isAllowedKey(key)) {
+        continue;
+      }
       if (typeof value === 'object' || typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
         await this.settingsService.set(key, value);
+        updated += 1;
       }
     }
-    return reply.send({ message: 'Settings updated successfully.' });
+    return reply.send({ message: `Settings updated successfully (${updated} key(s)).` });
   }
 }
