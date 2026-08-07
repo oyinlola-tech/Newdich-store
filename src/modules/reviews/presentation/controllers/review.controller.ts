@@ -18,8 +18,8 @@ export class ReviewController {
     const userId = request.user!.id;
     const { productId } = request.params as { productId: string };
     const body = request.body as { rating?: number; title?: string; comment?: string };
-    if (typeof body.rating !== 'number') {
-      return reply.status(400).send({ message: 'rating is required.' });
+    if (typeof body.rating !== 'number' || !Number.isInteger(body.rating) || body.rating < 1 || body.rating > 5) {
+      return reply.status(400).send({ message: 'rating must be an integer between 1 and 5.' });
     }
     try {
       const review = await this.reviewService.create(productId, userId, {
