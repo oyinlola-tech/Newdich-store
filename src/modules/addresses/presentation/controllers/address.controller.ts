@@ -66,8 +66,11 @@ export class AddressController {
     try {
       await this.addressService.remove(userId, id);
       return reply.send({ message: 'Address deleted successfully.' });
-    } catch {
-      return reply.status(404).send({ message: 'Address not found.' });
+    } catch (error) {
+      if (error instanceof Error && error.message === 'Address not found.') {
+        return reply.status(404).send({ message: 'Address not found.' });
+      }
+      throw error;
     }
   }
 }

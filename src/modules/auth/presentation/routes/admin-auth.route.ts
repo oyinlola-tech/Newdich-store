@@ -12,7 +12,7 @@ export function registerAdminAuthRoutes(app: FastifyInstance, container: Contain
   app.post('/admin/auth/otp/request', { config: { rateLimit: { max: 5, timeWindow: '1 minute' } } }, controller.requestOtp.bind(controller));
   app.post('/admin/auth/otp/verify', { config: { rateLimit: { max: 10, timeWindow: '5 minutes' } } }, controller.adminVerifyOtp.bind(controller));
   app.post('/admin/auth/forgot-password', { config: { rateLimit: { max: 5, timeWindow: '10 minutes' } } }, controller.forgotPassword.bind(controller));
-  app.post('/admin/auth/reset-password', controller.resetPassword.bind(controller));
+  app.post('/admin/auth/reset-password', { config: { rateLimit: { max: 5, timeWindow: '10 minutes' } } }, controller.resetPassword.bind(controller));
 
   const adminGuard = requireAdmin(tokenService);
   app.post('/admin/auth/change-password', { preHandler: adminGuard }, controller.changePassword.bind(controller));
