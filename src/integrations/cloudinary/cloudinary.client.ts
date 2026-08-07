@@ -5,7 +5,7 @@ export class CloudinaryClient {
     private readonly apiSecret: string
   ) {}
 
-  async upload(buffer: Buffer, publicId: string, folder = 'newdich'): Promise<string> {
+  async upload(buffer: Buffer, publicId: string, folder = 'telente'): Promise<string> {
     const formData = new FormData();
     formData.append('file', new Blob([new Uint8Array(buffer)]));
     formData.append('upload_preset', '');

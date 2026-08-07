@@ -82,7 +82,7 @@ export class MailerService {
   sendWelcome(user: MailUser): Promise<void> {
     return this.dispatch({
       to: user.email,
-      subject: 'Welcome to Newdich Store',
+      subject: 'Welcome to Telente Store',
       html: welcomeEmail(user.name),
       purpose: 'welcome'
     });
@@ -118,7 +118,7 @@ export class MailerService {
   sendPasswordReset(user: MailUser, resetUrl: string): Promise<void> {
     return this.dispatch({
       to: user.email,
-      subject: 'Reset your Newdich Store password',
+      subject: 'Reset your Telente Store password',
       html: passwordResetEmail(user.name, resetUrl),
       purpose: 'password-reset'
     });

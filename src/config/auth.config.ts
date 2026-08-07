@@ -10,7 +10,7 @@ const authSchema = z.object({
     .transform((v) => v === 'true'),
   OTP_LIFETIME_MINUTES: z.coerce.number().default(10),
   BCRYPT_ROUNDS: z.coerce.number().default(10),
-  ADMIN_EMAIL: z.string().email().default('admin@newdich.com'),
+  ADMIN_EMAIL: z.string().email().default('admin@telente.site'),
   ADMIN_PASSWORD: z.string().min(8).default('ChangeMe_Admin123'),
   ADMIN_NAME: z.string().default('Super Admin'),
   ADMIN_PHONE: z.string().optional()

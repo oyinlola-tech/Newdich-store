@@ -1,4 +1,4 @@
-# Newdich Store API Reference
+# Telente Store API Reference
 
 This document lists every API endpoint referenced by the frontend code in `public/api/*` and `admin/api/*`.
 

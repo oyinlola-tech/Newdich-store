@@ -1,8 +1,8 @@
 export const openApiDocument = {
   openapi: '3.0.3',
   info: {
-    title: 'Newdich Store API',
-    description: 'REST API for the Newdich Store modular monolith (Fastify + MySQL/Prisma).',
+    title: 'Telente Store API',
+    description: 'REST API for the Telente Store modular monolith (Fastify + MySQL/Prisma).',
     version: '1.0.0'
   },
   servers: [{ url: 'http://localhost:3000' }],

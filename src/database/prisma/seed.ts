@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
-const email = process.env.ADMIN_EMAIL?.trim().toLowerCase() ?? 'admin@newdich.com';
+const email = process.env.ADMIN_EMAIL?.trim().toLowerCase() ?? 'admin@telente.site';
 const password = process.env.ADMIN_PASSWORD ?? 'ChangeMe_Admin123';
 const name = process.env.ADMIN_NAME?.trim() ?? 'Super Admin';
 const phone = process.env.ADMIN_PHONE?.trim() ?? null;
@@ -35,7 +35,7 @@ async function main(): Promise<void> {
   console.log(`[seed] Superadmin ready: ${admin.email} (id: ${admin.id})`);
 
   const defaultSettings: Record<string, { value: string | number | boolean; description: string }> = {
-    'store.name': { value: 'Newdich Store', description: 'Store display name' },
+    'store.name': { value: 'Telente Store', description: 'Store display name' },
     'store.currency': { value: 'NGN', description: 'Default currency code' },
     'store.email': { value: email, description: 'Store contact email' },
     'store.phone': { value: phone ?? '', description: 'Store contact phone' },
