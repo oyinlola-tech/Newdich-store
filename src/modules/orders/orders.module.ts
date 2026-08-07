@@ -8,7 +8,12 @@ import { registerOrderRoutes } from './presentation/routes/order.route.js';
 export function registerOrdersModule(container: Container, app: FastifyInstance): void {
   container.register('order.repository', (c) => new PrismaOrderRepository(c.get('prisma')));
   container.register('order.service', (c) =>
-    new OrderService(c.get('order.repository'), c.get('user.repository'), c.get('mailer.service'))
+    new OrderService(
+      c.get('order.repository'),
+      c.get('user.repository'),
+      c.get('mailer.service'),
+      c.get('cart.repository')
+    )
   );
   container.register('order.controller', (c) => new OrderController(c.get('order.service')));
 

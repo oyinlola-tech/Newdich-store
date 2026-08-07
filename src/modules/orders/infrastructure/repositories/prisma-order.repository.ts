@@ -36,6 +36,7 @@ export interface OrderRepositoryPort {
   findByUserId(userId: string): Promise<OrderWithRelations[]>;
   list(filters: { status?: string; search?: string }, page: number, limit: number): Promise<{ orders: OrderWithRelations[]; total: number }>;
   updateStatus(orderId: string, status: OrderStatus, note?: string): Promise<OrderWithRelations>;
+  addNote(id: string, note: string): Promise<OrderWithRelations>;
   delete(id: string): Promise<void>;
 }
 
@@ -124,6 +125,20 @@ export class PrismaOrderRepository implements OrderRepositoryPort {
       data: { orderId, status, note: note ?? null }
     });
     return order as OrderWithRelations;
+  }
+
+  async addNote(id: string, note: string): Promise<OrderWithRelations> {
+    const order = await this.prisma.order.findUnique({ where: { id } });
+    if (!order) {
+      throw new Error('Order not found.');
+    }
+    const prefix = order.note ? `${order.note}\n` : '';
+    const timestamped = `[${new Date().toISOString()}] ${note}`;
+    return this.prisma.order.update({
+      where: { id },
+      data: { note: prefix + timestamped },
+      include: includeAll
+    }) as Promise<OrderWithRelations>;
   }
 
   async delete(id: string): Promise<void> {
