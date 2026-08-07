@@ -6,11 +6,12 @@ export class InventoryController {
   constructor(private readonly inventoryService: InventoryService) {}
 
   async list(request: FastifyRequest, reply: FastifyReply) {
-    const query = request.query as { page?: string; limit?: string; lowStock?: string };
+    const query = request.query as { page?: string; limit?: string; lowStock?: string; threshold?: string };
     const { page, limit } = buildPagination(query.page, query.limit, 50);
 
     if (query.lowStock === 'true') {
-      const items = await this.inventoryService.listLowStock(10);
+      const threshold = query.threshold ? Number(query.threshold) : 10;
+      const items = await this.inventoryService.listLowStock(threshold);
       return reply.send({ inventory: items, lowStock: true });
     }
 
