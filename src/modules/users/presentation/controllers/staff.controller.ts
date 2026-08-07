@@ -11,8 +11,7 @@ export class StaffController {
 
   async get(request: FastifyRequest, reply: FastifyReply) {
     const { id } = request.params as { id: string };
-    const staff = await this.staffService.listStaff();
-    const member = staff.find((s) => s.id === id);
+    const member = await this.staffService.getById(id);
     if (!member) {
       return reply.status(404).send({ message: 'Staff member not found.' });
     }
@@ -72,8 +71,7 @@ export class StaffController {
 
   async remove(request: FastifyRequest, reply: FastifyReply) {
     const { id } = request.params as { id: string };
-    const staff = await this.staffService.listStaff();
-    const member = staff.find((s) => s.id === id);
+    const member = await this.staffService.getById(id);
     if (!member) {
       return reply.status(404).send({ message: 'Staff member not found.' });
     }

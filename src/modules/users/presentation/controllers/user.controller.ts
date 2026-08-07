@@ -28,6 +28,9 @@ export class UserController {
 
   async get(request: FastifyRequest, reply: FastifyReply) {
     const { id } = request.params as { id: string };
+    if (id !== request.user!.id) {
+      return reply.status(404).send({ message: 'User not found.' });
+    }
     const user = await this.queryBus.execute(new GetUserQuery(id));
     return reply.send({ user: toUserOutput(user) });
   }
