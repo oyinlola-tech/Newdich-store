@@ -7,7 +7,11 @@ export function registerInventoryRoutes(app: FastifyInstance, container: Contain
   const controller = container.get<InventoryController>('inventory.controller');
   const admin = isAdmin(container);
 
+  app.get('/inventory/:productId', controller.getByProduct.bind(controller));
+  app.post('/inventory/check', controller.check.bind(controller));
+
   app.get('/admin/inventory', { preHandler: [admin] }, controller.list.bind(controller));
   app.get('/admin/inventory/variants/:variantId', { preHandler: [admin] }, controller.getByVariant.bind(controller));
   app.put('/admin/inventory/variants/:variantId', { preHandler: [admin] }, controller.adjust.bind(controller));
+  app.put('/admin/inventory/:productId', { preHandler: [admin] }, controller.updateByProduct.bind(controller));
 }

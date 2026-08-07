@@ -8,6 +8,20 @@ export class InventoryService {
     return this.inventoryRepository.findByVariantId(variantId);
   }
 
+  getByProductId(productId: string) {
+    return this.inventoryRepository.findByProductId(productId);
+  }
+
+  async checkAvailability(productId: string, quantity: number): Promise<{ available: boolean; stock: number }> {
+    const inventory = await this.inventoryRepository.findByProductId(productId);
+    const stock = inventory?.quantity ?? 0;
+    return { available: stock >= quantity, stock };
+  }
+
+  updateByProductId(productId: string, quantity: number, reason?: string) {
+    return this.inventoryRepository.updateByProductId(productId, { quantity, reason });
+  }
+
   list(page: number, limit: number) {
     return this.inventoryRepository.list(page, limit);
   }
