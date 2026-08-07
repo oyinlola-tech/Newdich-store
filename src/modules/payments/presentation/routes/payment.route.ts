@@ -3,6 +3,7 @@ import type { Container } from '../../../../app/container.js';
 import type { PaymentController } from '../controllers/payment.controller.js';
 import { authenticate } from '../../../auth/presentation/guards/auth.guard.js';
 import { isAdmin } from '../../../auth/presentation/guards/admin.guard.js';
+import { registerRawBodyJsonParser } from '../../../../core/infrastructure/http/raw-body.js';
 
 export function registerPaymentRoutes(app: FastifyInstance, container: Container): void {
   const controller = container.get<PaymentController>('payment.controller');
@@ -10,11 +11,20 @@ export function registerPaymentRoutes(app: FastifyInstance, container: Container
   const admin = isAdmin(container);
 
   app.post('/payments/intent', { preHandler: [auth] }, controller.initiate.bind(controller));
+  app.post('/payments/:paymentId/confirm', { preHandler: [auth] }, controller.confirm.bind(controller));
+  app.get('/payments/methods', { preHandler: [auth] }, controller.methods.bind(controller));
   app.get('/payments/verify', { preHandler: [auth] }, controller.verify.bind(controller));
-  app.post('/payments/webhook/paystack', controller.paystackWebhook.bind(controller));
   app.get('/payments/orders/:orderId', { preHandler: [auth] }, controller.listByOrder.bind(controller));
 
   app.get('/admin/payments', { preHandler: [admin] }, controller.adminList.bind(controller));
   app.post('/admin/payments/:paymentId/refund', { preHandler: [admin] }, controller.refund.bind(controller));
   app.put('/admin/payments/:paymentId/status', { preHandler: [admin] }, controller.updateStatus.bind(controller));
+
+  app.register(
+    (webhookApp, _opts, done) => {
+      registerRawBodyJsonParser(webhookApp);
+      webhookApp.post('/payments/webhook/paystack', controller.paystackWebhook.bind(controller));
+      done();
+    }
+  );
 }

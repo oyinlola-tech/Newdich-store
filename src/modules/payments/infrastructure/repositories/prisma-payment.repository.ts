@@ -11,6 +11,7 @@ export interface CreatePaymentInput {
 
 export interface PaymentRepositoryPort {
   create(input: CreatePaymentInput): Promise<Payment>;
+  findById(id: string): Promise<Payment | null>;
   findByReference(reference: string): Promise<Payment | null>;
   findByOrderId(orderId: string): Promise<Payment[]>;
   updateStatus(id: string, status: PaymentStatus, extra?: { reference?: string; provider?: string; paidAt?: Date }): Promise<Payment>;
@@ -22,6 +23,10 @@ export class PrismaPaymentRepository implements PaymentRepositoryPort {
 
   async create(input: CreatePaymentInput): Promise<Payment> {
     return this.prisma.payment.create({ data: input });
+  }
+
+  findById(id: string): Promise<Payment | null> {
+    return this.prisma.payment.findUnique({ where: { id } });
   }
 
   findByReference(reference: string): Promise<Payment | null> {

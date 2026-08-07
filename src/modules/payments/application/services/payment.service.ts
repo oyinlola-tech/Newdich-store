@@ -48,7 +48,7 @@ export class PaymentService {
       authorizationUrl = result.authorization_url;
     }
 
-    return { payment, authorizationUrl };
+    return { paymentId: payment.id, payment, authorizationUrl };
   }
 
   async verify(reference: string) {
@@ -80,6 +80,28 @@ export class PaymentService {
 
   async verifyWebhook(reference: string) {
     return this.verify(reference);
+  }
+
+  getById(paymentId: string) {
+    return this.paymentRepository.findById(paymentId);
+  }
+
+  async confirm(paymentId: string) {
+    const payment = await this.paymentRepository.findById(paymentId);
+    if (!payment) {
+      throw new Error('Payment not found.');
+    }
+    if (payment.status === 'PAID') {
+      return { payment, status: 'confirmed' };
+    }
+    const updated = await this.paymentRepository.updateStatus(payment.id, 'PAID', { paidAt: new Date() });
+    await this.orderService.updateStatus(payment.orderId, 'PAID', 'Payment confirmed');
+    await this.notifyPaid(payment.orderId, payment.method, payment.reference ?? '');
+    return { payment: updated, status: 'confirmed' };
+  }
+
+  paymentMethods(): string[] {
+    return ['CARD', 'TRANSFER', 'PAY_ON_DELIVERY'];
   }
 
   listByOrder(orderId: string) {
