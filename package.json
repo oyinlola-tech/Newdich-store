@@ -51,7 +51,7 @@
     "prisma": "6.19.3",
     "tsx": "^4.23.11",
     "typescript": "^5.9.3",
-    "vitest": "^2.1.0"
+    "vitest": "^4.1.10"
   },
   "prisma": {
     "schema": "src/database/prisma/schema.prisma",
