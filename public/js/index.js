@@ -1,7 +1,7 @@
-﻿import { fetchFeaturedProducts, fetchAllProducts } from '../api/products.js';
-import { updateCartCount, handleAddToCart, handleAddToWishlist } from './main.js';
-import { formatCurrency } from './format.js';
-import { escapeHtml, escapeAttr, sanitizeUrl } from './sanitize.js';
+﻿import { fetchFeaturedProducts, fetchAllProducts } from '../apis/products/products.js';
+import { updateCartCount, handleAddToCart, handleAddToWishlist } from './main/main.js';
+import { formatCurrency } from './security/format.js';
+import { escapeHtml, escapeAttr, sanitizeUrl } from './security/sanitize.js';
 
 const productGrid = document.getElementById('featured-products-grid');
 const heroFeaturedCard = document.getElementById('hero-featured-card');
