@@ -1,6 +1,7 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { buildPagination } from '../../../../core/shared/pagination/pagination.js';
+import { getRawBody } from '../../../../core/infrastructure/http/raw-body.js';
 import type { PaymentService } from '../../application/services/payment.service.js';
 
 export class PaymentController {
@@ -34,6 +35,20 @@ export class PaymentController {
     });
   }
 
+  async confirm(request: FastifyRequest, reply: FastifyReply) {
+    const { paymentId } = request.params as { paymentId: string };
+    try {
+      const result = await this.paymentService.confirm(paymentId);
+      return reply.send(result);
+    } catch (error) {
+      return reply.status(404).send({ message: (error as Error).message });
+    }
+  }
+
+  async methods(_request: FastifyRequest, reply: FastifyReply) {
+    return reply.send({ methods: this.paymentService.paymentMethods() });
+  }
+
   async verify(request: FastifyRequest, reply: FastifyReply) {
     const query = request.query as { reference?: string };
     if (!query.reference) {
@@ -54,7 +69,7 @@ export class PaymentController {
     };
     const signature = request.headers['x-paystack-signature'] as string | undefined;
 
-    const payload = JSON.stringify(request.body);
+    const payload = getRawBody(request);
     const expected = createHmac('sha512', this.paystackSecret).update(payload).digest('hex');
     const signatureBytes = Buffer.from(signature ?? '', 'utf8');
     const expectedBytes = Buffer.from(expected, 'utf8');
@@ -85,8 +100,7 @@ export class PaymentController {
 
   async refund(request: FastifyRequest, reply: FastifyReply) {
     const { paymentId } = request.params as { paymentId: string };
-    const payments = await this.paymentService.list(1, 200);
-    const payment = payments.payments.find((p) => p.id === paymentId);
+    const payment = await this.paymentService.getById(paymentId);
     if (!payment) {
       return reply.status(404).send({ message: 'Payment not found.' });
     }
