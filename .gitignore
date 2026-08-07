@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Database
+*.db
+
+# Test output
+test-output/
+test/
+*test*
+
+# Uploads (runtime data)
+uploads/*
+!uploads/.gitkeep
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Test coverage
+coverage/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Prisma
+src/database/prisma/generated/
