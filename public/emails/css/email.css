@@ -1,0 +1,222 @@
+/* Email Base Styles - Telente Store */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #f4f6f9;
+    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+.email-wrapper {
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: #ffffff;
+}
+
+.email-header {
+    background-color: #0b1220;
+    padding: 40px 32px;
+    text-align: center;
+}
+
+.email-wordmark {
+    font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+    text-decoration: none;
+    display: inline-block;
+    line-height: 1.1;
+}
+
+.email-wordmark span {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 4px;
+}
+
+.email-body {
+    padding: 40px 32px;
+}
+
+.email-headline {
+    font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    color: #12141a;
+    margin: 0 0 16px 0;
+}
+
+.email-subhead {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #5a6270;
+    margin: 0 0 32px 0;
+}
+
+.email-text {
+    font-size: 15px;
+    line-height: 1.7;
+    color: #12141a;
+    margin: 0 0 16px 0;
+}
+
+.email-button {
+    display: inline-block;
+    background-color: #1f4b99;
+    color: #ffffff;
+    text-decoration: none;
+    padding: 14px 32px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 15px;
+    margin: 24px 0;
+}
+
+.email-button:hover {
+    background-color: #163a77;
+}
+
+.email-button-secondary {
+    display: inline-block;
+    background-color: transparent;
+    color: #1f4b99;
+    text-decoration: none;
+    padding: 14px 32px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 15px;
+    margin: 24px 0;
+    border: 2px solid #1f4b99;
+}
+
+.email-divider {
+    border: none;
+    border-top: 1px solid #e2e7f0;
+    margin: 32px 0;
+}
+
+.email-footer {
+    background-color: #f4f6f9;
+    padding: 32px;
+    text-align: center;
+}
+
+.email-footer-wordmark {
+    font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #12141a;
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 16px;
+}
+
+.email-footer-links {
+    margin: 16px 0;
+}
+
+.email-footer-links a {
+    color: #5a6270;
+    text-decoration: none;
+    font-size: 13px;
+    margin: 0 8px;
+}
+
+.email-footer-links a:hover {
+    color: #1f4b99;
+}
+
+.email-footer-legal {
+    font-size: 12px;
+    color: #9aa0ad;
+    margin-top: 16px;
+}
+
+.email-product-list {
+    margin: 24px 0;
+}
+
+.email-product-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid #e2e7f0;
+}
+
+.email-product-item:last-child {
+    border-bottom: none;
+}
+
+.email-product-image {
+    width: 64px;
+    height: 64px;
+    border-radius: 8px;
+    object-fit: cover;
+    background-color: #eef1f6;
+}
+
+.email-product-info {
+    flex: 1;
+}
+
+.email-product-name {
+    font-weight: 600;
+    color: #12141a;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.email-product-meta {
+    font-size: 13px;
+    color: #5a6270;
+}
+
+.email-product-price {
+    font-weight: 700;
+    color: #1f4b99;
+    font-size: 15px;
+}
+
+.email-order-summary {
+    background-color: #f4f6f9;
+    border-radius: 12px;
+    padding: 24px;
+    margin: 24px 0;
+}
+
+.email-summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 14px;
+    color: #12141a;
+}
+
+.email-summary-row.total {
+    border-top: 1px solid #e2e7f0;
+    margin-top: 8px;
+    padding-top: 16px;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+@media (max-width: 600px) {
+    .email-body {
+        padding: 24px 20px;
+    }
+    .email-headline {
+        font-size: 24px;
+    }
+    .email-header {
+        padding: 32px 20px;
+    }
+}
