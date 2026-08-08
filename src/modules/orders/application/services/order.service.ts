@@ -2,6 +2,7 @@ import type { OrderRepositoryPort, CreateOrderInput } from '../../infrastructure
 import type { MailerService } from '../../../../core/infrastructure/email/mailer.service.js';
 import type { UserRepositoryPort } from '../../../users/application/ports/user.repository.js';
 import type { CartRepositoryPort } from '../../../carts/infrastructure/repositories/prisma-cart.repository.js';
+import type { PaymentService } from '../../../payments/application/services/payment.service.js';
 
 const EMAILED_STATUSES = new Set(['PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED']);
 
@@ -10,8 +11,41 @@ export class OrderService {
     private readonly orderRepository: OrderRepositoryPort,
     private readonly userRepository: UserRepositoryPort,
     private readonly mailerService: MailerService,
-    private readonly cartRepository: CartRepositoryPort
+    private readonly cartRepository: CartRepositoryPort,
+    private readonly paymentService?: PaymentService
   ) {}
+
+  async cancel(orderId: string, note?: string): Promise<{ order: unknown; refunded: boolean }> {
+    const order = await this.orderRepository.findById(orderId);
+    if (!order) {
+      throw new Error('Order not found.');
+    }
+
+    const allowedCancelStatuses = ['PENDING', 'PAID'] as const;
+    if (!allowedCancelStatuses.includes(order.status as typeof allowedCancelStatuses[number])) {
+      throw new Error('This order can no longer be cancelled.');
+    }
+
+    const timestamped = note ? `[${new Date().toISOString()}] ${note}` : '[system] Order cancelled by customer';
+    const updated = await this.orderRepository.updateStatus(orderId, 'CANCELLED', timestamped);
+
+    let refunded = false;
+    if (order.status === 'PAID' && this.paymentService) {
+      try {
+        const payments = await this.orderRepository.findById(orderId);
+        const paidPayment = payments?.payments?.find((p: { status?: string }) => p.status === 'PAID');
+        if (paidPayment?.id) {
+          await this.paymentService.refund(paidPayment.id);
+          refunded = true;
+        }
+      } catch {
+        // refund failures are logged but do not block cancellation
+      }
+    }
+
+    await this.notifyStatus(updated, 'CANCELLED');
+    return { order: updated, refunded };
+  }
 
   create(input: CreateOrderInput) {
     return this.orderRepository.create(input);

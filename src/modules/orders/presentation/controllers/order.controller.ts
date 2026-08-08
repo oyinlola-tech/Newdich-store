@@ -107,6 +107,17 @@ export class OrderController {
     const order = await this.orderService.updateStatus(id, body.status, body.note);
     return reply.send({ order: toOrderOutput(order) });
   }
+
+  async cancel(request: FastifyRequest, reply: FastifyReply) {
+    const { id } = request.params as { id: string };
+    const userId = request.user!.id;
+    const order = await this.orderService.getById(id);
+    if (!order || order.userId !== userId) {
+      return reply.status(404).send({ message: 'Order not found.' });
+    }
+    const result = await this.orderService.cancel(id, 'Cancelled by customer');
+    return reply.send({ order: toOrderOutput(result.order), refunded: result.refunded });
+  }
 }
 
 function toOrderOutput(order: {

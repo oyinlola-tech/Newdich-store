@@ -4,9 +4,7 @@ import { PrismaUserRepository } from './infrastructure/repositories/prisma-user.
 import { UserService } from './application/services/user.service.js';
 import { UserController } from './presentation/controllers/user.controller.js';
 import { AdminUserController } from './presentation/controllers/admin-user.controller.js';
-import { StaffController } from './presentation/controllers/staff.controller.js';
-import { StaffService } from './application/services/staff.service.js';
-import { registerUserRoutes, registerAdminUserRoutes, registerStaffRoutes } from './presentation/routes/user.route.js';
+import { registerUserRoutes, registerAdminUserRoutes } from './presentation/routes/user.route.js';
 import { CommandBus } from '../../core/application/commands/command-bus.js';
 import { QueryBus } from '../../core/application/queries/query-bus.js';
 import { UpdateProfileHandler } from './application/commands/update-profile/update-profile.handler.js';
@@ -27,10 +25,6 @@ export function registerUsersModule(container: Container, app: FastifyInstance):
   container.register('admin-user.controller', (c) =>
     new AdminUserController(c.get('command.bus'), c.get('query.bus'))
   );
-  container.register('staff.service', (c) =>
-    new StaffService(c.get('user.repository'), c.get('password-hasher.service'), c.get('mailer.service'))
-  );
-  container.register('staff.controller', (c) => new StaffController(c.get('staff.service')));
 
   const commandBus = container.get<CommandBus>('command.bus');
   const queryBus = container.get<QueryBus>('query.bus');
@@ -46,5 +40,4 @@ export function registerUsersModule(container: Container, app: FastifyInstance):
 
   registerUserRoutes(app, container);
   registerAdminUserRoutes(app, container);
-  registerStaffRoutes(app, container);
 }

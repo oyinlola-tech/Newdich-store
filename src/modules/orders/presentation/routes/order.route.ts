@@ -12,6 +12,7 @@ export function registerOrderRoutes(app: FastifyInstance, container: Container):
   app.get('/orders', { preHandler: [auth] }, controller.listMine.bind(controller));
   app.post('/orders', { preHandler: [auth] }, controller.createCustomerOrder.bind(controller));
   app.get('/orders/:id', { preHandler: [auth] }, controller.getMine.bind(controller));
+  app.post('/orders/:id/cancel', { preHandler: [auth] }, controller.cancel.bind(controller));
   app.get('/orders/track/:orderNumber', controller.track.bind(controller));
 
   app.get('/admin/orders', { preHandler: [admin] }, controller.adminList.bind(controller));

@@ -12,7 +12,8 @@ export function registerOrdersModule(container: Container, app: FastifyInstance)
       c.get('order.repository'),
       c.get('user.repository'),
       c.get('mailer.service'),
-      c.get('cart.repository')
+      c.get('cart.repository'),
+      c.get('payment.service')
     )
   );
   container.register('order.controller', (c) => new OrderController(c.get('order.service')));

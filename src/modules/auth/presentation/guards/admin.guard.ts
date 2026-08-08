@@ -4,12 +4,10 @@ import type { TokenService } from '../../infrastructure/security/token.service.j
 import { ForbiddenError } from '../../../../core/domain/errors/domain.error.js';
 import { requireAuth } from './auth.guard.js';
 
-const STAFF_ROLES = ['ADMIN', 'SUPER_ADMIN'] as const;
-
 export function requireAdmin(tokenService: TokenService) {
   return async function adminGuard(request: FastifyRequest, _reply: FastifyReply): Promise<void> {
     await requireAuth(tokenService)(request);
-    if (!request.user || !(STAFF_ROLES as readonly string[]).includes(request.user.role)) {
+    if (!request.user || (request.user.role !== 'ADMIN' && request.user.role !== 'SUPER_ADMIN')) {
       throw new ForbiddenError('Admin access required');
     }
   };
