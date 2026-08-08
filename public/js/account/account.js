@@ -10,20 +10,16 @@ import { initPasswordToggles } from './password-toggle.js';
 
 const container = document.getElementById('account-container');
 
-// Check authentication
 if (!isLoggedIn()) {
     navigateToRoute('login', { redirect: '/account' });
 }
 
-// Format date
 function formatDate(dateString) {
     if (!dateString) return 'N/A';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+    return new Date(dateString).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 }
 
-// Render account page
-function renderAccountPage(user, orders) {
+function renderOrdersSection(orders) {
     const orderHistoryHtml = orders && orders.length > 0 ? orders.map(order => `
         <div class="order-item" data-order-id="${escapeAttr(order.id)}">
             <div class="order-header">
@@ -39,14 +35,21 @@ function renderAccountPage(user, orders) {
                     </div>
                 `).join('')}
             </div>
-            <div class="order-total">
-                <strong>Total:</strong> ${formatCurrency(order.total)}
-            </div>
+            <div class="order-total"><strong>Total:</strong> ${formatCurrency(order.total)}</div>
             <a href="/order-confirmation?orderId=${escapeAttr(encodeURIComponent(order.id ?? ''))}" class="view-order-link">View Details</a>
         </div>
     `).join('') : '<p>No orders yet. <a href="/products">Start shopping</a>.</p>';
 
-    const html = `
+    return `
+        <div class="orders-section">
+            <h3>Order History</h3>
+            <div class="orders-list">${orderHistoryHtml}</div>
+        </div>
+    `;
+}
+
+function renderAccountHtml(user) {
+    return `
         <div class="account-page">
             <div class="account-sidebar">
                 <div class="user-info">
@@ -79,7 +82,6 @@ function renderAccountPage(user, orders) {
                     </form>
                     <div id="profile-message" class="profile-message" style="display: none;"></div>
                 </div>
-
                 <div class="profile-section">
                     <h3>Change Password</h3>
                     <form id="password-form">
@@ -101,21 +103,35 @@ function renderAccountPage(user, orders) {
                     </form>
                     <div id="password-message" class="profile-message" style="display: none;"></div>
                 </div>
-
-                <div class="orders-section">
-                    <h3>Order History</h3>
-                    <div class="orders-list">
-                        ${orderHistoryHtml}
-                    </div>
-                </div>
             </div>
         </div>
     `;
+}
 
-    container.innerHTML = html;
-    initPasswordToggles(container);
+function showMessage(element, message, type) {
+    element.textContent = message;
+    element.className = `profile-message ${type}`;
+    element.style.display = 'block';
+    setTimeout(() => { element.style.display = 'none'; }, 5000);
+}
 
-    // Attach profile update handler
+async function loadAccount() {
+    try {
+        container.innerHTML = '<div class="loading">Loading account details...</div>';
+        const [user, orders] = await Promise.all([
+            getUserProfile(),
+            fetchOrders()
+        ]);
+        const html = renderAccountHtml(user) + renderOrdersSection(orders);
+        container.innerHTML = html;
+        initPasswordToggles(container);
+        attachFormHandlers(user);
+    } catch (error) {
+        container.innerHTML = '<p class="error">Failed to load account details. Please try again later.</p>';
+    }
+}
+
+function attachFormHandlers(user) {
     const profileForm = document.getElementById('profile-form');
     const profileMessage = document.getElementById('profile-message');
 
@@ -124,23 +140,17 @@ function renderAccountPage(user, orders) {
         const name = document.getElementById('name').value.trim();
         const email = document.getElementById('email').value.trim();
         const phone = document.getElementById('phone').value.trim();
-
         if (!name || !email) {
             showMessage(profileMessage, 'Name and email are required.', 'error');
             return;
         }
-
         const submitBtn = profileForm.querySelector('button[type="submit"]');
-        const originalText = submitBtn.textContent;
         submitBtn.textContent = 'Updating...';
         submitBtn.disabled = true;
-
         try {
             const updatedUser = await updateUserProfile({ name, email, phone });
-            // Update stored user in sessionStorage
             sessionStorage.setItem('user', JSON.stringify(updatedUser));
             showMessage(profileMessage, 'Profile updated successfully!', 'success');
-            // Optionally update the sidebar name/email
             const userInfo = document.querySelector('.user-info');
             if (userInfo) {
                 userInfo.querySelector('h3').textContent = updatedUser.name || '';
@@ -149,12 +159,11 @@ function renderAccountPage(user, orders) {
         } catch (error) {
             showMessage(profileMessage, error.message || 'Failed to update profile.', 'error');
         } finally {
-            submitBtn.textContent = originalText;
+            submitBtn.textContent = 'Update Profile';
             submitBtn.disabled = false;
         }
     });
 
-    // Logout handler
     const logoutBtn = document.getElementById('logout-btn');
     if (logoutBtn) {
         logoutBtn.addEventListener('click', () => {
@@ -163,14 +172,6 @@ function renderAccountPage(user, orders) {
         });
     }
 
-    const returnsLink = document.querySelector('.account-sidebar a[href="/returns"]');
-    if (returnsLink) {
-        returnsLink.addEventListener('click', () => {
-            sessionStorage.setItem('returnsAccess', '1');
-        });
-    }
-
-    // Change password handler
     const passwordForm = document.getElementById('password-form');
     const passwordMessage = document.getElementById('password-message');
 
@@ -179,7 +180,6 @@ function renderAccountPage(user, orders) {
         const currentPassword = document.getElementById('current-password').value;
         const newPassword = document.getElementById('new-password').value;
         const confirmPassword = document.getElementById('confirm-new-password').value;
-
         if (!currentPassword || !newPassword || !confirmPassword) {
             showMessage(passwordMessage, 'Please fill in all fields.', 'error');
             return;
@@ -192,12 +192,9 @@ function renderAccountPage(user, orders) {
             showMessage(passwordMessage, 'New passwords do not match.', 'error');
             return;
         }
-
         const submitBtn = passwordForm.querySelector('button[type="submit"]');
-        const originalText = submitBtn.textContent;
         submitBtn.textContent = 'Updating...';
         submitBtn.disabled = true;
-
         try {
             await changePassword(currentPassword, newPassword);
             showMessage(passwordMessage, 'Password updated successfully.', 'success');
@@ -205,39 +202,13 @@ function renderAccountPage(user, orders) {
         } catch (error) {
             showMessage(passwordMessage, error.message || 'Failed to update password.', 'error');
         } finally {
-            submitBtn.textContent = originalText;
+            submitBtn.textContent = 'Update Password';
             submitBtn.disabled = false;
         }
     });
-}
-
-function showMessage(element, message, type) {
-    element.textContent = message;
-    element.className = `profile-message ${type}`;
-    element.style.display = 'block';
-    setTimeout(() => {
-        element.style.display = 'none';
-    }, 5000);
-}
-
-// Load data
-async function loadAccount() {
-    try {
-        container.innerHTML = '<div class="loading">Loading account details...</div>';
-        const [user, orders] = await Promise.all([
-            getUserProfile(),
-            fetchOrders()
-        ]);
-        renderAccountPage(user, orders);
-    } catch (error) {
-        console.error('Error loading account:', error);
-        container.innerHTML = '<p class="error">Failed to load account details. Please try again later.</p>';
-    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     loadAccount();
     updateCartCount();
 });
-
-
