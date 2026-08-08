@@ -31,6 +31,7 @@ import { registerReviewPromptsModule } from '../modules/review-prompts/review-pr
 import { registerActivityLogsModule } from '../modules/activity-logs/activity-logs.module.js';
 import { registerRequestLogsModule } from '../modules/request-logs/request-logs.module.js';
 import { registerEmailTemplatesModule } from '../modules/email-templates/email-templates.module.js';
+import { registerSeoModule } from '../modules/seo/seo.module.js';
 
 export function registerRoutes(app: FastifyInstance, container: Container): void {
   registerHealthModule(container, app);
@@ -64,4 +65,5 @@ export function registerRoutes(app: FastifyInstance, container: Container): void
   registerActivityLogsModule(container, app);
   registerRequestLogsModule(container, app);
   registerEmailTemplatesModule(container, app);
+  registerSeoModule(container, app);
 }

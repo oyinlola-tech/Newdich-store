@@ -203,6 +203,11 @@ model Product {
   brand       Brand?        @relation(fields: [brandId], references: [id], onDelete: SetNull)
   status      ProductStatus @default(DRAFT)
   featured    Boolean       @default(false)
+  seoTitle    String?
+  seoDescription String?
+  seoKeywords String?
+  ogImage     String?
+  metaRobots  String        @default("index, follow")
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
@@ -219,6 +224,7 @@ model Product {
 
   @@index([status, featured])
   @@index([name])
+  @@index([slug])
 }
 
 model ProductVariant {
@@ -838,4 +844,20 @@ enum JobStatus {
   PROCESSING
   COMPLETED
   FAILED
+}
+
+model SeoSetting {
+  id                String   @id @default(cuid())
+  siteTitle         String
+  siteDescription   String
+  siteKeywords      String?
+  ogImage           String?
+  twitterHandle     String?
+  googleAnalyticsId String?
+  facebookPixelId   String?
+  robotsTxt         String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("seo_settings")
 }
