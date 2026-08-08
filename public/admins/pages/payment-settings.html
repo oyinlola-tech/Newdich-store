@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:; img-src 'self' data: https://via.placeholder.com; connect-src 'self' http://localhost:3000; base-uri 'self'; form-action 'self'; frame-ancestors 'none'">
+    <meta name="referrer" content="no-referrer">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Payment Settings | Telente Store</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Custom Admin CSS -->
+    <link rel="stylesheet" href="/admins/css/admin.css">
+</head>
+<body>
+    <div class="admin-wrapper">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="sidebar-header">
+                <h2>Telente Admin</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="/admin"><i class="fas fa-dashboard"></i> Dashboard</a></li>
+                    <li><a href="/admin/products"><i class="fas fa-box"></i> Products</a></li>
+                    <li><a href="/admin/categories"><i class="fas fa-tags"></i> Categories</a></li>
+                    <li><a href="/admin/inventory"><i class="fas fa-warehouse"></i> Inventory</a></li>
+                    <li><a href="/admin/orders"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+                    <li><a href="/admin/returns"><i class="fas fa-undo"></i> Returns</a></li>
+                    <li><a href="/admin/contact"><i class="fas fa-envelope"></i> Contact</a></li>
+                    <li><a href="/admin/users"><i class="fas fa-users"></i> Users</a></li>
+                    <li><a href="/admin/payment-settings" class="active"><i class="fas fa-credit-card"></i> Payments</a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <button id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <header class="admin-header">
+                <div class="header-title">
+                    <h1>Payment Settings</h1>
+                </div>
+                <div class="header-user">
+                    <span id="admin-name">Admin</span>
+                </div>
+            </header>
+
+            <div class="admin-content">
+                <div id="lock-banner" class="lock-banner" style="display: none;">
+                    <p><i class="fas fa-lock"></i> Payment settings are <strong>locked</strong>. Online checkout is paused until you unlock them with your pin.</p>
+                    <button id="unlock-btn" class="btn-primary"><i class="fas fa-unlock"></i> Unlock with pin</button>
+                </div>
+                <div id="unlocked-banner" class="unlocked-banner" style="display: none;">
+                    <p><i class="fas fa-unlock"></i> Payment settings are <strong>unlocked</strong> (expires <span id="unlock-expiry"></span>).</p>
+                    <button id="lock-btn" class="btn-secondary"><i class="fas fa-lock"></i> Lock now</button>
+                </div>
+
+                <div id="pin-banner" class="pin-banner" style="display: none;">
+                    <p><i class="fas fa-key"></i> No pin set yet. Create a 4 or 6 digit pin — it encrypts all provider keys at rest.</p>
+                    <button id="create-pin-btn" class="btn-primary"><i class="fas fa-key"></i> Create pin</button>
+                </div>
+
+                <div class="page-actions">
+                    <button id="change-pin-btn" class="btn-secondary"><i class="fas fa-exchange-alt"></i> Change pin</button>
+                    <button id="reload-btn" class="btn-secondary"><i class="fas fa-sync"></i> Refresh</button>
+                </div>
+
+                <div id="providers-container">
+                    <div class="loading">Loading payment providers...</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal: Create/Change pin -->
+    <div id="pin-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" data-close="pin-modal">&times;</span>
+            <h2 id="pin-modal-title">Create pin</h2>
+            <form id="pin-form">
+                <div class="form-group" id="current-pin-group" style="display: none;">
+                    <label for="current-pin">Current pin</label>
+                    <input type="password" id="current-pin" inputmode="numeric" maxlength="6" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="new-pin">New pin (4 or 6 digits)</label>
+                    <input type="password" id="new-pin" inputmode="numeric" maxlength="6" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="confirm-pin">Confirm pin</label>
+                    <input type="password" id="confirm-pin" inputmode="numeric" maxlength="6" autocomplete="off">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Save</button>
+                    <button type="button" class="btn-secondary" data-close="pin-modal">Cancel</button>
+                </div>
+            </form>
+            <div id="pin-message" class="profile-message" style="display: none;"></div>
+        </div>
+    </div>
+
+    <!-- Modal: Unlock -->
+    <div id="unlock-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" data-close="unlock-modal">&times;</span>
+            <h2>Unlock payment settings</h2>
+            <p class="helper-text">Unlocking keeps provider keys in memory for 12 hours so checkout and webhooks can work.</p>
+            <form id="unlock-form">
+                <div class="form-group">
+                    <label for="unlock-pin">Pin</label>
+                    <input type="password" id="unlock-pin" inputmode="numeric" maxlength="6" autocomplete="off" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Unlock</button>
+                    <button type="button" class="btn-secondary" data-close="unlock-modal">Cancel</button>
+                </div>
+            </form>
+            <div id="unlock-message" class="profile-message" style="display: none;"></div>
+        </div>
+    </div>
+
+    <!-- Modal: Provider credentials -->
+    <div id="provider-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" data-close="provider-modal">&times;</span>
+            <h2 id="provider-modal-title">Configure provider</h2>
+            <form id="provider-form">
+                <div class="form-group">
+                    <label for="provider-enabled">Enabled</label>
+                    <select id="provider-enabled">
+                        <option value="true">Enabled (accept payments)</option>
+                        <option value="false">Disabled</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="provider-public-key">Public Key</label>
+                    <input type="text" id="provider-public-key" autocomplete="off">
+                    <small class="helper-text" id="provider-public-key-hint"></small>
+                </div>
+                <div class="form-group">
+                    <label for="provider-secret-key">Secret Key</label>
+                    <input type="password" id="provider-secret-key" autocomplete="off">
+                    <small class="helper-text" id="provider-secret-key-hint"></small>
+                </div>
+                <div class="form-group">
+                    <label for="provider-webhook-secret">Webhook Secret (optional)</label>
+                    <input type="password" id="provider-webhook-secret" autocomplete="off">
+                    <small class="helper-text">Paystack: signature key. Flutterwave: secret hash. Nomba: webhook signature key. Stripe: whsec_ webhook signing secret.</small>
+                </div>
+                <div class="form-group" id="provider-account-group" style="display: none;">
+                    <label for="provider-account-id">Account ID</label>
+                    <input type="password" id="provider-account-id" autocomplete="off">
+                    <small class="helper-text">Nomba only.</small>
+                </div>
+                <div class="form-group">
+                    <label for="provider-pin">Pin (required to save)</label>
+                    <input type="password" id="provider-pin" inputmode="numeric" maxlength="6" autocomplete="off" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Save Provider</button>
+                    <button type="button" class="btn-danger" id="provider-remove-btn">Remove</button>
+                    <button type="button" class="btn-secondary" data-close="provider-modal">Cancel</button>
+                </div>
+            </form>
+            <div id="provider-message" class="profile-message" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script type="module" src="/admins/js/main/payment-settings.js"></script>
+    <script type="module" src="/admins/js/main/admin.js"></script>
+</body>
+</html>

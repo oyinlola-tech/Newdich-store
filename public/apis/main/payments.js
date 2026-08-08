@@ -19,6 +19,37 @@ export async function createPaymentIntent(paymentData) {
     }
 }
 
+// Checkout: creates the order and payment intent in one step
+export async function submitCheckout(checkoutData) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/checkout`, {
+            method: 'POST',
+            headers: getHeaders(),
+            body: JSON.stringify(checkoutData)
+        });
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Checkout failed');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Error during checkout:', error);
+        throw error;
+    }
+}
+
+// Verify a payment by reference (polls provider status)
+export async function verifyPayment(reference) {
+    const response = await fetch(`${API_BASE_URL}/payments/verify?reference=${encodeURIComponent(reference)}`, {
+        headers: getHeaders()
+    });
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to verify payment');
+    }
+    return await response.json();
+}
+
 // Confirm a payment
 export async function confirmPayment(paymentId) {
     try {
@@ -51,5 +82,6 @@ export async function fetchPaymentMethods() {
         return [];
     }
 }
+
 
 

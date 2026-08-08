@@ -1,7 +1,6 @@
 ﻿import { fetchCart } from '../../apis/main/cart.js';
-import { submitOrder } from '../../apis/products/orders.js';
+import { submitCheckout, confirmPayment, verifyPayment } from '../../apis/main/payments.js';
 import { isLoggedIn, getCurrentUser } from '../../apis/accounts/auth.js';
-import { createPaymentIntent, confirmPayment } from '../../apis/main/payments.js';
 import { updateCartCount } from '../main/main.js';
 import { formatCurrency } from '../security/format.js';
 import { escapeHtml, escapeAttr, sanitizeUrl } from '../security/sanitize.js';
@@ -21,12 +20,14 @@ if (!isLoggedIn()) {
 }
 
 let cartData = null;
+let currentUser = null;
 
 async function loadCheckout() {
     try {
         checkoutContainer.innerHTML = '<div class="loading">Loading checkout...</div>';
         const cart = await fetchCart();
         cartData = cart;
+        currentUser = getCurrentUser();
 
         if (!cart.items || cart.items.length === 0) {
             checkoutContainer.innerHTML = `
@@ -38,8 +39,7 @@ async function loadCheckout() {
             return;
         }
 
-        const user = getCurrentUser();
-        renderCheckoutForm(user);
+        renderCheckoutForm(currentUser);
     } catch (error) {
         console.error('Error loading checkout:', error);
         checkoutContainer.innerHTML = '<p class="error">Failed to load checkout. Please try again later.</p>';
@@ -95,20 +95,23 @@ function renderCheckoutForm(user) {
 
                     <h3>Payment Information</h3>
                     <div class="form-group">
-                        <label for="cardNumber">Card Number</label>
-                        <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" required>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="expiryDate">Expiry Date</label>
-                            <input type="text" id="expiryDate" placeholder="MM/YY" required>
+                        <label>Payment Method</label>
+                        <div class="payment-methods">
+                            <label class="payment-method">
+                                <input type="radio" name="paymentMethod" value="CARD" checked>
+                                <span>Card</span>
+                            </label>
+                            <label class="payment-method">
+                                <input type="radio" name="paymentMethod" value="TRANSFER">
+                                <span>Bank Transfer</span>
+                            </label>
+                            <label class="payment-method">
+                                <input type="radio" name="paymentMethod" value="PAY_ON_DELIVERY">
+                                <span>Pay on Delivery</span>
+                            </label>
                         </div>
-                        <div class="form-group">
-                            <label for="cvv">CVV</label>
-                            <input type="text" id="cvv" placeholder="123" required>
-                        </div>
                     </div>
-                    <p class="helper-text">Payments are secured and encrypted.</p>
+                    <p class="helper-text">Payments are secured and encrypted. You will not be redirected away from this page.</p>
 
                     <button type="submit" class="btn-primary btn-block" id="place-order-btn">Place Order</button>
                 </form>
@@ -135,6 +138,7 @@ function renderCheckoutForm(user) {
             </div>
         </div>
         <div id="order-error" class="error-message" style="display: none;"></div>
+        <div id="payment-status" class="payment-status" style="display: none;"></div>
     `;
 
     checkoutContainer.innerHTML = checkoutHtml;
@@ -142,6 +146,11 @@ function renderCheckoutForm(user) {
     // Attach form submit handler
     const form = document.getElementById('shipping-form');
     form.addEventListener('submit', handleOrderSubmit);
+}
+
+function getSelectedPaymentMethod() {
+    const selected = document.querySelector('input[name="paymentMethod"]:checked');
+    return selected ? selected.value : 'CARD';
 }
 
 async function handleOrderSubmit(e) {
@@ -154,32 +163,11 @@ async function handleOrderSubmit(e) {
     const city = document.getElementById('city').value.trim();
     const postalCode = document.getElementById('postalCode').value.trim();
     const phone = document.getElementById('phone').value.trim();
-    const cardNumber = document.getElementById('cardNumber').value.trim();
-    const expiryDate = document.getElementById('expiryDate').value.trim();
-    const cvv = document.getElementById('cvv').value.trim();
+    const paymentMethod = getSelectedPaymentMethod();
 
     // Basic validation
     if (!fullName || !email || !address || !city || !postalCode || !phone) {
         showOrderError('Please fill in all shipping fields.');
-        return;
-    }
-    if (!cardNumber || !expiryDate || !cvv) {
-        showOrderError('Please fill in all payment fields.');
-        return;
-    }
-
-    // Simple credit card validation (just checks format)
-    const cardNumberClean = cardNumber.replace(/\s/g, '');
-    if (!/^\d{16}$/.test(cardNumberClean)) {
-        showOrderError('Card number must be 16 digits.');
-        return;
-    }
-    if (!/^\d{2}\/\d{2}$/.test(expiryDate)) {
-        showOrderError('Expiry date must be in MM/YY format.');
-        return;
-    }
-    if (!/^\d{3,4}$/.test(cvv)) {
-        showOrderError('CVV must be 3 or 4 digits.');
         return;
     }
 
@@ -189,60 +177,37 @@ async function handleOrderSubmit(e) {
     submitBtn.textContent = 'Placing Order...';
     submitBtn.disabled = true;
 
-    // Build order data (will attach payment info after processing)
-    const orderData = {
-        shippingAddress: {
-            fullName,
-            email,
-            address,
-            city,
-            postalCode,
-            phone
-        },
-        paymentInfo: {
-            cardNumber: cardNumberClean,
-            expiryDate,
-            cvv
-        },
-        items: cartData.items.map(item => ({
-            productId: item.product.id,
-            productName: item.product.name,
-            quantity: item.quantity,
-            price: item.product.price
-        })),
-        total: cartData.grandTotal || cartData.totalPrice
-    };
-
     try {
-        // 1) Create payment intent
-        const paymentInit = await createPaymentIntent({
-            amount: orderData.total,
-            currency: 'NGN',
-            paymentMethod: {
-                cardNumber: cardNumberClean,
-                expiryDate,
-                cvv
-            },
-            customer: { fullName, email }
+        const result = await submitCheckout({
+            shippingMethod: 'STANDARD',
+            paymentMethod,
+            note: `Deliver to ${fullName}, ${address}, ${city}, ${postalCode}. Phone: ${phone}`
         });
 
-        const paymentId = paymentInit.paymentId || paymentInit.id || paymentInit.intentId;
-        if (!paymentId) {
-            throw new Error('Payment initialization failed.');
+        const { order, payment } = result;
+
+        if (payment.method === 'PAY_ON_DELIVERY') {
+            // No online payment needed — confirm directly.
+            await confirmPayment(payment.id);
+            navigateToRoute('orderConfirmation', { orderId: order.id });
+            return;
         }
 
-        // 2) Confirm payment
-        const paymentResult = await confirmPayment(paymentId);
-        const paymentStatus = paymentResult.status || 'confirmed';
+        // Show payment status area and run the provider flow without redirecting away.
+        const statusEl = document.getElementById('payment-status');
+        statusEl.style.display = 'block';
+        statusEl.innerHTML = '<p>Preparing your payment…</p>';
+        statusEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-        // 3) Submit order with payment metadata
-        const order = await submitOrder({
-            ...orderData,
-            payment: { paymentId, status: paymentStatus }
-        });
-        // Clear cart from sessionStorage or trigger backend cart clear (handled by API)
-        // Redirect to order confirmation page
-        navigateToRoute('orderConfirmation', { orderId: order.id ?? '' });
+        if (payment.transferAccount) {
+            await runTransferPayment(payment, result, statusEl);
+        } else if (payment.inline) {
+            await runInlinePayment(payment, email, result, statusEl);
+        } else if (payment.redirectUrl) {
+            await runRedirectPayment(payment, result, statusEl);
+        } else {
+            throw new Error('No payment method was configured by the store. Please contact support.');
+        }
     } catch (error) {
         showOrderError(error.message || 'Failed to place order. Please try again.');
         submitBtn.textContent = originalText;
@@ -250,8 +215,185 @@ async function handleOrderSubmit(e) {
     }
 }
 
+function loadScript(url) {
+    return new Promise((resolve, reject) => {
+        if (window.__loadedScripts && window.__loadedScripts.has(url)) {
+            resolve();
+            return;
+        }
+        const script = document.createElement('script');
+        script.src = url;
+        script.async = true;
+        script.onload = () => {
+            window.__loadedScripts = window.__loadedScripts || new Set();
+            window.__loadedScripts.add(url);
+            resolve();
+        };
+        script.onerror = () => reject(new Error('Could not load the payment provider script.'));
+        document.head.appendChild(script);
+    });
+}
+
+async function runInlinePayment(payment, email, result, statusEl) {
+    const { inline } = payment;
+    if (!inline?.scriptUrl || !inline?.publicKey) {
+        throw new Error('Payment provider is misconfigured. Please contact support.');
+    }
+
+    await loadScript(inline.scriptUrl);
+
+    const paid = await new Promise((resolve) => {
+        const done = (success) => resolve(success);
+
+        if (payment.provider === 'paystack') {
+            if (!window.PaystackPop?.setup) {
+                resolve(false);
+                return;
+            }
+            const handler = window.PaystackPop.setup({
+                key: inline.publicKey,
+                email,
+                amount: Math.round(result.totals.total * 100),
+                ref: inline.reference,
+                currency: 'NGN',
+                metadata: { orderNumber: result.order.orderNumber },
+                callback: () => done(true),
+                onClose: () => done(false)
+            });
+            handler.openIframe();
+        } else if (payment.provider === 'flutterwave') {
+            if (typeof window.FlutterwaveCheckout !== 'function') {
+                resolve(false);
+                return;
+            }
+            window.FlutterwaveCheckout({
+                public_key: inline.publicKey,
+                tx_ref: inline.reference,
+                amount: result.totals.total,
+                currency: 'NGN',
+                payment_options: payment.method === 'TRANSFER' ? 'banktransfer' : 'card',
+                callback: () => done(true),
+                onclose: () => done(false)
+            });
+        } else {
+            // Nomba and others: open the provider checkout URL in a modal iframe.
+            resolve(await runRedirectPayment(payment, result, statusEl));
+        }
+    });
+
+    if (paid) {
+        await pollUntilPaid(payment.reference);
+    } else {
+        statusEl.innerHTML = '<p>Payment window closed before completion. You can verify your payment status on the order page.</p>';
+        const submitBtn = document.getElementById('place-order-btn');
+        submitBtn.textContent = 'I have completed my payment';
+        submitBtn.disabled = false;
+        submitBtn.onclick = async () => {
+            try {
+                await pollUntilPaid(payment.reference);
+            } catch (err) {
+                showOrderError(err.message);
+            }
+        };
+    }
+}
+
+async function runTransferPayment(payment, result, statusEl) {
+    const account = payment.transferAccount;
+    statusEl.innerHTML = `
+        <h3>Pay by Bank Transfer</h3>
+        <p>Transfer <strong>${formatCurrency(result.totals.total)}</strong> to the account below, then click "I have paid" to confirm.</p>
+        <div class="transfer-details">
+            <p><span>Bank:</span> <strong>${escapeHtml(account.bank)}</strong></p>
+            <p><span>Account Number:</span> <strong>${escapeHtml(account.accountNumber)}</strong></p>
+            <p><span>Account Name:</span> <strong>${escapeHtml(account.accountName)}</strong></p>
+            <p><span>Reference:</span> <strong>${escapeHtml(account.reference || payment.reference)}</strong></p>
+        </div>
+        <button type="button" class="btn-primary" id="transfer-done-btn">I have paid</button>
+    `;
+    document.getElementById('transfer-done-btn').addEventListener('click', async () => {
+        statusEl.innerHTML = '<p>Confirming your transfer… This can take a few minutes.</p>';
+        try {
+            await pollUntilPaid(payment.reference, 40);
+        } catch (err) {
+            showOrderError(err.message);
+        }
+    });
+}
+
+async function runRedirectPayment(payment, result, statusEl) {
+    const safeUrl = sanitizeUrl(payment.redirectUrl, '');
+    // Stripe's hosted Checkout refuses to render inside an iframe, so open it
+    // as a popup window and let the status area poll for confirmation.
+    if (payment.provider === 'stripe') {
+        statusEl.innerHTML = `
+            <h3>Complete your payment</h3>
+            <p>We opened a secure Stripe payment window. Complete the payment there and it will be confirmed here automatically.</p>
+            <p class="helper-text">Popup blocked? <a href="${escapeAttr(safeUrl)}" target="_blank" rel="noopener">Open Stripe checkout</a>.</p>
+        `;
+        const popup = window.open(safeUrl, '_blank', 'width=520,height=680');
+        if (!popup) {
+            window.location.href = safeUrl;
+            return;
+        }
+        try {
+            await pollUntilPaid(payment.reference);
+        } catch (err) {
+            showOrderError(err.message);
+        }
+        return;
+    }
+
+    // Other providers without inline support: hosted checkout in a modal iframe
+    // so the customer is never redirected away from the store.
+    statusEl.innerHTML = `
+        <h3>Complete your payment</h3>
+        <div class="checkout-iframe-wrap">
+            <iframe src="${escapeAttr(safeUrl)}" title="Payment" class="checkout-iframe"></iframe>
+        </div>
+        <p class="helper-text">If the form above does not load, <a href="${escapeAttr(safeUrl)}" target="_blank" rel="noopener">open it in a new tab</a>.</p>
+    `;
+}
+
+async function pollUntilPaid(reference, maxAttempts = 30) {
+    const statusEl = document.getElementById('payment-status');
+    const submitBtn = document.getElementById('place-order-btn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Confirming payment…';
+
+    let attempts = 0;
+    while (attempts < maxAttempts) {
+        try {
+            const result = await verifyPayment(reference);
+            const status = result.payment?.status;
+            if (status === 'PAID') {
+                submitBtn.textContent = 'Payment confirmed ✓';
+                navigateToRoute('orderConfirmation', { orderId: result.payment.orderId });
+                return;
+            }
+            if (status === 'FAILED') {
+                throw new Error('Payment failed. Please try again.');
+            }
+        } catch (error) {
+            if (error.message?.toLowerCase().includes('failed')) {
+                submitBtn.textContent = 'Place Order';
+                submitBtn.disabled = false;
+                throw error;
+            }
+        }
+        statusEl.innerHTML = '<p>Waiting for payment confirmation…</p>';
+        await new Promise(r => setTimeout(r, 5000));
+        attempts += 1;
+    }
+    submitBtn.textContent = 'Check payment status';
+    submitBtn.disabled = false;
+    submitBtn.onclick = () => pollUntilPaid(reference, 30);
+    throw new Error('Payment is taking longer than expected. Click "Check payment status" after completing payment.');
+}
+
 function showOrderError(message) {
     const errorDiv = document.getElementById('order-error');
+    if (!errorDiv) return;
     errorDiv.textContent = message;
     errorDiv.style.display = 'block';
     // Scroll to error
@@ -263,5 +405,3 @@ document.addEventListener('DOMContentLoaded', () => {
     loadCheckout();
     updateCartCount(); // update header badge
 });
-
-

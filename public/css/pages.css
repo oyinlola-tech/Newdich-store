@@ -1185,3 +1185,69 @@
         flex-wrap: wrap;
     }
 }
+
+/* ============ Checkout: payment methods, transfer details, inline popups ============ */
+
+.payment-methods {
+    display: flex;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+}
+
+.payment-method {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3);
+    border: 1px solid var(--color-border, #ddd);
+    border-radius: 8px;
+    cursor: pointer;
+    flex: 1;
+    min-width: 120px;
+    transition: border-color 0.2s;
+}
+
+.payment-method:hover {
+    border-color: var(--color-primary, #007bff);
+}
+
+.payment-method input {
+    margin: 0;
+}
+
+.payment-status {
+    margin-top: var(--space-4);
+    padding: var(--space-4);
+    border: 1px solid var(--color-border, #ddd);
+    border-radius: 8px;
+    background: var(--color-surface, #fafafa);
+}
+
+.payment-status h3 {
+    margin-bottom: var(--space-2);
+}
+
+.transfer-details {
+    margin: var(--space-3) 0;
+    padding: var(--space-3);
+    background: var(--color-surface-alt, #fff);
+    border: 1px dashed var(--color-border, #ccc);
+    border-radius: 8px;
+}
+
+.transfer-details p {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--space-2);
+}
+
+.checkout-iframe-wrap {
+    margin: var(--space-3) 0;
+}
+
+.checkout-iframe {
+    width: 100%;
+    height: 560px;
+    border: 1px solid var(--color-border, #ddd);
+    border-radius: 8px;
+}

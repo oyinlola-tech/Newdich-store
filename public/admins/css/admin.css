@@ -1318,3 +1318,114 @@ body {
         justify-content: center;
     }
 }
+
+/* ============ Payment settings page ============ */
+
+.lock-banner, .unlocked-banner, .pin-banner {
+    padding: var(--space-3, 16px);
+    border-radius: 8px;
+    margin-bottom: var(--space-4, 20px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.lock-banner {
+    background: #fef3c7;
+    border: 1px solid #f59e0b;
+    color: #78350f;
+}
+
+.unlocked-banner {
+    background: #dcfce7;
+    border: 1px solid #22c55e;
+    color: #14532d;
+}
+
+.pin-banner {
+    background: #dbeafe;
+    border: 1px solid #3b82f6;
+    color: #1e3a8a;
+}
+
+.lock-banner p, .unlocked-banner p, .pin-banner p {
+    margin: 0;
+}
+
+.page-actions {
+    display: flex;
+    gap: 10px;
+    margin-bottom: var(--space-4, 20px);
+}
+
+.provider-card {
+    margin-bottom: var(--space-4, 20px);
+}
+
+.provider-status {
+    font-weight: 600;
+    font-size: 0.8rem;
+    padding: 4px 10px;
+    border-radius: 999px;
+}
+
+.provider-status.status-on {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.provider-status.status-off {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.provider-fields {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: var(--space-3, 16px) 0;
+}
+
+.chip {
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    border-radius: 999px;
+}
+
+.chip-on {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.chip-off {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+.provider-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: var(--space-2, 8px);
+}
+
+.btn-danger {
+    background: #dc2626;
+    color: #fff;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn-danger:hover {
+    background: #b91c1c;
+}
+
+.helper-text {
+    font-size: 0.8rem;
+    color: #64748b;
+    display: block;
+    margin-top: 4px;
+}
