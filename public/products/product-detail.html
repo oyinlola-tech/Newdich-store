@@ -12,18 +12,7 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div class="top-bar">
-        <div class="container top-bar-content">
-            <div class="top-bar-left">
-                <span><i class="fas fa-shield-alt"></i> Secure checkout</span>
-                <span class="divider">•</span>
-                <span><i class="fas fa-truck"></i> Nationwide delivery</span>
-            </div>
-            <div class="top-bar-right">
-                <span><i class="fas fa-headset"></i> 24/7 client support</span>
-            </div>
-        </div>
-    </div>    <header>
+    <header>
         <div class="container">
             <div class="logo">
                 <h1>Telente Store</h1>
@@ -52,29 +41,7 @@
                 </a>
             </div>
         </div>
-    </header>
-    <section class="trust-strip">
-        <div class="container trust-strip-inner">
-            <div class="trust-item">
-                <i class="fas fa-shield-alt"></i>
-                <span>Secure, compliant checkout</span>
-            </div>
-            <div class="trust-item">
-                <i class="fas fa-truck"></i>
-                <span>Nationwide delivery network</span>
-            </div>
-            <div class="trust-item">
-                <i class="fas fa-award"></i>
-                <span>Quality-checked catalog</span>
-            </div>
-            <div class="trust-item">
-                <i class="fas fa-headset"></i>
-                <span>24/7 enterprise support</span>
-            </div>
-        </div>
-    </section>
-
-    <main>
+    </header><main>
         <div class="container">
             <div id="product-detail" class="product-detail-section">
                 <div class="loading">Loading product details...</div>
@@ -82,7 +49,7 @@
         </div>
         <section class="related-products">
             <div class="container">
-                <h3>Related Products</h3>
+                <h3 class="section-title">Related Products</h3>
                 <div id="related-products-grid" class="product-grid">
                     <div class="loading">Loading related products...</div>
                 </div>
@@ -95,11 +62,11 @@
             <div class="footer-brand">
                 <h3>Telente Store</h3>
                 <p>Telente Store delivers luxury essentials with bold design and impeccable delivery.</p>
-                <div class="footer-badges">
-                    <span class="badge"><i class="fas fa-lock"></i> PCI-ready</span>
-                    <span class="badge"><i class="fas fa-globe"></i> Nationwide</span>
-                    <span class="badge"><i class="fas fa-star"></i> Trusted by teams</span>
-                </div>
+                            <div class="footer-social">
+                <a href="#" class="social-link" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social-link" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="social-link" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
+            </div>
             </div>
             <div class="footer-column">
                 <h4>Company</h4>
@@ -130,14 +97,13 @@
             </div>
         </div>
         <div class="container footer-bottom">
-            <p>&copy; 2026 Telente Store. All rights reserved.</p>
-            <div class="footer-meta">
-                <span>Powered by Telente Technology</span>
-            </div>
+            <p>&copy; <span class="js-year">2026</span> Telente Store. All rights reserved.</p>
+            
         </div>
     </footer>
 
     <script type="module" src="js/products/product-detail.js"></script>
+    <script type="module" src="/js/pages/footer-year.js"></script>
 </body>
 </html>
 

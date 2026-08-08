@@ -21,6 +21,42 @@
     --shadow: 0 14px 30px rgba(17, 24, 39, 0.08);
     --shadow-soft: 0 8px 18px rgba(17, 24, 39, 0.06);
     --ring: 0 0 0 3px rgba(31, 75, 153, 0.18);
+
+    /* Semantic color tokens (preserve existing brand colors) */
+    --color-primary: #1f4b99;
+    --color-primary-hover: #163a77;
+    --color-primary-active: #1a3d6e;
+    --color-accent: #d1962f;
+    --color-background: #f4f6f9;
+    --color-surface: #ffffff;
+    --color-surface-muted: #eef1f6;
+    --color-text: #12141a;
+    --color-text-secondary: #5a6270;
+    --color-text-muted: #9aa0ad;
+    --color-border: #e2e7f0;
+
+    /* Spacing scale (design system section 9) */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-10: 40px;
+    --space-12: 48px;
+    --space-16: 64px;
+    --space-20: 80px;
+    --space-24: 96px;
+    --space-32: 120px;
+    --space-40: 160px;
+
+    /* Radius tokens (design system section 10) */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+    --radius-xl: 28px;
+    --radius-full: 9999px;
 }
 
 body {
@@ -66,7 +102,7 @@ main {
 }
 
 section {
-    padding: 3.75rem 0;
+    padding: var(--space-12) 0;
 }
 
 .reveal {
@@ -91,7 +127,10 @@ section {
 
 .section-title {
     font-size: 2.1rem;
-    margin-bottom: 0.75rem;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--space-4);
 }
 
 .section-subtitle {
@@ -101,7 +140,7 @@ section {
 
 @media (max-width: 768px) {
     section {
-        padding: 2.5rem 0;
+        padding: var(--space-8) 0;
     }
 }
 
