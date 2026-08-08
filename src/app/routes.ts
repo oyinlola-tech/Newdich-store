@@ -4,10 +4,10 @@ import { registerHealthModule } from '../modules/health/health.module.js';
 import { registerAuthModule } from '../modules/auth/auth.module.js';
 import { registerUsersModule } from '../modules/users/users.module.js';
 import { registerCategoriesModule } from '../modules/categories/categories.module.js';
-import { registerProductsModule } from '../modules/products/products.module.js';
-import { registerProductVariantsModule } from '../modules/product-variants/product-variants.module.js';
-import { registerInventoryModule } from '../modules/inventory/inventory.module.js';
+import { registerBrandsModule } from '../modules/brands/brands.module.js';
 import { registerMediaModule } from '../modules/media/media.module.js';
+import { registerInventoryModule } from '../modules/inventory/inventory.module.js';
+import { registerProductVariantsModule } from '../modules/product-variants/product-variants.module.js';
 import { registerSettingsModule } from '../modules/settings/settings.module.js';
 import { registerAddressesModule } from '../modules/addresses/addresses.module.js';
 import { registerCartsModule } from '../modules/carts/carts.module.js';
@@ -15,8 +15,6 @@ import { registerOrdersModule } from '../modules/orders/orders.module.js';
 import { registerPaymentsModule } from '../modules/payments/payments.module.js';
 import { registerCheckoutModule } from '../modules/checkout/checkout.module.js';
 import { registerShippingModule } from '../modules/shipping/shipping.module.js';
-import { registerWishlistsModule } from '../modules/wishlists/wishlists.module.js';
-import { registerReviewsModule } from '../modules/reviews/reviews.module.js';
 import { registerReturnsModule } from '../modules/returns/returns.module.js';
 import { registerNotificationsModule } from '../modules/notifications/notifications.module.js';
 import { registerCouponsModule } from '../modules/coupons/coupons.module.js';
@@ -26,7 +24,13 @@ import { registerAnalyticsModule } from '../modules/analytics/analytics.module.j
 import { registerAuditModule } from '../modules/audit/audit.module.js';
 import { registerSearchModule } from '../modules/search/search.module.js';
 import { registerWebhooksModule } from '../modules/webhooks/webhooks.module.js';
-import { registerBrandsModule } from '../modules/brands/brands.module.js';
+import { registerProductsModule } from '../modules/products/products.module.js';
+import { registerWishlistsModule } from '../modules/wishlists/wishlists.module.js';
+import { registerReviewsModule } from '../modules/reviews/reviews.module.js';
+import { registerReviewPromptsModule } from '../modules/review-prompts/review-prompts.module.js';
+import { registerActivityLogsModule } from '../modules/activity-logs/activity-logs.module.js';
+import { registerRequestLogsModule } from '../modules/request-logs/request-logs.module.js';
+import { registerEmailTemplatesModule } from '../modules/email-templates/email-templates.module.js';
 
 export function registerRoutes(app: FastifyInstance, container: Container): void {
   registerHealthModule(container, app);
@@ -56,4 +60,8 @@ export function registerRoutes(app: FastifyInstance, container: Container): void
   registerAuditModule(container, app);
   registerSearchModule(container, app);
   registerWebhooksModule(container, app);
+  registerReviewPromptsModule(container, app);
+  registerActivityLogsModule(container, app);
+  registerRequestLogsModule(container, app);
+  registerEmailTemplatesModule(container, app);
 }

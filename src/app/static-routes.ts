@@ -34,10 +34,12 @@ const HTML_ROUTES: Record<string, string> = {
   '/admin/coupons': 'admins/pages/coupons.html',
   '/admin/admins': 'admins/pages/admins.html',
   '/admin/audit': 'admins/pages/audit.html',
+  '/admin/emails': 'admins/pages/emails.html',
   '/admin/login': 'admins/auth/login.html',
   '/admin/forgot-password': 'admins/auth/forgot-password.html',
   '/admin/reset-password': 'admins/auth/reset-password.html',
-  '/admin/otp': 'admins/auth/otp.html'
+  '/admin/otp': 'admins/auth/otp.html',
+  '/track': 'pages/track.html'
 };
 
 export function isApiRoute(url: string): boolean {

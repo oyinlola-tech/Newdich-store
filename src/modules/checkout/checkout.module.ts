@@ -15,7 +15,8 @@ export function registerCheckoutModule(container: Container, app: FastifyInstanc
       c.get('payment.service'),
       c.get('user.repository'),
       c.get('tax.service'),
-      c.get('coupon.service')
+      c.get('coupon.service'),
+      c.has('review-prompt.service') ? c.get('review-prompt.service') : undefined
     )
   );
   container.register('checkout.controller', (c) => new CheckoutController(c.get('checkout.service')));

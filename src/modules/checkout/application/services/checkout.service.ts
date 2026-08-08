@@ -5,6 +5,7 @@ import type { PaymentService } from '../../../payments/application/services/paym
 import type { UserRepositoryPort } from '../../../users/application/ports/user.repository.js';
 import type { TaxService } from '../../../tax/application/services/tax.service.js';
 import type { CouponService } from '../../../coupons/application/services/coupon.service.js';
+import type { ReviewPromptService } from '../../../review-prompts/application/services/review-prompt.service.js';
 
 export const SHIPPING_RATES: Record<string, { fee: number; estimate: string }> = {
   STANDARD: { fee: 2500, estimate: '3 - 5 business days' },
@@ -28,7 +29,8 @@ export class CheckoutService {
     private readonly paymentService: PaymentService,
     private readonly userRepository: UserRepositoryPort,
     private readonly taxService: TaxService,
-    private readonly couponService: CouponService
+    private readonly couponService: CouponService,
+    private readonly reviewPromptService?: ReviewPromptService
   ) {}
 
   async checkout(input: CheckoutInput) {
@@ -95,6 +97,10 @@ export class CheckoutService {
 
     if (couponCode) {
       await this.couponService.consume(couponCode, discountAmount);
+    }
+
+    for (const item of order.items) {
+      await this.reviewPromptService?.create(input.userId, item.productId, order.id, 14).catch(() => undefined);
     }
 
     // Payment first: the order is only finalized (emails, admin alert) once the

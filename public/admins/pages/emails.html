@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:; img-src 'self' data: https://via.placeholder.com; connect-src 'self' http://localhost:3000; base-uri 'self'; form-action 'self'; frame-ancestors 'none'">
+    <meta name="referrer" content="no-referrer">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Emails | Telente Store</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/admins/css/admin.css">
+</head>
+<body>
+    <div class="admin-wrapper">
+        <aside class="admin-sidebar">
+            <div class="sidebar-header">
+                <h2>Telente Admin</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="/admin"><i class="fas fa-dashboard"></i> Dashboard</a></li>
+                    <li><a href="/admin/products"><i class="fas fa-box"></i> Products</a></li>
+                    <li><a href="/admin/categories"><i class="fas fa-tags"></i> Categories</a></li>
+                    <li><a href="/admin/inventory"><i class="fas fa-warehouse"></i> Inventory</a></li>
+                    <li><a href="/admin/orders"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+                    <li><a href="/admin/returns"><i class="fas fa-undo"></i> Returns</a></li>
+                    <li><a href="/admin/contact"><i class="fas fa-envelope"></i> Contact</a></li>
+                    <li><a href="/admin/analytics"><i class="fas fa-chart-line"></i> Analytics</a></li>
+                    <li><a href="/admin/coupons"><i class="fas fa-ticket-alt"></i> Coupons</a></li>
+                    <li><a href="/admin/emails" class="active"><i class="fas fa-paper-plane"></i> Emails</a></li>
+                    <li><a href="/admin/payment-settings"><i class="fas fa-credit-card"></i> Payments</a></li>
+                    <li><a href="/admin/users"><i class="fas fa-users"></i> Users</a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <button id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </aside>
+
+        <main class="admin-main">
+            <header class="admin-header">
+                <div class="header-title">
+                    <h1>Email Center</h1>
+                </div>
+                <div class="header-user">
+                    <span id="admin-name">Admin</span>
+                </div>
+            </header>
+
+            <div class="admin-content">
+                <div class="filters">
+                    <div class="filter-group">
+                        <label for="template-search">Search Templates</label>
+                        <input type="text" id="template-search" placeholder="Template name">
+                    </div>
+                    <div class="filter-actions">
+                        <button id="create-template-btn" class="btn-primary"><i class="fas fa-plus"></i> New Template</button>
+                        <button id="send-email-btn" class="btn-primary"><i class="fas fa-paper-plane"></i> Send Email</button>
+                    </div>
+                </div>
+
+                <div id="templates-container">
+                    <div class="loading">Loading email templates...</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="template-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Create Email Template</h2>
+            <form id="template-form">
+                <div class="form-group">
+                    <label for="template-name">Name</label>
+                    <input type="text" id="template-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="template-category">Category</label>
+                    <select id="template-category">
+                        <option value="support">Support</option>
+                        <option value="marketing">Marketing</option>
+                        <option value="transactional">Transactional</option>
+                        <option value="coupon">Coupon</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="template-subject">Subject</label>
+                    <input type="text" id="template-subject" required>
+                </div>
+                <div class="form-group">
+                    <label for="template-body">Body</label>
+                    <textarea id="template-body" rows="6" required></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Create</button>
+                    <button type="button" id="cancel-modal" class="btn-secondary">Cancel</button>
+                </div>
+            </form>
+            <div id="template-message" class="profile-message" style="display: none;"></div>
+        </div>
+    </div>
+
+    <div id="send-email-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Send Email</h2>
+            <form id="send-email-form">
+                <div class="form-group">
+                    <label for="email-to">To (email)</label>
+                    <input type="email" id="email-to" placeholder="user@example.com">
+                </div>
+                <div class="form-group">
+                    <label for="email-search">Or Search User</label>
+                    <input type="text" id="email-search" placeholder="Search by name or email">
+                </div>
+                <div class="form-group">
+                    <label for="email-template">Template</label>
+                    <select id="email-template">
+                        <option value="">Custom email</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="email-subject">Subject</label>
+                    <input type="text" id="email-subject" required>
+                </div>
+                <div class="form-group">
+                    <label for="email-body">Body</label>
+                    <textarea id="email-body" rows="6" required></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Send</button>
+                    <button type="button" id="cancel-send-modal" class="btn-secondary">Cancel</button>
+                </div>
+            </form>
+            <div id="send-email-message" class="profile-message" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script type="module" src="/admins/js/main/emails.js"></script>
+    <script type="module" src="/admins/js/main/admin.js"></script>
+</body>
+</html>

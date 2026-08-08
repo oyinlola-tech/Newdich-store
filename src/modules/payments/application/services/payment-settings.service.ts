@@ -201,7 +201,6 @@ export class PaymentSettingsService {
     return PinService.decryptWithPin(pin, config[field]);
   }
 
-  // ===================== UNLOCK (runtime) =====================
 
   isUnlocked(): boolean {
     return this.unlockedAt !== null && Date.now() - this.unlockedAt < UNLOCK_TTL_MS;

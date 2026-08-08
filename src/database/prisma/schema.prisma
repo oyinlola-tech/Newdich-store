@@ -51,6 +51,7 @@ model User {
   notifications Notification[]
   passwordResets PasswordReset[]
   coupons     Coupon[]
+  reviewPrompts ReviewPrompt[]
 
   @@index([role])
   @@index([status])
@@ -753,6 +754,65 @@ model EmailLog {
 
   @@index([to, createdAt])
   @@index([status])
+}
+
+model ReviewPrompt {
+  id         String    @id @default(cuid())
+  userId     String
+  productId  String
+  orderId    String
+  status     String    @default("PENDING")
+  expiresAt  DateTime
+  createdAt  DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+  @@index([expiresAt])
+}
+
+model ActivityLog {
+  id         String    @id @default(cuid())
+  actorType  String
+  actorId    String?
+  action     String
+  targetType String?
+  targetId   String?
+  metadata   Json?
+  ip         String?
+  userAgent  String?
+  createdAt  DateTime  @default(now())
+
+  @@index([actorType, createdAt])
+  @@index([action, createdAt])
+  @@index([targetType, targetId])
+}
+
+model RequestLog {
+  id         String    @id @default(cuid())
+  ip         String
+  path      String
+  method    String
+  status    Int
+  userId    String?
+  userAgent String?
+  createdAt DateTime  @default(now())
+
+  @@index([ip, createdAt])
+  @@index([path, createdAt])
+}
+
+model EmailTemplate {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  subject     String
+  body        String
+  category    String
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([category])
 }
 
 model Job {
