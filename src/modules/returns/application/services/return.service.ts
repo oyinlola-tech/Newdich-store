@@ -118,7 +118,7 @@ export class ReturnService {
       const user = await this.userRepository.findById(order.userId);
       if (!user) return;
       await send(user, order.orderNumber);
-    } catch (error) {
+    } catch {
       /* return emails must never break the return flow */
     }
   }

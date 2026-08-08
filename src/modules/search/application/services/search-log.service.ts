@@ -8,7 +8,7 @@ export class SearchLogService {
     if (!trimmed) return;
     try {
       await this.prisma.searchLog.create({ data: { query: trimmed.slice(0, 200), userId: userId ?? null } });
-    } catch (error) {
+    } catch {
       // Logging is best-effort; never fail a search because logging failed.
     }
   }

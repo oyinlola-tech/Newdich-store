@@ -6,7 +6,7 @@ import { openApiDocument } from './openapi.js';
 
 export async function registerSwagger(app: FastifyInstance): Promise<void> {
   await app.register(swagger, {
-    openapi: openApiDocument as unknown as OpenAPIV3.Document<{}>,
+    openapi: openApiDocument as unknown as OpenAPIV3.Document<unknown>,
     refResolver: { buildLocalReference: (_json, _baseUri, _fragment, i) => `def-${i}` }
   });
 

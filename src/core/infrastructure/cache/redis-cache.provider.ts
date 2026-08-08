@@ -6,9 +6,9 @@ export class RedisCacheProvider implements CachePort {
 
   constructor() {
     try {
-      const Redis = require('ioredis');
+      const Redis = await import('ioredis');
       if (appConfig.REDIS_URL) {
-        this.client = new Redis(appConfig.REDIS_URL, {
+        this.client = new Redis.default(appConfig.REDIS_URL, {
           lazyConnect: true,
           maxRetriesPerRequest: 1,
           enableOfflineQueue: false

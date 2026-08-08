@@ -161,7 +161,7 @@ export class OrderService {
         { email: user.email, name: user.name },
         { orderNumber: order.orderNumber, status }
       );
-    } catch (error) {
+    } catch {
       /* status emails must never break the order flow */
     }
   }

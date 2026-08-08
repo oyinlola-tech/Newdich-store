@@ -56,7 +56,7 @@ export class NotificationService {
           )
         )
       );
-    } catch (error) {
+    } catch {
       /* promotional emails must never break the notification flow */
     }
   }

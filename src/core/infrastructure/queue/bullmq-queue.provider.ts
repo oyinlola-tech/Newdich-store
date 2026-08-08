@@ -8,9 +8,9 @@ export class BullMQQueueProvider implements QueuePort {
   constructor() {
     try {
       if (!appConfig.REDIS_URL) return;
-      const Redis = require('ioredis');
-      const { Queue } = require('bullmq');
-      this.client = new Redis(appConfig.REDIS_URL, {
+      const Redis = await import('ioredis');
+      const { Queue } = await import('bullmq');
+      this.client = new Redis.default(appConfig.REDIS_URL, {
         lazyConnect: true,
         maxRetriesPerRequest: 1,
         enableOfflineQueue: false

@@ -58,7 +58,7 @@ export class ShippingService {
           trackingNumber: trackingNumber ?? '—'
         }
       );
-    } catch (error) {
+    } catch {
       /* shipping notification must never break the shipment flow */
     }
   }
