@@ -1,0 +1,154 @@
+/* Error Pages */
+.error-hero {
+    padding: 4rem 0 5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.error-wrap {
+    display: grid;
+    gap: 2.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    align-items: center;
+}
+
+.error-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2.5rem;
+    box-shadow: var(--shadow);
+}
+
+.error-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.9rem;
+    border-radius: 999px;
+    background: rgba(31, 75, 153, 0.1);
+    color: var(--brand);
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+}
+
+.error-code {
+    font-size: clamp(3.5rem, 8vw, 6rem);
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    color: var(--brand);
+    margin-bottom: 0.5rem;
+}
+
+.error-title {
+    font-size: clamp(1.5rem, 3vw, 2.4rem);
+    margin-bottom: 0.75rem;
+}
+
+.error-description {
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.error-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.error-side {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.error-visual {
+    padding: 1.5rem;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #f9fbff 0%, #eef2ff 100%);
+    border: 1px solid rgba(27, 92, 255, 0.2);
+    box-shadow: var(--shadow-soft);
+}
+
+.error-visual svg {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.error-quick {
+    display: grid;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+    color: var(--muted);
+}
+
+.error-quick strong {
+    color: var(--ink);
+}
+
+.error-links {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.error-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    background: #f6f8fc;
+    border: 1px solid var(--border);
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.error-link:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-soft);
+}
+
+.error-link i {
+    color: var(--brand);
+}
+
+.error-401 .error-code {
+    color: var(--accent);
+}
+
+.error-403 .error-code {
+    color: #dc2626;
+}
+
+.error-429 .error-code {
+    color: #ca8a04;
+}
+
+.error-500 .error-code,
+.error-502 .error-code,
+.error-503 .error-code,
+.error-504 .error-code {
+    color: #dc2626;
+}
+
+.error-401 .error-tag {
+    background: rgba(209, 150, 47, 0.1);
+    color: var(--accent);
+}
+
+.error-403 .error-tag,
+.error-429 .error-tag {
+    color: #fff;
+}
+
+.error-403 .error-tag {
+    background: #dc2626;
+}
+
+.error-429 .error-tag {
+    background: #ca8a04;
+}

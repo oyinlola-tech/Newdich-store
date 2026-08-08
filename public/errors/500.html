@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:; img-src 'self' data: https://via.placeholder.com; connect-src 'self' http://localhost:3000; base-uri 'self'; form-action 'self'; frame-ancestors 'none'">
+    <meta name="referrer" content="no-referrer">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Error - Telente Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/error.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>Telente Store</h1>
+            </div>
+            <button class="hamburger" aria-label="Menu">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/products">Products</a></li>
+                    <li><a href="/wishlist">Wishlist</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="header-icons">
+                <a href="/wishlist" class="wishlist-icon">
+                    <i class="fas fa-heart"></i>
+                </a>
+                <a href="/cart" class="cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count">0</span>
+                </a>
+                <a href="/account" class="user-icon">
+                    <i class="fas fa-user"></i>
+                </a>
+            </div>
+        </div>
+    </header><main>
+        <section class="error-hero error-500">
+            <div class="container error-wrap">
+                <div class="error-card">
+                    <span class="error-tag"><i class="fas fa-server"></i> Server Error</span>
+                    <div class="error-code">500</div>
+                    <h2 class="error-title">Something went wrong</h2>
+                    <p class="error-description">An internal server error occurred. Our team has been notified and is working on it.</p>
+                    <div class="error-actions">
+                        <a href="/" class="btn-primary">Go Home</a>
+                        <a href="/contact" class="btn-secondary">Contact Support</a>
+                    </div>
+                </div>
+                <div class="error-side">
+                    <div class="error-visual" aria-hidden="true">
+                        <svg viewBox="0 0 420 260" xmlns="http://www.w3.org/2000/svg" role="presentation">
+                            <defs>
+                                <linearGradient id="errGlow" x1="0" y1="0" x2="1" y2="1">
+                                    <stop offset="0%" stop-color="#1f4b99" stop-opacity="0.9"/>
+                                    <stop offset="100%" stop-color="#2d67d1" stop-opacity="0.6"/>
+                                </linearGradient>
+                            </defs>
+                            <rect width="420" height="260" rx="24" fill="#ffffff" opacity="0.85"/>
+                            <circle cx="320" cy="80" r="52" fill="url(#errGlow)"/>
+                            <circle cx="320" cy="80" r="20" fill="#ffffff" opacity="0.6"/>
+                            <path d="M40 210 C120 160, 180 200, 250 150 C300 120, 340 140, 380 110" stroke="#1f4b99" stroke-width="4" fill="none" opacity="0.5"/>
+                            <path d="M60 190 C120 140, 210 170, 260 130 C310 100, 350 120, 390 90" stroke="#d1962f" stroke-width="3" fill="none" opacity="0.35"/>
+                            <rect x="60" y="60" width="160" height="18" rx="9" fill="#e9efff"/>
+                            <rect x="60" y="90" width="200" height="18" rx="9" fill="#e9efff"/>
+                            <rect x="60" y="120" width="120" height="18" rx="9" fill="#e9efff"/>
+                        </svg>
+                    </div>
+                    <div class="error-quick">
+                        <strong>Need help?</strong>
+                        <span>Visit our contact page, check your account, or return to the home page.</span>
+                    </div>
+                    <div class="error-links">
+                        <a class="error-link" href="/">
+                            <i class="fas fa-home"></i>
+                            <span>Return to Telente Store homepage</span>
+                        </a>
+                        <a class="error-link" href="/contact">
+                            <i class="fas fa-headset"></i>
+                            <span>Contact customer support</span>
+                        </a>
+                        <a class="error-link" href="/account">
+                            <i class="fas fa-user"></i>
+                            <span>Go to your account</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <h3>Telente Store</h3>
+                <p>Telente Store delivers luxury essentials with bold design and impeccable delivery.</p>
+                <div class="footer-social">
+                    <a href="#" class="social-link" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-link" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-link" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
+                </div>
+            </div>
+            <div class="footer-column">
+                <h4>Shop</h4>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/products">Products</a></li>
+                    <li><a href="/cart">Cart</a></li>
+                    <li><a href="/wishlist">Wishlist</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="/contact">Contact</a></li>
+                    <li><a href="/returns">Returns</a></li>
+                    <li><a href="/account">My Account</a></li>
+                    <li><a href="/order-confirmation">Track Order</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Access</h4>
+                <ul>
+                    <li><a href="/login">Login</a></li>
+                    <li><a href="/register">Register</a></li>
+                    <li><a href="/forgot-password">Forgot Password</a></li>
+                    <li><a href="/contact">Help</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="container footer-bottom">
+            <p>&copy; <span class="js-year">2026</span> Telente Store. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script type="module" src="/js/pages/footer-year.js"></script>
+</body>
+</html>

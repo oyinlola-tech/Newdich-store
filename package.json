@@ -1,8 +1,8 @@
 {
-  "name": "newdich-store-backend",
+  "name": "telente-store-backend",
   "version": "0.1.0",
   "private": true,
-  "description": "Newdich Store - modular monolith backend (Fastify + MySQL/Prisma)",
+  "description": "Telente Store - modular monolith backend (Fastify + MySQL/Prisma)",
   "type": "module",
   "engines": {
     "node": ">=20.0.0"

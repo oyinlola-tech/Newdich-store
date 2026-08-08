@@ -5,7 +5,7 @@ const appSchema = z.object({
   PORT: z.coerce.number().default(3000),
   HOST: z.string().default('0.0.0.0'),
   API_PREFIX: z.string().default('/api/v1'),
-  CORS_ORIGIN: z.string().default('*'),
+  CORS_ORIGIN: z.string().default('http://localhost:3000'),
   PUBLIC_BASE_URL: z.string().url().default('http://localhost:3000'),
   LOG_LEVEL: z.string().default('info')
 });

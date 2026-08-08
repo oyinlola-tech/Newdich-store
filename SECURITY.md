@@ -1,6 +1,6 @@
 # Security Policy
 
-Thanks for helping keep Newdich Store secure. If you discover a vulnerability, please report it privately.
+Thanks for helping keep Telente Store secure. If you discover a vulnerability, please report it privately.
 
 ## Supported Versions
 Only the latest version on the main branch is supported.

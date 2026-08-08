@@ -89,7 +89,7 @@ export function layout({ title, cta, ctaLabel }: EmailLayoutOptions, content: st
                 font-weight: 700;
                 color: ${BRAND};
                 letter-spacing: -0.3px;
-              ">NEWDICH<span style="color: ${ACCENT};">.</span></span>
+              ">TELENTE<span style="color: ${ACCENT};">.</span></span>
             </td>
           </tr>
           <!-- Card -->
@@ -141,12 +141,12 @@ export function layout({ title, cta, ctaLabel }: EmailLayoutOptions, content: st
           <tr>
             <td align="center" style="padding: 24px 16px 8px;">
               <p style="margin: 0 0 6px; font-size: 13px; color: ${MUTED};">
-                Newdich Store &middot; Quality products, delivered to you.
+                Telente Store &middot; Quality products, delivered to you.
               </p>
               <p style="margin: 0; font-size: 12px; color: #9ca3af;">
-                You received this email because you have an account or placed an order with Newdich Store.
+                You received this email because you have an account or placed an order with Telente Store.
                 <br>If this was not you, please ignore this email or contact
-                <a href="mailto:support@newdich.com" style="color: ${BRAND}; text-decoration: none;">support@newdich.com</a>.
+                <a href="mailto:support@telente.site" style="color: ${BRAND}; text-decoration: none;">support@telente.site</a>.
               </p>
             </td>
           </tr>
@@ -162,7 +162,7 @@ export function layout({ title, cta, ctaLabel }: EmailLayoutOptions, content: st
 // Template builders
 // ============================================================
 
-export function welcomeEmail(userName: string, storeName = 'Newdich Store'): string {
+export function welcomeEmail(userName: string, storeName = 'Telente Store'): string {
   const content = `
     <p>Hello ${escapeHtml(userName)},</p>
     <p>Welcome to <strong>${escapeHtml(storeName)}</strong>! We are thrilled to have you on board.</p>
@@ -173,7 +173,7 @@ export function welcomeEmail(userName: string, storeName = 'Newdich Store'): str
       <li>Browse our latest products and offers</li>
       <li>Add your favourite items to your wishlist</li>
     </ul>`;
-  return layout({ title: 'Welcome to Newdich Store', cta: { label: 'Start shopping', url: `${storeFrontUrl()}` } }, content);
+  return layout({ title: 'Welcome to Telente Store', cta: { label: 'Start shopping', url: `${storeFrontUrl()}` } }, content);
 }
 
 export function otpEmail(userName: string, code: string, minutes: number, purpose: string): string {
@@ -203,7 +203,7 @@ export function otpEmail(userName: string, code: string, minutes: number, purpos
 export function loginAlertEmail(userName: string, ip: string, userAgent: string, location: string): string {
   const content = `
     <p>Hello ${escapeHtml(userName)},</p>
-    <p>We noticed a new sign-in to your <strong>Newdich Store</strong> account.</p>
+    <p>We noticed a new sign-in to your <strong>Telente Store</strong> account.</p>
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin: 16px 0; background: ${BG}; border: 1px solid ${BORDER}; border-radius: 10px;">
       <tr><td style="padding: 12px 16px; font-size: 14px;"><strong>Date:</strong> ${escapeHtml(new Date().toISOString())}</td></tr>
       <tr><td style="padding: 0 16px 12px; font-size: 14px;"><strong>IP address:</strong> ${escapeHtml(ip)}</td></tr>
@@ -220,7 +220,7 @@ export function loginAlertEmail(userName: string, ip: string, userAgent: string,
 export function passwordChangedEmail(userName: string): string {
   const content = `
     <p>Hello ${escapeHtml(userName)},</p>
-    <p>Your <strong>Newdich Store</strong> account password was just changed.</p>
+    <p>Your <strong>Telente Store</strong> account password was just changed.</p>
     <p style="color: ${MUTED}; font-size: 14px;">If you made this change, you are all set. If you did not, please reset your password immediately and contact our support team.</p>`;
   return layout({ title: 'Your password has been changed', cta: { label: 'Reset password', url: `${storeFrontUrl()}/auths/reset-password.html` } }, content);
 }
@@ -228,7 +228,7 @@ export function passwordChangedEmail(userName: string): string {
 export function passwordResetEmail(userName: string, resetUrl: string): string {
   const content = `
     <p>Hello ${escapeHtml(userName)},</p>
-    <p>We received a request to reset the password for your <strong>Newdich Store</strong> account.</p>
+    <p>We received a request to reset the password for your <strong>Telente Store</strong> account.</p>
     <p>Click the button below to choose a new password. This link expires in <strong>30 minutes</strong>.</p>`;
   return layout({ title: 'Reset your password', cta: { label: 'Reset password', url: resetUrl } }, content);
 }
@@ -320,7 +320,7 @@ export function orderStatusEmail(input: { userName: string; orderNumber: string;
   const content = `
     <p>Hello ${escapeHtml(input.userName)},</p>
     <p>Your order <strong>#${escapeHtml(input.orderNumber)}</strong> has been updated to: <strong style="color: ${BRAND}; text-transform: uppercase;">${escapeHtml(input.status)}</strong>.</p>
-    <p>We will keep you posted on every change. Thank you for shopping with Newdich Store!</p>`;
+    <p>We will keep you posted on every change. Thank you for shopping with Telente Store!</p>`;
   return layout({ title: `Order update: ${escapeHtml(input.status)}`, cta: { label: 'View order', url: `${storeFrontUrl()}/pages/order-confirmation.html?order=${input.orderNumber}` } }, content);
 }
 
@@ -335,7 +335,7 @@ export function shippingUpdateEmail(input: { userName: string; orderNumber: stri
     <p>Hello ${escapeHtml(input.userName)},</p>
     <p>Great news! Your order <strong>#${escapeHtml(input.orderNumber)}</strong> ${escapeHtml(statusLabels[input.status] ?? 'has a shipping update')}.</p>
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin: 18px 0; background: ${BG}; border: 1px solid ${BORDER}; border-radius: 10px;">
-      <tr><td style="padding: 12px 16px; font-size: 14px;"><strong>Carrier:</strong> ${escapeHtml(input.carrier || 'Newdich Logistics')}</td></tr>
+      <tr><td style="padding: 12px 16px; font-size: 14px;"><strong>Carrier:</strong> ${escapeHtml(input.carrier || 'Telente Logistics')}</td></tr>
       <tr><td style="padding: 0 16px 12px; font-size: 14px;"><strong>Tracking number:</strong> ${escapeHtml(input.trackingNumber) || '—'}</td></tr>
       <tr><td style="padding: 0 16px 12px; font-size: 14px;"><strong>Status:</strong> <span style="text-transform: uppercase; color: ${BRAND};">${escapeHtml(input.status)}</span></td></tr>
     </table>
@@ -380,7 +380,7 @@ export function refundIssuedEmail(input: { userName: string; orderNumber: string
 export function accountSuspendedEmail(userName: string, reason: string): string {
   const content = `
     <p>Hello ${escapeHtml(userName)},</p>
-    <p>Your <strong>Newdich Store</strong> account has been suspended${reason ? ` for the following reason: <em>"${escapeHtml(reason)}"</em>` : '.'}</p>
+    <p>Your <strong>Telente Store</strong> account has been suspended${reason ? ` for the following reason: <em>"${escapeHtml(reason)}"</em>` : '.'}</p>
     <p>If you believe this is a mistake, please contact our support team and we will be happy to help.</p>`;
   return layout({ title: 'Account suspended' }, content);
 }
@@ -407,7 +407,7 @@ export function adminAlertEmail(title: string, body: string, ctaUrl?: string, ct
 export function contactReplyEmail(userName: string, subject: string, reply: string): string {
   const content = `
     <p>Hello ${escapeHtml(userName)},</p>
-    <p>Thank you for contacting <strong>Newdich Store</strong>. Here is our response to your message <em>"${escapeHtml(subject)}"</em>:</p>
+    <p>Thank you for contacting <strong>Telente Store</strong>. Here is our response to your message <em>"${escapeHtml(subject)}"</em>:</p>
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin: 16px 0; background: ${BG}; border: 1px solid ${BORDER}; border-radius: 10px; padding: 16px;">
       <tr><td style="padding: 16px; font-size: 14.5px; line-height: 1.7; color: #2a2f3a;">${escapeHtml(reply)}</td></tr>
     </table>

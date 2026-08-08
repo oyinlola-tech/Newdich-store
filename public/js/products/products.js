@@ -20,6 +20,7 @@ const filterMaxPrice = document.getElementById('filter-max-price');
 const applyFiltersBtn = document.getElementById('apply-filters');
 const resetFiltersBtn = document.getElementById('reset-filters');
 const relatedGrid = document.getElementById('products-related-grid');
+const productCountEl = document.getElementById('product-count');
 
 function getProductImage(product) {
     const url = product?.image || product?.images?.[0];
@@ -33,6 +34,7 @@ function safeId(value) {
 // Render products in grid
 function renderProducts(products) {
     if (!products || products.length === 0) {
+        if (productCountEl) productCountEl.textContent = '0 PRODUCTS';
         productsGrid.innerHTML = `
             <div class="empty-state">
                 <div class="empty-icon"><i class="fas fa-box-open"></i></div>
@@ -78,7 +80,7 @@ function renderProducts(products) {
         `;
     }).join('');
 
-    // Attach event listeners to add-to-cart buttons
+    if (productCountEl) productCountEl.textContent = `${products.length} PRODUCTS`;
     const addButtons = document.querySelectorAll('.btn-add-to-cart');
     addButtons.forEach(button => {
         button.addEventListener('click', async (e) => {

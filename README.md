@@ -1,4 +1,4 @@
-# Newdich Store
+# Telente Store
 
 Premium e-commerce storefront and admin dashboard built with vanilla HTML, CSS, and JS modules. The repo ships a complete public shopping flow, plus a full admin management suite.
 
