@@ -23,6 +23,8 @@ import { registerCouponsModule } from '../modules/coupons/coupons.module.js';
 import { registerTaxModule } from '../modules/tax/tax.module.js';
 import { registerContactModule } from '../modules/contact/contact.module.js';
 import { registerAnalyticsModule } from '../modules/analytics/analytics.module.js';
+import { registerAuditModule } from '../modules/audit/audit.module.js';
+import { registerSearchModule } from '../modules/search/search.module.js';
 import { registerWebhooksModule } from '../modules/webhooks/webhooks.module.js';
 import { registerBrandsModule } from '../modules/brands/brands.module.js';
 
@@ -51,5 +53,7 @@ export function registerRoutes(app: FastifyInstance, container: Container): void
   registerReviewsModule(container, app);
   registerContactModule(container, app);
   registerAnalyticsModule(container, app);
+  registerAuditModule(container, app);
+  registerSearchModule(container, app);
   registerWebhooksModule(container, app);
 }

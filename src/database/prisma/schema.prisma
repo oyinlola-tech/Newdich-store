@@ -16,7 +16,6 @@ enum UserRole {
   CUSTOMER
   ADMIN
   SUPER_ADMIN
-  STAFF
 }
 
 enum UserStatus {
@@ -39,6 +38,8 @@ model User {
   updatedAt       DateTime      @updatedAt
 
   sessions    Session[]
+  loginLogs   LoginLog[]
+  searchLogs  SearchLog[]
   otps        Otp[]
   addresses   Address[]
   cart        Cart?
@@ -49,9 +50,39 @@ model User {
   refunds     Refund[]
   notifications Notification[]
   passwordResets PasswordReset[]
+  coupons     Coupon[]
 
   @@index([role])
   @@index([status])
+}
+
+model LoginLog {
+  id        String    @id @default(cuid())
+  userId    String?
+  email     String
+  role      String?
+  ip        String?
+  userAgent String?
+  location  String?
+  success   Boolean   @default(true)
+  createdAt DateTime  @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model SearchLog {
+  id        String    @id @default(cuid())
+  query     String
+  userId    String?
+  createdAt DateTime  @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([query])
+  @@index([createdAt])
 }
 
 model Session {
@@ -509,11 +540,15 @@ model Coupon {
   validFrom    DateTime?
   validUntil   DateTime?
   status       CouponStatus @default(ACTIVE)
+  balance      Decimal?     @db.Decimal(10, 2)
+  userId       String?
   createdAt    DateTime     @default(now())
 
   products Product[] @relation("CouponProducts")
+  user     User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   @@index([status])
+  @@index([userId])
 }
 
 model Review {

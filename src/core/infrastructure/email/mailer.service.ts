@@ -41,11 +41,33 @@ export interface OrderMailData {
 }
 
 export class MailerService {
+  private adminEmailCache: { email: string; at: number } | null = null;
+
   constructor(
     private readonly emailPort: EmailPort,
     private readonly prisma: PrismaClient,
     private readonly logger: AppLogger
   ) {}
+
+  private async resolveAdminEmail(): Promise<string> {
+    // Admin email comes from StoreSettings (key 'notifications.adminEmail'),
+    // falling back to the ADMIN_EMAIL environment variable.
+    if (this.adminEmailCache && Date.now() - this.adminEmailCache.at < 5 * 60 * 1000) {
+      return this.adminEmailCache.email;
+    }
+    let email = appConfig.ADMIN_EMAIL;
+    try {
+      const entry = await this.prisma.storeSettings.findUnique({ where: { key: 'notifications.adminEmail' } });
+      const stored = typeof entry?.value === 'string' ? entry.value : null;
+      if (stored && /^\S+@\S+\.\S+$/.test(stored)) {
+        email = stored;
+      }
+    } catch (error) {
+      this.logger.error({ error }, 'failed to read admin email from settings');
+    }
+    this.adminEmailCache = { email, at: Date.now() };
+    return email;
+  }
 
   private async dispatch(input: {
     to: string;
@@ -214,9 +236,9 @@ export class MailerService {
     });
   }
 
-  sendAdminAlert(input: { subject: string; body: string; ctaUrl?: string; ctaLabel?: string }): Promise<void> {
+  async sendAdminAlert(input: { subject: string; body: string; ctaUrl?: string; ctaLabel?: string }): Promise<void> {
     return this.dispatch({
-      to: appConfig.ADMIN_EMAIL,
+      to: await this.resolveAdminEmail(),
       subject: input.subject,
       html: adminAlertEmail(input.subject, input.body, input.ctaUrl, input.ctaLabel),
       purpose: 'admin-alert'

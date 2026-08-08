@@ -39,12 +39,17 @@ function renderOrder(order) {
         </div>
     `).join('');
 
-    container.innerHTML = `
+    const noteParts = (order.note || '').split(' | ').filter(Boolean);
+    const shipPart = noteParts.find((part) => part.startsWith('Ship to:'));
+    const shippingHtml = shipPart
+      ? `<p>${escapeHtml(shipPart.replace('Ship to:', '').trim())}</p>`
+      : '<p>No shipping address provided.</p>';
+
+    const html = `
         <div class="detail-card">
             <h2>Order #${escapeHtml(order.id)}</h2>
             <div class="detail-meta">
                 <span><strong>Date:</strong> ${new Date(order.createdAt).toLocaleString()}</span>
-                <span><strong>Customer:</strong> ${escapeHtml(order.customerName || order.shippingAddress?.fullName || 'N/A')}</span>
                 <span><strong>Total:</strong> ${formatCurrency(order.total)}</span>
             </div>
         </div>
@@ -52,10 +57,7 @@ function renderOrder(order) {
         <div class="detail-grid">
             <div class="detail-card">
                 <h3>Shipping</h3>
-                <p>${escapeHtml(order.shippingAddress?.fullName || '')}</p>
-                <p>${escapeHtml(order.shippingAddress?.address || '')}</p>
-                <p>${escapeHtml(order.shippingAddress?.city || '')} ${escapeHtml(order.shippingAddress?.postalCode || '')}</p>
-                <p>${escapeHtml(order.shippingAddress?.phone || '')}</p>
+                ${shippingHtml}
             </div>
             <div class="detail-card">
                 <h3>Items</h3>
@@ -65,6 +67,7 @@ function renderOrder(order) {
             </div>
         </div>
     `;
+    container.innerHTML = html;
 
     statusSelect.value = order.status || 'pending';
 }
@@ -104,13 +107,10 @@ async function loadOrder() {
 
     container.innerHTML = '<div class="loading">Loading order...</div>';
     try {
-        const [order, history] = await Promise.all([
-            fetchOrderDetails(orderId),
-            fetchOrderStatusHistory(orderId)
-        ]);
+        const order = await fetchOrderDetails(orderId);
         renderOrder(order);
         renderHistory(history);
-        renderNotes(order.notes || []);
+        renderNotes((order.note || '').split('\n').filter(Boolean).map((text) => ({ text, createdAt: order.createdAt })));
     } catch (error) {
         container.innerHTML = '<p class="error">Failed to load order details.</p>';
     }

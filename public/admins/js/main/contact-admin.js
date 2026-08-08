@@ -36,7 +36,9 @@ function getMessageId(message) {
 }
 
 function getMessageStatus(message) {
-    return message?.status || 'open';
+    const status = message?.status || 'NEW';
+    const map: Record<string, string> = { open: 'NEW', pending: 'READ', resolved: 'CLOSED' };
+    return map[status] || status;
 }
 
 async function renderMessages(messages) {
@@ -59,9 +61,10 @@ async function renderMessages(messages) {
                 </tr>
             </thead>
             <tbody>
-                ${messages.map(message => {
+                    ${messages.map(message => {
                     const messageId = getMessageId(message);
                     const status = getMessageStatus(message);
+                    const statusLabel = status === 'NEW' ? 'Open' : status === 'READ' ? 'Pending' : status === 'CLOSED' ? 'Resolved' : status;
                     return `
                         <tr>
                             <td>#${escapeHtml(messageId)}</td>
@@ -71,9 +74,9 @@ async function renderMessages(messages) {
                             <td>${formatDate(message.createdAt || message.sentAt)}</td>
                             <td>
                                 <select class="status-select" data-message-id="${escapeAttr(messageId)}" data-current-status="${escapeAttr(status)}">
-                                    <option value="open" ${status === 'open' ? 'selected' : ''}>Open</option>
-                                    <option value="pending" ${status === 'pending' ? 'selected' : ''}>Pending</option>
-                                    <option value="resolved" ${status === 'resolved' ? 'selected' : ''}>Resolved</option>
+                                    <option value="NEW" ${status === 'NEW' ? 'selected' : ''}>Open</option>
+                                    <option value="READ" ${status === 'READ' ? 'selected' : ''}>Pending</option>
+                                    <option value="CLOSED" ${status === 'CLOSED' ? 'selected' : ''}>Resolved</option>
                                 </select>
                             </td>
                             <td class="actions">

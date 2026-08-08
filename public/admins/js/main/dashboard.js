@@ -254,7 +254,7 @@ async function loadStats() {
             <div class="stat-card">
                 <i class="fas fa-naira-sign"></i>
                 <h3>Revenue</h3>
-                <div class="stat-value">${escapeHtml(formatCurrency(stats.revenue || 0))}</div>
+                <div class="stat-value">${escapeHtml(formatCurrency(stats.totalRevenue || 0))}</div>
             </div>
         `;
         updateKpiVisuals(stats || {});

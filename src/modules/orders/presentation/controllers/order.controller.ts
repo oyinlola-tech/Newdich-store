@@ -124,6 +124,7 @@ function toOrderOutput(order: {
   statusHistory: { id: string; status: string; note: string | null; createdAt: Date }[];
   shipment?: unknown | null;
   payments?: unknown[];
+  note?: string | null;
 }) {
   return {
     id: order.id,
@@ -145,6 +146,7 @@ function toOrderOutput(order: {
       quantity: item.quantity,
       total: item.total
     })),
-    statusHistory: order.statusHistory
+    statusHistory: order.statusHistory,
+    note: order.note
   };
 }

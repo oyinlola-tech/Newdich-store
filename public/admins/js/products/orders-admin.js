@@ -49,31 +49,32 @@ async function renderOrders(orders) {
                     <th>Total</th>
                     <th>Status</th>
                     <th>Actions</th>
-                </thead>
-                <tbody>
-                    ${orders.map(order => `
-                        <tr>
-                            <td>#${escapeHtml(order.id)}</td>
-                            <td>${escapeHtml(order.customerName)}</td>
-                            <td>${formatDate(order.createdAt)}</td>
-                            <td>${formatCurrency(order.total)}</td>
-                            <td>
-                                <select class="status-select" data-order-id="${escapeAttr(order.id)}" data-current-status="${escapeAttr(order.status)}">
-                                    <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
-                                    <option value="processing" ${order.status === 'processing' ? 'selected' : ''}>Processing</option>
-                                    <option value="completed" ${order.status === 'completed' ? 'selected' : ''}>Completed</option>
-                                    <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
-                                </select>
-                            </td>
-                            <td class="actions">
-                                <button class="btn-view" data-order-id="${escapeAttr(order.id)}"><i class="fas fa-eye"></i> View</button>
-                                <button class="btn-open" data-order-id="${escapeAttr(order.id)}"><i class="fas fa-arrow-right"></i> Open</button>
-                            </td>
-                        </tr>
-                    `).join('')}
-                </tbody>
-            </table>
-        `;
+                </tr>
+            </thead>
+            <tbody>
+                ${orders.map(order => `
+                    <tr>
+                        <td>#${escapeHtml(order.id)}</td>
+                        <td>${escapeHtml(order.customerName)}</td>
+                        <td>${formatDate(order.createdAt)}</td>
+                        <td>${formatCurrency(order.total)}</td>
+                        <td>
+                            <select class="status-select" data-order-id="${escapeAttr(order.id)}" data-current-status="${escapeAttr(order.status)}">
+                                <option value="PENDING" ${order.status === 'PENDING' ? 'selected' : ''}>Pending</option>
+                                <option value="PROCESSING" ${order.status === 'PROCESSING' ? 'selected' : ''}>Processing</option>
+                                <option value="DELIVERED" ${order.status === 'DELIVERED' ? 'selected' : ''}>Delivered</option>
+                                <option value="CANCELLED" ${order.status === 'CANCELLED' ? 'selected' : ''}>Cancelled</option>
+                            </select>
+                        </td>
+                        <td class="actions">
+                            <button class="btn-view" data-order-id="${escapeAttr(order.id)}"><i class="fas fa-eye"></i> View</button>
+                            <button class="btn-open" data-order-id="${escapeAttr(order.id)}"><i class="fas fa-arrow-right"></i> Open</button>
+                        </td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+    `;
     ordersContainer.innerHTML = tableHtml;
 
     // Attach status change handlers

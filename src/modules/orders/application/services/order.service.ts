@@ -3,7 +3,7 @@ import type { MailerService } from '../../../../core/infrastructure/email/mailer
 import type { UserRepositoryPort } from '../../../users/application/ports/user.repository.js';
 import type { CartRepositoryPort } from '../../../carts/infrastructure/repositories/prisma-cart.repository.js';
 
-const EMAILED_STATUSES = new Set(['PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED', 'ON_HOLD']);
+const EMAILED_STATUSES = new Set(['PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED']);
 
 export class OrderService {
   constructor(

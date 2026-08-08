@@ -4,7 +4,7 @@ const appSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   PORT: z.coerce.number().default(3000),
   HOST: z.string().default('0.0.0.0'),
-  API_PREFIX: z.string().default('/api/v1'),
+  API_PREFIX: z.string().default('/api'),
   CORS_ORIGIN: z.string().default('http://localhost:3000'),
   PUBLIC_BASE_URL: z.string().url().default('http://localhost:3000'),
   LOG_LEVEL: z.string().default('info')

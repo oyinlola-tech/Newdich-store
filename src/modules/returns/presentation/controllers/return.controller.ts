@@ -52,7 +52,7 @@ export class ReturnController {
   async updateStatus(request: FastifyRequest, reply: FastifyReply) {
     const { id } = request.params as { id: string };
     const body = request.body as { status?: string };
-    const allowedStatuses = ['REQUESTED', 'APPROVED', 'REJECTED', 'IN_TRANSIT', 'RECEIVED', 'REFUNDED', 'CLOSED'];
+    const allowedStatuses = ['REQUESTED', 'APPROVED', 'REJECTED', 'PICKED_UP', 'REFUNDED', 'CLOSED'];
     if (!body.status || !allowedStatuses.includes(body.status)) {
       return reply.status(400).send({ message: `status must be one of: ${allowedStatuses.join(', ')}.` });
     }

@@ -5,7 +5,6 @@ import type { PaymentService } from '../../../payments/application/services/paym
 import type { UserRepositoryPort } from '../../../users/application/ports/user.repository.js';
 import type { TaxService } from '../../../tax/application/services/tax.service.js';
 import type { CouponService } from '../../../coupons/application/services/coupon.service.js';
-import type { MailerService } from '../../../../core/infrastructure/email/mailer.service.js';
 
 export const SHIPPING_RATES: Record<string, { fee: number; estimate: string }> = {
   STANDARD: { fee: 2500, estimate: '3 - 5 business days' },
@@ -17,7 +16,7 @@ export interface CheckoutInput {
   userId: string;
   shippingMethod?: 'STANDARD' | 'EXPRESS' | 'SAME_DAY';
   note?: string;
-  paymentMethod?: 'CARD' | 'TRANSFER';
+  paymentMethod?: 'CARD' | 'TRANSFER' | 'PAY_ON_DELIVERY';
   couponCode?: string;
 }
 
@@ -29,8 +28,7 @@ export class CheckoutService {
     private readonly paymentService: PaymentService,
     private readonly userRepository: UserRepositoryPort,
     private readonly taxService: TaxService,
-    private readonly couponService: CouponService,
-    private readonly mailerService: MailerService
+    private readonly couponService: CouponService
   ) {}
 
   async checkout(input: CheckoutInput) {
@@ -67,7 +65,7 @@ export class CheckoutService {
     let discountAmount = 0;
     let couponCode: string | null = null;
     if (input.couponCode) {
-      const coupon = await this.couponService.validate(input.couponCode, subtotal);
+      const coupon = await this.couponService.validate(input.couponCode, subtotal, input.userId);
       if (!coupon.valid) {
         throw new Error(coupon.message ?? 'Invalid coupon.');
       }
@@ -95,35 +93,14 @@ export class CheckoutService {
       note: input.note
     });
 
-    await this.checkoutRepository.decrementStock(checkoutItems);
-    await this.checkoutRepository.clearCart(input.userId);
+    if (couponCode) {
+      await this.couponService.consume(couponCode, discountAmount);
+    }
 
+    // Payment first: the order is only finalized (emails, admin alert) once the
+    // payment is confirmed via webhook or the confirm endpoint.
     const user = await this.userRepository.findById(input.userId);
     const email = user?.email ?? 'customer@example.com';
-
-    const placedAt = new Date();
-    await this.mailerService.sendOrderConfirmation(
-      { email, name: user?.name ?? email },
-      {
-        userName: user?.name ?? email,
-        orderNumber: order.orderNumber,
-        items: cart.items.map((item) => ({
-          name: item.product.name,
-          quantity: item.quantity,
-          price: Number(item.product.price) + Number(item.variant?.priceDelta ?? 0)
-        })),
-        subtotal,
-        shippingAmount,
-        taxAmount,
-        discountAmount,
-        total,
-        placedAt
-      }
-    );
-    await this.mailerService.sendAdminAlert({
-      subject: `New order ${order.orderNumber}`,
-      body: `${user?.name ?? 'Customer'} placed order #${order.orderNumber} for ₦${total.toLocaleString('en-NG')}.`
-    });
 
     const payment = await this.paymentService.initiate({
       orderId: order.id,
@@ -136,10 +113,14 @@ export class CheckoutService {
     return {
       order: { id: order.id, orderNumber: order.orderNumber, status: order.status, total, currency: order.currency },
       payment: {
-        id: payment.payment.id,
-        reference: payment.payment.reference,
-        status: payment.payment.status,
-        authorizationUrl: payment.authorizationUrl
+        id: payment.paymentId,
+        reference: payment.reference,
+        status: payment.status,
+        provider: payment.provider,
+        method: payment.method,
+        inline: payment.inline ?? null,
+        redirectUrl: payment.redirectUrl ?? null,
+        transferAccount: payment.transferAccount ?? null
       },
       shipping: { method, estimate: shippingRate.estimate },
       totals: { subtotal, shippingAmount, taxAmount, discountAmount, total }
