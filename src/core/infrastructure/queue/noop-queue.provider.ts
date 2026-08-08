@@ -1,6 +1,4 @@
-export interface QueuePort {
-  enqueue(jobName: string, payload: Record<string, unknown>): Promise<void>;
-}
+import type { QueuePort } from '../../application/ports/queue.port.js';
 
 export class NoopQueueProvider implements QueuePort {
   async enqueue(): Promise<void> {}
