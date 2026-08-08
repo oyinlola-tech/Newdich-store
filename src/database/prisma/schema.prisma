@@ -754,3 +754,28 @@ model EmailLog {
   @@index([to, createdAt])
   @@index([status])
 }
+
+model Job {
+  id          String           @id @default(cuid())
+  name        String
+  payload     Json
+  status      JobStatus        @default(PENDING)
+  attempts    Int              @default(0)
+  maxAttempts Int              @default(3)
+  lastError   String?
+  scheduledAt DateTime?
+  lockedAt    DateTime?
+  completedAt DateTime?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@index([status, createdAt])
+  @@index([name, status])
+}
+
+enum JobStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}

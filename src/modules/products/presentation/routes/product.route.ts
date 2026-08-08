@@ -9,6 +9,7 @@ export function registerProductRoutes(app: FastifyInstance, container: Container
 
   app.get('/products', controller.list.bind(controller));
   app.get('/products/search', controller.search.bind(controller));
+  app.get('/products/suggestions', controller.suggestions.bind(controller));
   app.get('/products/:idOrSlug', controller.get.bind(controller));
 
   app.get('/admin/products', { preHandler: [admin] }, controller.adminList.bind(controller));

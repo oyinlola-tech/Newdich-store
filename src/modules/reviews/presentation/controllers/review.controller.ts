@@ -40,6 +40,14 @@ export class ReviewController {
     return reply.send({ reviews: result.reviews, total: result.total, page, limit });
   }
 
+  async listByUser(request: FastifyRequest, reply: FastifyReply) {
+    const userId = request.user!.id;
+    const query = request.query as { page?: string; limit?: string };
+    const { page, limit } = buildPagination(query.page, query.limit, 20);
+    const result = await this.reviewService.listByUser(userId, page, limit);
+    return reply.send({ reviews: result.reviews, total: result.total, page, limit });
+  }
+
   async remove(request: FastifyRequest, reply: FastifyReply) {
     const { id } = request.params as { id: string };
     await this.reviewService.remove(id);

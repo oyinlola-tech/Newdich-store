@@ -13,6 +13,7 @@ export interface CreateReviewInput {
 export interface ReviewRepositoryPort {
   create(input: CreateReviewInput): Promise<Review>;
   listByProduct(productId: string, page: number, limit: number): Promise<{ reviews: Review[]; total: number }>;
+  listByUser(userId: string, page: number, limit: number): Promise<{ reviews: Review[]; total: number }>;
   listAll(page: number, limit: number, search?: string): Promise<{ reviews: Review[]; total: number }>;
   findById(id: string): Promise<Review | null>;
   remove(id: string): Promise<void>;
@@ -71,6 +72,20 @@ export class PrismaReviewRepository implements ReviewRepositoryPort {
         take: limit
       }),
       this.prisma.review.count({ where })
+    ]);
+    return { reviews, total };
+  }
+
+  async listByUser(userId: string, page: number, limit: number): Promise<{ reviews: Review[]; total: number }> {
+    const [reviews, total] = await this.prisma.$transaction([
+      this.prisma.review.findMany({
+        where: { userId },
+        include: { product: { select: { id: true, name: true, images: true } } },
+        orderBy: { createdAt: 'desc' },
+        skip: (page - 1) * limit,
+        take: limit
+      }),
+      this.prisma.review.count({ where: { userId } })
     ]);
     return { reviews, total };
   }

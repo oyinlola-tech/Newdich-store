@@ -28,6 +28,10 @@ export class ReviewService {
     return this.reviewRepository.listAll(page, limit, search);
   }
 
+  listByUser(userId: string, page: number, limit: number) {
+    return this.reviewRepository.listByUser(userId, page, limit);
+  }
+
   async remove(id: string): Promise<void> {
     await this.reviewRepository.remove(id);
   }

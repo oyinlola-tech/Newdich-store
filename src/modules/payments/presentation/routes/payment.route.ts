@@ -17,10 +17,10 @@ export function registerPaymentRoutes(app: FastifyInstance, container: Container
   const admin = isAdmin(container);
   const superAdmin = isSuperAdmin(container);
 
-  app.post('/payments/intent', { preHandler: [auth] }, controller.initiate.bind(controller));
-  app.post('/payments/:paymentId/confirm', { preHandler: [auth] }, controller.confirm.bind(controller));
+  app.post('/payments/intent', { preHandler: [auth], config: { rateLimit: { max: 20, timeWindow: '1 minute' } } }, controller.initiate.bind(controller));
+  app.post('/payments/:paymentId/confirm', { preHandler: [auth], config: { rateLimit: { max: 20, timeWindow: '1 minute' } } }, controller.confirm.bind(controller));
   app.get('/payments/methods', { preHandler: [auth] }, controller.methods.bind(controller));
-  app.get('/payments/verify', { preHandler: [auth] }, controller.verify.bind(controller));
+  app.get('/payments/verify', { preHandler: [auth], config: { rateLimit: { max: 30, timeWindow: '1 minute' } } }, controller.verify.bind(controller));
   app.get('/payments/orders/:orderId', { preHandler: [auth] }, controller.listByOrder.bind(controller));
 
   app.get('/admin/payments', { preHandler: [admin] }, controller.adminList.bind(controller));

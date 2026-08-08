@@ -85,6 +85,29 @@ export class ProductController {
     });
   }
 
+  async suggestions(request: FastifyRequest, reply: FastifyReply) {
+    const query = request.query as { q?: string; limit?: string };
+    const term = query.q?.trim() || '';
+    const limit = Math.min(10, Math.max(1, Number(query.limit ?? 5)));
+
+    if (!term) {
+      return reply.send({ suggestions: [] });
+    }
+
+    const products = await this.queryBus.execute(
+      new SearchProductsQuery({ search: term, page: 1, limit })
+    );
+
+    const suggestions = products.products.slice(0, limit).map((p) => ({
+      id: p.id,
+      name: p.name,
+      price: p.price,
+      image: p.images?.[0] || null
+    }));
+
+    return reply.send({ suggestions });
+  }
+
   async adminList(request: FastifyRequest, reply: FastifyReply) {
     const query = request.query as { search?: string; status?: string; page?: string; limit?: string };
     const { page, limit } = buildPagination(query.page, query.limit, 50);

@@ -11,6 +11,7 @@ export function registerReviewRoutes(app: FastifyInstance, container: Container)
 
   app.get('/products/:productId/reviews', controller.listByProduct.bind(controller));
   app.post('/products/:productId/reviews', { preHandler: [auth] }, controller.create.bind(controller));
+  app.get('/reviews/me', { preHandler: [auth] }, controller.listByUser.bind(controller));
   app.get('/admin/reviews', { preHandler: [admin] }, controller.adminList.bind(controller));
   app.delete('/admin/reviews/:id', { preHandler: adminPermission(container, 'reviews.manage') }, controller.remove.bind(controller));
 }
