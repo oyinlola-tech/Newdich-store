@@ -35,4 +35,24 @@ export class PrismaAuthRepository implements AuthRepositoryPort {
   updatePassword(id: string, passwordHash: string): Promise<User> {
     return this.prisma.user.update({ where: { id }, data: { passwordHash } });
   }
+
+  async logLogin(input: {
+    userId?: string | null;
+    email: string;
+    role?: string | null;
+    ip?: string | null;
+    userAgent?: string | null;
+    success: boolean;
+  }): Promise<void> {
+    await this.prisma.loginLog.create({
+      data: {
+        userId: input.userId ?? null,
+        email: input.email,
+        role: input.role ?? null,
+        ip: input.ip ?? null,
+        userAgent: input.userAgent ? input.userAgent.slice(0, 500) : null,
+        success: input.success
+      }
+    });
+  }
 }

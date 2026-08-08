@@ -120,4 +120,72 @@ export class AnalyticsController {
       })
     });
   }
+
+  async topCustomers(_request: FastifyRequest, reply: FastifyReply) {
+    const rows = await this.prisma.order.groupBy({
+      by: ['userId'],
+      where: { status: { not: 'CANCELLED' } },
+      _sum: { total: true },
+      _count: { id: true },
+      orderBy: { _sum: { total: 'desc' } },
+      take: 10
+    });
+
+    const users = await this.prisma.user.findMany({
+      where: { id: { in: rows.map((row) => row.userId) } },
+      select: { id: true, name: true, email: true }
+    });
+
+    const byId = new Map(users.map((u) => [u.id, u]));
+    return reply.send({
+      customers: rows.map((row) => ({
+        userId: row.userId,
+        name: byId.get(row.userId)?.name ?? 'Unknown',
+        email: byId.get(row.userId)?.email ?? '',
+        orders: row._count.id ?? 0,
+        totalSpent: Number(row._sum.total ?? 0)
+      }))
+    });
+  }
+
+  async salesSeries(request: FastifyRequest, reply: FastifyReply) {
+    const query = request.query as { days?: string };
+    const days = Math.min(90, Math.max(7, Number(query.days ?? 30)));
+    const since = new Date();
+    since.setDate(since.getDate() - (days - 1));
+    since.setHours(0, 0, 0, 0);
+
+    const rows = await this.prisma.order.findMany({
+      where: { status: { not: 'CANCELLED' }, placedAt: { gte: since } },
+      select: { placedAt: true, total: true, status: true }
+    });
+
+    const labels: string[] = [];
+    const revenue: number[] = [];
+    const orders: number[] = [];
+    const dayIndex = new Map<string, number>();
+
+    for (let i = 0; i < days; i++) {
+      const date = new Date(since);
+      date.setDate(since.getDate() + i);
+      const key = date.toISOString().slice(0, 10);
+      labels.push(key);
+      dayIndex.set(key, i);
+      revenue.push(0);
+      orders.push(0);
+    }
+
+    for (const row of rows) {
+      const key = row.placedAt.toISOString().slice(0, 10);
+      const index = dayIndex.get(key);
+      if (index === undefined) continue;
+      revenue[index] += Number(row.total);
+      orders[index] += 1;
+    }
+
+    return reply.send({
+      days,
+      series: labels.map((label, i) => ({ date: label, revenue: Math.round(revenue[i] * 100) / 100, orders: orders[i] }))
+    });
+  }
 }

@@ -2,7 +2,7 @@ import type { FastifyInstance } from 'fastify';
 import type { Container } from '../../../../app/container.js';
 import type { OrderController } from '../controllers/order.controller.js';
 import { authenticate } from '../../../auth/presentation/guards/auth.guard.js';
-import { isAdmin } from '../../../auth/presentation/guards/admin.guard.js';
+import { adminPermission, isAdmin } from '../../../auth/presentation/guards/admin.guard.js';
 
 export function registerOrderRoutes(app: FastifyInstance, container: Container): void {
   const controller = container.get<OrderController>('order.controller');
@@ -16,7 +16,7 @@ export function registerOrderRoutes(app: FastifyInstance, container: Container):
 
   app.get('/admin/orders', { preHandler: [admin] }, controller.adminList.bind(controller));
   app.get('/admin/orders/:id', { preHandler: [admin] }, controller.adminGet.bind(controller));
-  app.put('/admin/orders/:id/status', { preHandler: [admin] }, controller.updateStatus.bind(controller));
-  app.post('/admin/orders/:id/notes', { preHandler: [admin] }, controller.adminAddNote.bind(controller));
+  app.put('/admin/orders/:id/status', { preHandler: adminPermission(container, 'orders.manage') }, controller.updateStatus.bind(controller));
+  app.post('/admin/orders/:id/notes', { preHandler: adminPermission(container, 'orders.manage') }, controller.adminAddNote.bind(controller));
   app.get('/admin/orders/:id/status-history', { preHandler: [admin] }, controller.adminStatusHistory.bind(controller));
 }

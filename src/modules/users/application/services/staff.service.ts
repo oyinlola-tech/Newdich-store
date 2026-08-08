@@ -22,7 +22,7 @@ export const PERMISSION_CATALOG: { key: string; label: string }[] = [
   { key: 'shipping.manage', label: 'Shipping' },
   { key: 'media.manage', label: 'Media' },
   { key: 'settings.manage', label: 'Settings' },
-  { key: 'staff.manage', label: 'Staff' },
+  { key: 'staff.manage', label: 'Admin management' },
   { key: 'reviews.manage', label: 'Reviews' },
   { key: 'notifications.manage', label: 'Notifications' },
   { key: 'analytics.view', label: 'Analytics' }
@@ -78,7 +78,7 @@ export class StaffService {
     name: string;
     email: string;
     password: string;
-    role: 'ADMIN' | 'STAFF';
+    role: 'ADMIN';
     roleTemplate?: string;
     permissions?: string[];
   }): Promise<User> {
@@ -120,7 +120,7 @@ export class StaffService {
 
   async getById(id: string): Promise<User | null> {
     const user = await this.userRepository.findById(id);
-    if (!user || (user.role !== 'STAFF' && user.role !== 'ADMIN')) {
+    if (!user || (user.role !== 'SUPER_ADMIN' && user.role !== 'ADMIN')) {
       return null;
     }
     return user;
@@ -131,7 +131,7 @@ export class StaffService {
     input: {
       name?: string;
       phone?: string;
-      role?: 'ADMIN' | 'STAFF';
+      role?: 'ADMIN';
       status?: 'ACTIVE' | 'SUSPENDED';
       roleTemplate?: string;
       permissions?: string[];

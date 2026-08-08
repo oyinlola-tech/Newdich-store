@@ -68,7 +68,7 @@ export class PrismaUserRepository implements UserRepositoryPort {
 
   async listStaff(): Promise<User[]> {
     return this.prisma.user.findMany({
-      where: { role: { in: ['ADMIN', 'SUPER_ADMIN', 'STAFF'] } },
+      where: { role: { in: ['ADMIN', 'SUPER_ADMIN'] } },
       orderBy: { createdAt: 'desc' }
     });
   }

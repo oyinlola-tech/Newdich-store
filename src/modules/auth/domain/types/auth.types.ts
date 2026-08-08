@@ -15,7 +15,8 @@ export interface AdminOutput {
   name: string;
   email: string;
   phone: string | null;
-  role: 'admin';
+  role: 'superadmin' | 'admin';
+  permissions: string[];
   status: 'active' | 'suspended';
   createdAt: Date;
 }

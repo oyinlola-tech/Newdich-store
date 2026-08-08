@@ -23,7 +23,7 @@ export class StaffController {
       name?: string;
       email?: string;
       password?: string;
-      role?: 'ADMIN' | 'STAFF';
+      role?: 'ADMIN';
       roleTemplate?: string;
       permissions?: string[];
     };
@@ -54,7 +54,7 @@ export class StaffController {
     const body = request.body as {
       name?: string;
       phone?: string;
-      role?: 'ADMIN' | 'STAFF';
+      role?: 'ADMIN';
       status?: 'ACTIVE' | 'SUSPENDED';
       roleTemplate?: string;
       permissions?: string[];

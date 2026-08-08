@@ -4,7 +4,7 @@ import type { TokenService } from '../../infrastructure/security/token.service.j
 import { ForbiddenError } from '../../../../core/domain/errors/domain.error.js';
 import { requireAuth } from './auth.guard.js';
 
-const STAFF_ROLES = ['ADMIN', 'SUPER_ADMIN', 'STAFF'] as const;
+const STAFF_ROLES = ['ADMIN', 'SUPER_ADMIN'] as const;
 
 export function requireAdmin(tokenService: TokenService) {
   return async function adminGuard(request: FastifyRequest, _reply: FastifyReply): Promise<void> {
@@ -47,4 +47,14 @@ export function isAdmin(container: Container) {
 
 export function isSuperAdmin(container: Container) {
   return requireSuperAdmin(container.get<TokenService>('token.service'));
+}
+
+export interface PermissionProvider {
+  getPermissions(userId: string): Promise<string[]>;
+}
+
+export function adminPermission(container: Container, permission: string) {
+  const getUserPermissions = (userId: string) =>
+    container.get<PermissionProvider>('user.repository').getPermissions(userId);
+  return requirePermission(container, getUserPermissions, permission);
 }

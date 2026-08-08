@@ -13,13 +13,15 @@ import { SearchProductsQuery } from '../../application/queries/search-products/s
 import { createProductValidator, updateProductValidator } from '../validators/product.validator.js';
 import { toProductOutput } from '../serializers/product.serializer.js';
 import type { MediaService } from '../../../media/application/services/media.service.js';
+import type { SearchLogService } from '../../../search/application/services/search-log.service.js';
 
 export class ProductController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
     private readonly mediaService: MediaService,
-    private readonly categoryRepository: CategoryRepositoryPort
+    private readonly categoryRepository: CategoryRepositoryPort,
+    private readonly searchLogService: SearchLogService
   ) {}
 
   async list(request: FastifyRequest, reply: FastifyReply) {
@@ -66,6 +68,10 @@ export class ProductController {
   async search(request: FastifyRequest, reply: FastifyReply) {
     const query = request.query as { q?: string; page?: string; limit?: string };
     const { page, limit } = buildPagination(query.page, query.limit, 50);
+
+    if (query.q?.trim()) {
+      await this.searchLogService.log(query.q, request.user?.id);
+    }
 
     const result = await this.queryBus.execute(
       new SearchProductsQuery({ search: query.q?.trim() || undefined, page, limit })

@@ -21,4 +21,12 @@ export interface AuthRepositoryPort {
   markEmailVerified(id: string): Promise<User>;
   markLastLogin(id: string): Promise<void>;
   updatePassword(id: string, passwordHash: string): Promise<User>;
+  logLogin(input: {
+    userId?: string | null;
+    email: string;
+    role?: string | null;
+    ip?: string | null;
+    userAgent?: string | null;
+    success: boolean;
+  }): Promise<void>;
 }

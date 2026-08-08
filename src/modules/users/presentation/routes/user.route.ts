@@ -4,7 +4,11 @@ import { UserController } from '../controllers/user.controller.js';
 import { AdminUserController } from '../controllers/admin-user.controller.js';
 import { StaffController } from '../controllers/staff.controller.js';
 import { requireAuth } from '../../../auth/presentation/guards/auth.guard.js';
-import { requireAdmin, requireSuperAdmin } from '../../../auth/presentation/guards/admin.guard.js';
+import {
+  adminPermission,
+  requireAdmin,
+  requireSuperAdmin
+} from '../../../auth/presentation/guards/admin.guard.js';
 import type { TokenService } from '../../../auth/infrastructure/security/token.service.js';
 
 export function registerUserRoutes(app: FastifyInstance, container: Container): void {
@@ -24,7 +28,11 @@ export function registerAdminUserRoutes(app: FastifyInstance, container: Contain
 
   app.get('/admin/users', { preHandler: adminGuard }, controller.list.bind(controller));
   app.get('/admin/users/:id', { preHandler: adminGuard }, controller.get.bind(controller));
-  app.put('/admin/users/:id', { preHandler: adminGuard }, controller.update.bind(controller));
+  app.put(
+    '/admin/users/:id',
+    { preHandler: adminPermission(container, 'customers.manage') },
+    controller.update.bind(controller)
+  );
 }
 
 export function registerStaffRoutes(app: FastifyInstance, container: Container): void {

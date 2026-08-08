@@ -19,7 +19,8 @@ export function toAdminOutput(user: User): AdminOutput {
     name: user.name,
     email: user.email,
     phone: user.phone,
-    role: 'admin',
+    role: user.role === 'SUPER_ADMIN' ? 'superadmin' : 'admin',
+    permissions: Array.isArray(user.permissions) ? (user.permissions as string[]) : [],
     status: user.status === 'ACTIVE' ? 'active' : 'suspended',
     createdAt: user.createdAt
   };

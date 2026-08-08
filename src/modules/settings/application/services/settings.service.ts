@@ -8,7 +8,8 @@ const ALLOWED_KEYS = [
   'store.announcement',
   'checkout.enableGuestCheckout',
   'email.orderConfirmationEnabled',
-  'notifications.adminNewOrder'
+  'notifications.adminNewOrder',
+  'notifications.adminEmail'
 ];
 
 export class SettingsService {

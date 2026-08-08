@@ -24,7 +24,8 @@ export function registerProductsModule(container: Container, app: FastifyInstanc
       c.get('command.bus'),
       c.get('query.bus'),
       c.get('media.service'),
-      c.get('category.repository')
+      c.get('category.repository'),
+      c.get('search-log.service')
     )
   );
 

@@ -95,32 +95,74 @@ export class AuthService {
     const user = await this.authRepository.findByEmail(email);
 
     if (!user) {
+      await this.logLogin({ email, ip: input.ip, userAgent: input.userAgent, success: false });
       throw new InvalidCredentialsError();
     }
 
-    if (isAdmin && user.role !== 'ADMIN') {
+    if (isAdmin && user.role !== 'ADMIN' && user.role !== 'SUPER_ADMIN') {
+      await this.logLogin({ email, ip: input.ip, userAgent: input.userAgent, success: false });
       throw new InvalidCredentialsError();
     }
 
     const passwordMatches = await this.passwordHasher.compare(input.password, user.passwordHash);
     if (!passwordMatches) {
+      await this.logLogin({ email, ip: input.ip, userAgent: input.userAgent, success: false });
       throw new InvalidCredentialsError();
     }
 
     if (user.status !== 'ACTIVE') {
+      await this.logLogin({
+        userId: user.id,
+        email,
+        role: user.role,
+        ip: input.ip,
+        userAgent: input.userAgent,
+        success: false
+      });
       throw new AccountSuspendedError();
     }
 
     if (this.config.otpRequired) {
+      await this.logLogin({
+        userId: user.id,
+        email,
+        role: user.role,
+        ip: input.ip,
+        userAgent: input.userAgent,
+        success: true
+      });
       await this.otpService.revokeAllForEmail(email);
       const purpose = isAdmin ? OtpPurpose.ADMIN_LOGIN : OtpPurpose.LOGIN;
       const { otpToken } = await this.otpService.request(email, purpose, user.name);
       return { user, requiresOtp: true, otpToken };
     }
 
+    await this.logLogin({
+      userId: user.id,
+      email,
+      role: user.role,
+      ip: input.ip,
+      userAgent: input.userAgent,
+      success: true
+    });
     const session = await this.createSession(user);
     await this.sendLoginAlert(user, input.ip, input.userAgent);
     return { user, session };
+  }
+
+  private async logLogin(input: {
+    userId?: string | null;
+    email: string;
+    role?: string | null;
+    ip?: string | null;
+    userAgent?: string | null;
+    success: boolean;
+  }): Promise<void> {
+    try {
+      await this.authRepository.logLogin(input);
+    } catch (error) {
+      this.logger.error({ error, email: input.email }, 'failed to log login attempt');
+    }
   }
 
   async verifyOtpAndComplete(input: {
@@ -165,6 +207,14 @@ export class AuthService {
       await this.authRepository.markEmailVerified(user.id);
       await this.mailerService.sendWelcome({ email: user.email, name: user.name });
     } else {
+      await this.logLogin({
+        userId: user.id,
+        email: user.email,
+        role: user.role,
+        ip: input.ip,
+        userAgent: input.userAgent,
+        success: true
+      });
       await this.sendLoginAlert(user, input.ip, input.userAgent);
     }
 

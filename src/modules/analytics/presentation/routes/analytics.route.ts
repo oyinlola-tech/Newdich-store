@@ -10,4 +10,6 @@ export function registerAnalyticsRoutes(app: FastifyInstance, container: Contain
   app.get('/admin/stats', { preHandler: [admin] }, controller.stats.bind(controller));
   app.get('/admin/orders/recent', { preHandler: [admin] }, controller.recentOrders.bind(controller));
   app.get('/admin/products/top', { preHandler: [admin] }, controller.topProducts.bind(controller));
+  app.get('/admin/analytics/top-customers', { preHandler: [admin] }, controller.topCustomers.bind(controller));
+  app.get('/admin/analytics/sales', { preHandler: [admin] }, controller.salesSeries.bind(controller));
 }
