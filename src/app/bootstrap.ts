@@ -22,14 +22,8 @@ export function buildContainer(): Container {
   container.registerSingleton('command.bus', () => new CommandBus());
   container.registerSingleton('query.bus', () => new QueryBus());
   container.registerSingleton('email.provider', (c) => createEmailProvider(c.get('logger')));
-  container.registerSingleton(
-    'cache.provider',
-    cacheConfig.REDIS_URL ? () => new RedisCacheProvider() : () => new NoopCacheProvider()
-  );
-  container.registerSingleton(
-    'queue.provider',
-    cacheConfig.REDIS_URL ? () => new BullMQQueueProvider() : () => new NoopQueueProvider()
-  );
+  container.register('cache.provider', () => cacheConfig.REDIS_URL ? new RedisCacheProvider() : new NoopCacheProvider());
+  container.register('queue.provider', () => cacheConfig.REDIS_URL ? new BullMQQueueProvider() : new NoopQueueProvider());
   container.register('token.service', () => new TokenService(authConfig.JWT_SECRET, authConfig.JWT_EXPIRES_IN));
   container.register('password-hasher.service', () => new PasswordHasherService(authConfig.BCRYPT_ROUNDS));
   container.registerSingleton('storage.provider', () => new LocalStorageProvider());

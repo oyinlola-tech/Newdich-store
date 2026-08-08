@@ -15,7 +15,7 @@ export class BullMQQueueProvider implements QueuePort {
         maxRetriesPerRequest: 1,
         enableOfflineQueue: false
       });
-      this.client.on('error', () => {});
+      this.client?.on('error', () => {});
       this.Queue = Queue;
     } catch {
       // BullMQ/Redis not available — queue becomes a no-op

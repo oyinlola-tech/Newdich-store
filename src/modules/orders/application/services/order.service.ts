@@ -33,9 +33,11 @@ export class OrderService {
     if (order.status === 'PAID' && this.paymentService) {
       try {
         const payments = await this.orderRepository.findById(orderId);
-        const paidPayment = payments?.payments?.find((p: { status?: string }) => p.status === 'PAID');
-        if (paidPayment?.id) {
-          await this.paymentService.refund(paidPayment.id);
+        const paymentsList = Array.isArray(payments?.payments) ? payments.payments : [];
+        const paidPayment = paymentsList.find((p) => (p as { status?: string }).status === 'PAID');
+        const paymentId = (paidPayment as { id?: string } | undefined)?.id;
+        if (paymentId) {
+          await this.paymentService.refund(paymentId);
           refunded = true;
         }
       } catch {

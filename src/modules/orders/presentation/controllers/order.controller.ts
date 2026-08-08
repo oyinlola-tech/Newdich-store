@@ -116,7 +116,7 @@ export class OrderController {
       return reply.status(404).send({ message: 'Order not found.' });
     }
     const result = await this.orderService.cancel(id, 'Cancelled by customer');
-    return reply.send({ order: toOrderOutput(result.order), refunded: result.refunded });
+    return reply.send({ order: toOrderOutput(result.order as never), refunded: result.refunded });
   }
 }
 

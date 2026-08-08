@@ -13,7 +13,7 @@ export class RedisCacheProvider implements CachePort {
           maxRetriesPerRequest: 1,
           enableOfflineQueue: false
         });
-        this.client.on('error', () => {});
+        this.client?.on('error', () => {});
       }
     } catch {
       // Redis not available — cache becomes a no-op
