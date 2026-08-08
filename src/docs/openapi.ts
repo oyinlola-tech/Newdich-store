@@ -2,7 +2,7 @@ export const openApiDocument = {
   openapi: '3.0.3',
   info: {
     title: 'Telente Store API',
-    description: 'REST API for the Telente Store modular monolith (Fastify + MySQL/Prisma).',
+    description: 'REST API for the Telente Store by Oluwayemi Oyinlola.',
     version: '1.0.0'
   },
   servers: [{ url: 'http://localhost:3000' }],
