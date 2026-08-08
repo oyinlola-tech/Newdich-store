@@ -9,7 +9,7 @@ export class CheckoutController {
     const body = request.body as {
       shippingMethod?: 'STANDARD' | 'EXPRESS' | 'SAME_DAY';
       note?: string;
-      paymentMethod?: 'CARD' | 'TRANSFER';
+      paymentMethod?: 'CARD' | 'TRANSFER' | 'PAY_ON_DELIVERY';
       couponCode?: string;
     };
 

@@ -10,6 +10,8 @@ export interface CreateCouponInput {
   usageLimit?: number;
   validFrom?: string;
   validUntil?: string;
+  balance?: number;
+  userId?: string;
 }
 
 export interface UpdateCouponInput {
@@ -21,6 +23,8 @@ export interface UpdateCouponInput {
   validFrom?: string | null;
   validUntil?: string | null;
   status?: CouponStatus;
+  balance?: number | null;
+  userId?: string | null;
 }
 
 export interface CouponRepositoryPort {
@@ -30,7 +34,7 @@ export interface CouponRepositoryPort {
   list(page: number, limit: number, status?: string): Promise<{ coupons: Coupon[]; total: number }>;
   update(id: string, input: UpdateCouponInput): Promise<Coupon>;
   remove(id: string): Promise<void>;
-  incrementUsed(code: string): Promise<void>;
+  consume(code: string, amount: number): Promise<void>;
 }
 
 export class PrismaCouponRepository implements CouponRepositoryPort {
@@ -46,7 +50,9 @@ export class PrismaCouponRepository implements CouponRepositoryPort {
         maxDiscountAmount: input.maxDiscountAmount ?? null,
         usageLimit: input.usageLimit ?? null,
         validFrom: input.validFrom ? new Date(input.validFrom) : null,
-        validUntil: input.validUntil ? new Date(input.validUntil) : null
+        validUntil: input.validUntil ? new Date(input.validUntil) : null,
+        balance: input.balance ?? null,
+        userId: input.userId ?? null
       }
     });
   }
@@ -66,7 +72,8 @@ export class PrismaCouponRepository implements CouponRepositoryPort {
         where,
         orderBy: { createdAt: 'desc' },
         skip: (page - 1) * limit,
-        take: limit
+        take: limit,
+        include: { user: { select: { id: true, name: true, email: true } } }
       }),
       this.prisma.coupon.count({ where })
     ]);
@@ -84,7 +91,9 @@ export class PrismaCouponRepository implements CouponRepositoryPort {
         usageLimit: input.usageLimit,
         validFrom: input.validFrom ? new Date(input.validFrom) : input.validFrom,
         validUntil: input.validUntil ? new Date(input.validUntil) : input.validUntil,
-        status: input.status
+        status: input.status,
+        balance: input.balance,
+        userId: input.userId
       }
     });
   }
@@ -93,10 +102,17 @@ export class PrismaCouponRepository implements CouponRepositoryPort {
     await this.prisma.coupon.delete({ where: { id } });
   }
 
-  async incrementUsed(code: string): Promise<void> {
+  async consume(code: string, amount: number): Promise<void> {
+    const coupon = await this.prisma.coupon.findUnique({ where: { code: code.toUpperCase() } });
+    if (!coupon) return;
+    const currentBalance = coupon.balance === null || coupon.balance === undefined ? null : Number(coupon.balance);
+    const nextBalance = currentBalance === null ? null : Math.max(0, Math.round((currentBalance - amount) * 100) / 100);
     await this.prisma.coupon.update({
-      where: { code: code.toUpperCase() },
-      data: { usedCount: { increment: 1 } }
+      where: { id: coupon.id },
+      data: {
+        usedCount: { increment: 1 },
+        balance: nextBalance
+      }
     });
   }
 }

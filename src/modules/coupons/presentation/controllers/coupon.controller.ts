@@ -10,7 +10,7 @@ export class CouponController {
     if (!query.code) {
       return reply.status(400).send({ message: 'code is required.' });
     }
-    const result = await this.couponService.validate(query.code, Number(query.amount ?? 0));
+    const result = await this.couponService.validate(query.code, Number(query.amount ?? 0), request.user?.id);
     return reply.send(result);
   }
 
@@ -31,9 +31,14 @@ export class CouponController {
       usageLimit?: number;
       validFrom?: string;
       validUntil?: string;
+      balance?: number;
+      userId?: string;
     };
     if (!body.code || !body.discountType || typeof body.discountValue !== 'number') {
       return reply.status(400).send({ message: 'code, discountType and discountValue are required.' });
+    }
+    if (body.discountType === 'FIXED' && typeof body.balance === 'number' && body.balance > body.discountValue) {
+      return reply.status(400).send({ message: 'balance cannot exceed discountValue.' });
     }
     try {
       const coupon = await this.couponService.create({
@@ -44,7 +49,9 @@ export class CouponController {
         maxDiscountAmount: body.maxDiscountAmount,
         usageLimit: body.usageLimit,
         validFrom: body.validFrom,
-        validUntil: body.validUntil
+        validUntil: body.validUntil,
+        balance: body.balance,
+        userId: body.userId
       });
       return reply.status(201).send({ coupon });
     } catch (error) {
@@ -73,7 +80,9 @@ export class CouponController {
         usageLimit: body.usageLimit === null ? null : (body.usageLimit as number | undefined),
         validFrom: body.validFrom === null ? null : (body.validFrom as string | undefined),
         validUntil: body.validUntil === null ? null : (body.validUntil as string | undefined),
-        status: body.status as 'ACTIVE' | 'EXPIRED' | 'DISABLED' | undefined
+        status: body.status as 'ACTIVE' | 'EXPIRED' | 'DISABLED' | undefined,
+        balance: body.balance === null ? null : (body.balance as number | undefined),
+        userId: body.userId === null ? null : (body.userId as string | undefined)
       });
       return reply.send({ coupon });
     } catch (error) {
