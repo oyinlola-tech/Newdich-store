@@ -1,11 +1,11 @@
-import { createHmac, timingSafeEqual } from 'node:crypto';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { buildPagination } from '../../../../core/shared/pagination/pagination.js';
 import { getRawBody } from '../../../../core/infrastructure/http/raw-body.js';
 import type { PaymentService } from '../../application/services/payment.service.js';
+import { PaymentSettingsError } from '../../application/services/payment-settings.service.js';
 
 export class PaymentController {
-  constructor(private readonly paymentService: PaymentService, private readonly paystackSecret: string) {}
+  constructor(private readonly paymentService: PaymentService) {}
 
   async initiate(request: FastifyRequest, reply: FastifyReply) {
     const { email } = request.user!;
@@ -15,7 +15,7 @@ export class PaymentController {
       return reply.status(400).send({ message: 'orderId, orderNumber and amount are required.' });
     }
 
-    const result = await this.paymentService.initiate({
+    const intent = await this.paymentService.initiate({
       orderId: body.orderId,
       orderNumber: body.orderNumber,
       amount: body.amount,
@@ -25,13 +25,16 @@ export class PaymentController {
 
     return reply.status(201).send({
       payment: {
-        id: result.payment.id,
-        reference: result.payment.reference,
-        status: result.payment.status,
-        amount: result.payment.amount,
-        method: result.payment.method
+        id: intent.paymentId,
+        reference: intent.reference,
+        status: intent.status,
+        amount: intent.amount,
+        method: intent.method,
+        provider: intent.provider
       },
-      authorizationUrl: result.authorizationUrl
+      inline: intent.inline ?? null,
+      redirectUrl: intent.redirectUrl ?? null,
+      transferAccount: intent.transferAccount ?? null
     });
   }
 
@@ -58,30 +61,24 @@ export class PaymentController {
       const payment = await this.paymentService.verify(query.reference);
       return reply.send({ payment });
     } catch (error) {
+      if (error instanceof PaymentSettingsError) {
+        return reply.status(503).send({ message: error.message });
+      }
       return reply.status(404).send({ message: (error as Error).message });
     }
   }
 
-  async paystackWebhook(request: FastifyRequest, reply: FastifyReply) {
-    const body = request.body as {
-      event?: string;
-      data?: { reference?: string };
-    };
-    const signature = request.headers['x-paystack-signature'] as string | undefined;
-
-    const payload = getRawBody(request);
-    const expected = createHmac('sha512', this.paystackSecret).update(payload).digest('hex');
-    const signatureBytes = Buffer.from(signature ?? '', 'utf8');
-    const expectedBytes = Buffer.from(expected, 'utf8');
-
-    if (!signature || signatureBytes.length !== expectedBytes.length || !timingSafeEqual(signatureBytes, expectedBytes)) {
-      return reply.status(401).send({ message: 'Invalid signature.' });
+  async webhook(request: FastifyRequest, reply: FastifyReply) {
+    const { provider } = request.params as { provider: string };
+    try {
+      await this.paymentService.handleWebhook(provider, getRawBody(request), request.headers);
+    } catch (error) {
+      if (error instanceof PaymentSettingsError) {
+        // Provider locked or not configured — ask the gateway to retry.
+        return reply.status(503).send({ message: error.message });
+      }
+      return reply.status(401).send({ message: (error as Error).message });
     }
-
-    if (body.event === 'charge.success' && body.data?.reference) {
-      await this.paymentService.verifyWebhook(body.data.reference);
-    }
-
     return reply.send({ received: true });
   }
 
@@ -100,12 +97,15 @@ export class PaymentController {
 
   async refund(request: FastifyRequest, reply: FastifyReply) {
     const { paymentId } = request.params as { paymentId: string };
-    const payment = await this.paymentService.getById(paymentId);
-    if (!payment) {
-      return reply.status(404).send({ message: 'Payment not found.' });
+    try {
+      const payment = await this.paymentService.refund(paymentId);
+      return reply.send({ message: 'Payment refunded.', paymentId: payment.id });
+    } catch (error) {
+      if (error instanceof PaymentSettingsError) {
+        return reply.status(503).send({ message: error.message });
+      }
+      return reply.status(404).send({ message: (error as Error).message });
     }
-    await this.paymentService.refund(payment.id);
-    return reply.send({ message: 'Payment refunded.', paymentId });
   }
 
   async updateStatus(request: FastifyRequest, reply: FastifyReply) {
