@@ -2,7 +2,7 @@
 import { checkAdminAuth } from '../main/admin.js';
 import { escapeHtml, escapeAttr } from '../main/sanitize.js';
 
-if (!checkAdminAuth()) return;
+if (!checkAdminAuth()) { throw new Error("Admin auth check failed"); }
 
 const container = document.getElementById('categories-container');
 const modal = document.getElementById('category-modal');

@@ -1,14 +1,27 @@
 import { CategoryStatus, type Category } from '@prisma/client';
 import type { CategoryRepositoryPort } from '../ports/category.repository.js';
+import type { CachePort } from '../../../../core/application/ports/cache.port.js';
 import { CategorySlugValueObject } from '../../domain/value-objects/category-slug.value-object.js';
 import { CategoryAlreadyExistsError, CategoryHasProductsError, CategoryNotFoundError } from '../../domain/errors/category.error.js';
 import type { CreateCategoryDto, UpdateCategoryDto } from '../../presentation/dto/category.dto.js';
 
 export class CategoryService {
-  constructor(private readonly categoryRepository: CategoryRepositoryPort) {}
+  constructor(
+    private readonly categoryRepository: CategoryRepositoryPort,
+    private readonly cache: CachePort
+  ) {}
 
   async listPublic(): Promise<Category[]> {
+    const cached = await this.cache.get('categories:public');
+    if (cached) {
+      try {
+        return JSON.parse(cached);
+      } catch {
+        // fall through
+      }
+    }
     const { categories } = await this.categoryRepository.list(false);
+    await this.cache.set('categories:public', JSON.stringify(categories), 300);
     return categories;
   }
 
@@ -34,7 +47,7 @@ export class CategoryService {
       throw new CategoryAlreadyExistsError();
     }
 
-    return this.categoryRepository.create({
+    const category = await this.categoryRepository.create({
       name,
       slug: CategorySlugValueObject.create(name).value,
       parentId: dto.parentId ?? null,
@@ -42,6 +55,8 @@ export class CategoryService {
       sortOrder: dto.sortOrder ?? 0,
       status: dto.status === 'inactive' ? CategoryStatus.INACTIVE : CategoryStatus.ACTIVE
     });
+    await this.cache.del('categories:public');
+    return category;
   }
 
   async update(id: string, dto: UpdateCategoryDto): Promise<Category> {
@@ -73,7 +88,9 @@ export class CategoryService {
       patch.status = dto.status === 'active' ? CategoryStatus.ACTIVE : CategoryStatus.INACTIVE;
     }
 
-    return this.categoryRepository.update(id, patch);
+    const category = await this.categoryRepository.update(id, patch);
+    await this.cache.del('categories:public');
+    return category;
   }
 
   async delete(id: string): Promise<void> {
@@ -83,6 +100,7 @@ export class CategoryService {
       throw new CategoryHasProductsError();
     }
     await this.categoryRepository.delete(id);
+    await this.cache.del('categories:public');
   }
 
   private async ensureExists(id: string): Promise<void> {

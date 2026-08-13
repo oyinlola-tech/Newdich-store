@@ -16,7 +16,7 @@ import { GetCategoryTreeHandler } from './application/queries/get-category-tree/
 
 export function registerCategoriesModule(container: Container, app: FastifyInstance): void {
   container.register('category.repository', (c) => new PrismaCategoryRepository(c.get('prisma')));
-  container.register('category.service', (c) => new CategoryService(c.get('category.repository')));
+  container.register('category.service', (c) => new CategoryService(c.get('category.repository'), c.get('cache.provider')));
   container.register('category.controller', (c) =>
     new CategoryController(c.get('command.bus'), c.get('query.bus'))
   );
