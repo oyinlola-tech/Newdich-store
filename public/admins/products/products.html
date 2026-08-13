@@ -13,7 +13,8 @@
     <!-- Custom Admin CSS -->
     <link rel="stylesheet" href="/admins/css/admin.css">
 </head>
-<body>
+<body class="auth-guest">
+    <script>sessionStorage.getItem("authToken")&&(document.body.classList.add("auth-authenticated"),document.body.classList.remove("auth-guest"));</script>
     <div class="admin-wrapper">
         <!-- Sidebar -->
         <aside class="admin-sidebar">
@@ -90,7 +91,7 @@
                 <div class="form-group">
                     <label for="product-images">Product Images (up to 10)</label>
                     <input type="file" id="product-images" accept="image/*" multiple>
-                    <p class="muted-text">Upload up to 10 images. Leave blank to keep existing images.</p>
+                    <p class="muted-text">Upload 1-10 images. New products require at least one image; on edit, leave blank to keep existing.</p>
                     <div id="existing-images" class="muted-text"></div>
                 </div>
                 <div class="form-group">

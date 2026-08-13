@@ -11,7 +11,8 @@
     <link rel="stylesheet" href="/admins/css/admin.css">
     <link rel="stylesheet" href="/admins/css/error.css">
 </head>
-<body class="not-found-body">
+<body>
+    <script>sessionStorage.getItem("authToken")&&(document.body.classList.add("auth-authenticated"),document.body.classList.remove("auth-guest"));</script> class="not-found-body">
     <div class="not-found-wrapper">
         <div class="not-found-card ">
             <div class="not-found-code">405</div>

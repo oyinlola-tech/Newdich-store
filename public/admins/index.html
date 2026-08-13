@@ -13,7 +13,8 @@
     <!-- Custom Admin CSS -->
     <link rel="stylesheet" href="/admins/css/admin.css">
 </head>
-<body>
+<body class="auth-guest">
+    <script>sessionStorage.getItem("authToken")&&(document.body.classList.add("auth-authenticated"),document.body.classList.remove("auth-guest"));</script>
     <div class="admin-wrapper">
         <!-- Sidebar -->
         <aside class="admin-sidebar">
