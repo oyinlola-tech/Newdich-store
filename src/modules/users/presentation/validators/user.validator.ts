@@ -6,6 +6,10 @@ export const updateProfileValidator = z.object({
   phone: z
     .union([z.string().trim().max(30), z.literal(''), z.null()])
     .optional()
+    .transform((v) => (v === '' || v === null ? null : v)),
+  birthday: z
+    .union([z.string().trim().max(10), z.literal(''), z.null()])
+    .optional()
     .transform((v) => (v === '' || v === null ? null : v))
 });
 

@@ -21,13 +21,16 @@ export class UserService {
   }
 
   async updateProfile(userId: string, dto: UpdateProfileDto): Promise<User> {
-    const patch: { name?: string; email?: string; phone?: string | null } = {};
+    const patch: { name?: string; email?: string; phone?: string | null; birthday?: Date | null } = {};
 
     if (dto.name !== undefined) {
       patch.name = dto.name;
     }
     if (dto.phone !== undefined) {
       patch.phone = dto.phone;
+    }
+    if (dto.birthday !== undefined) {
+      patch.birthday = dto.birthday ? new Date(dto.birthday) : null;
     }
     if (dto.email !== undefined) {
       const email = EmailValueObject.create(dto.email).value;

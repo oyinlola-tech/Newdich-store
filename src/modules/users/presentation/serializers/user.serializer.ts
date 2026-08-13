@@ -5,6 +5,7 @@ export interface UserOutput {
   name: string;
   email: string;
   phone: string | null;
+  birthday: string | null;
   role: 'customer' | 'admin';
   status: 'active' | 'suspended';
   emailVerified: boolean;
@@ -17,6 +18,7 @@ export function toUserOutput(user: User): UserOutput {
     name: user.name,
     email: user.email,
     phone: user.phone,
+    birthday: user.birthday ? user.birthday.toISOString().split('T')[0] : null,
     role: user.role === 'ADMIN' ? 'admin' : 'customer',
     status: user.status === 'ACTIVE' ? 'active' : 'suspended',
     emailVerified: user.emailVerifiedAt !== null,
