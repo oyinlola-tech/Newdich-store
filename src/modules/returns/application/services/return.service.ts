@@ -78,36 +78,6 @@ export class ReturnService {
     });
   }
 
-  async approveWithRefund(id: string, amount: number, provider?: string) {
-    const returnRequest = await this.returnRepository.findById(id);
-    if (!returnRequest) {
-      throw new Error('Return request not found.');
-    }
-    if (amount <= 0) {
-      throw new Error('Refund amount must be positive.');
-    }
-    await this.returnRepository.updateStatus(id, 'APPROVED');
-    const refund = await this.returnRepository.createRefund({
-      returnId: id,
-      userId: returnRequest.userId,
-      amount,
-      provider
-    });
-
-    await this.notifyUser(returnRequest.orderId, (user, orderNumber) =>
-      this.mailerService.sendRefundIssued(
-        { email: user.email, name: user.name },
-        { orderNumber, amount, method: provider ?? 'Original payment method' }
-      )
-    );
-
-    return refund;
-  }
-
-  listRefunds(page: number, limit: number) {
-    return this.returnRepository.listRefunds(page, limit);
-  }
-
   private async notifyUser(
     orderId: string,
     send: (user: { email: string; name: string }, orderNumber: string) => Promise<void>

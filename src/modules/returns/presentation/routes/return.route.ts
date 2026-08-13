@@ -16,6 +16,4 @@ export function registerReturnRoutes(app: FastifyInstance, container: Container)
   app.get('/admin/returns/:id', { preHandler: [admin] }, controller.adminGet.bind(controller));
   app.put('/admin/returns/:id/status', { preHandler: adminPermission(container, 'returns.manage') }, controller.updateStatus.bind(controller));
   app.post('/admin/returns/:id/notes', { preHandler: adminPermission(container, 'returns.manage') }, controller.addNote.bind(controller));
-  app.post('/admin/returns/:id/refund', { preHandler: adminPermission(container, 'returns.manage') }, controller.approveRefund.bind(controller));
-  app.get('/admin/refunds', { preHandler: adminPermission(container, 'returns.manage') }, controller.adminRefunds.bind(controller));
 }

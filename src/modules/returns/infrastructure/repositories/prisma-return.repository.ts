@@ -1,8 +1,8 @@
 import type { PrismaClient } from '@prisma/client';
-import type { Return, ReturnReason, ReturnStatus, Refund } from '@prisma/client';
+import type { Return, ReturnReason, ReturnStatus } from '@prisma/client';
 
 export interface ReturnWithRelations extends Return {
-  refund?: Refund | null;
+  refund?: { id: string; status: string; amount: unknown; provider: string | null } | null;
   order?: { id: string; orderNumber: string; total: unknown } | null;
   user?: { id: string; name: string; email: string } | null;
 }
@@ -20,8 +20,6 @@ export interface ReturnRepositoryPort {
   list(filters: { status?: string; search?: string }, page: number, limit: number): Promise<{ returns: ReturnWithRelations[]; total: number }>;
   updateStatus(id: string, status: ReturnStatus): Promise<Return>;
   addNote(id: string, note: { text: string; by: string; createdAt: string }): Promise<Return>;
-  createRefund(input: { returnId: string; userId: string; amount: number; provider?: string }): Promise<Refund>;
-  listRefunds(page: number, limit: number): Promise<{ refunds: Refund[]; total: number }>;
 }
 
 export class PrismaReturnRepository implements ReturnRepositoryPort {
@@ -116,32 +114,5 @@ export class PrismaReturnRepository implements ReturnRepositoryPort {
       where: { id },
       data: { notes: [...notes, note] as never }
     });
-  }
-
-  async createRefund(input: { returnId: string; userId: string; amount: number; provider?: string }): Promise<Refund> {
-    return this.prisma.refund.create({
-      data: {
-        returnId: input.returnId,
-        userId: input.userId,
-        amount: input.amount,
-        provider: input.provider ?? null
-      }
-    });
-  }
-
-  async listRefunds(page: number, limit: number): Promise<{ refunds: Refund[]; total: number }> {
-    const [refunds, total] = await this.prisma.$transaction([
-      this.prisma.refund.findMany({
-        include: {
-          return: { include: { order: { select: { orderNumber: true } } } },
-          user: { select: { id: true, name: true, email: true } }
-        },
-        orderBy: { createdAt: 'desc' },
-        skip: (page - 1) * limit,
-        take: limit
-      }),
-      this.prisma.refund.count()
-    ]);
-    return { refunds, total };
   }
 }

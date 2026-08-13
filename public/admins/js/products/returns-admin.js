@@ -1,8 +1,8 @@
-﻿import { fetchReturnRequests, fetchReturnById, updateReturnStatus, addReturnNote } from '../../api/main/admin-returns.js';
+﻿import { fetchReturnRequests, fetchReturnById, updateReturnStatus, addReturnNote, approveRefund, fetchRefunds } from '../../api/main/admin-returns.js';
 import { checkAdminAuth } from '../main/admin.js';
 import { escapeHtml, escapeAttr } from '../main/sanitize.js';
 
-if (!checkAdminAuth()) return;
+if (!checkAdminAuth()) { throw new Error("Admin auth check failed"); }
 
 const returnsContainer = document.getElementById('returns-container');
 const statusFilter = document.getElementById('status-filter');
@@ -111,6 +111,9 @@ async function renderReturns(returnsList) {
                             </td>
                             <td class="actions">
                                 <button class="btn-view" data-return-id="${escapeAttr(returnId)}"><i class="fas fa-eye"></i> View</button>
+                                ${['APPROVED', 'PICKED_UP', 'REQUESTED'].includes(status.toUpperCase()) ? `
+                                    <button class="btn-refund" data-return-id="${escapeAttr(returnId)}"><i class="fas fa-undo"></i> Refund</button>
+                                ` : ''}
                             </td>
                         </tr>
                     `;
@@ -136,6 +139,56 @@ async function renderReturns(returnsList) {
             await openReturnModal(returnId);
         });
     });
+
+    document.querySelectorAll('.btn-refund').forEach(btn => {
+        btn.addEventListener('click', () => {
+            activeReturnId = btn.getAttribute('data-return-id');
+            refundModal.style.display = 'flex';
+        });
+    });
+}
+
+const refundsContainer = document.getElementById('refunds-container');
+
+function renderRefunds(refundsList) {
+    if (!refundsList || refundsList.length === 0) {
+        refundsContainer.innerHTML = '<div class="empty-state">No refunds issued yet.</div>';
+        return;
+    }
+
+    refundsContainer.innerHTML = `
+        <table class="data-table premium-table">
+            <thead>
+                <tr>
+                    <th>Refund ID</th>
+                    <th>Order</th>
+                    <th>Customer</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Method</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${refundsList.map(refund => `
+                    <tr>
+                        <td>#${escapeHtml(refund.id || refund.refundId || 'N/A')}</td>
+                        <td>#${escapeHtml(refund.return?.order?.orderNumber || refund.orderNumber || 'N/A')}</td>
+                        <td>${escapeHtml(refund.user?.name || refund.customerName || 'N/A')}</td>
+                        <td>${escapeHtml(formatMoney(refund.amount))}</td>
+                        <td><span class="status-badge ${refund.status === 'COMPLETED' ? 'active' : ''}">${escapeHtml(refund.status || 'PENDING')}</span></td>
+                        <td>${escapeHtml(refund.provider || 'Original payment method')}</td>
+                        <td>${formatDate(refund.createdAt || refund.refundedAt)}</td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+    `;
+}
+
+function formatMoney(amount) {
+    const value = Number(amount ?? 0);
+    return value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
 async function openReturnModal(returnId) {
@@ -212,6 +265,67 @@ function closeStatusModal() {
     statusModal.style.display = 'none';
 }
 
+const refundModal = document.getElementById('returns-refund-modal');
+const refundForm = document.getElementById('returns-refund-form');
+const refundAmount = document.getElementById('refund-amount');
+const refundProvider = document.getElementById('refund-provider');
+const refundMessage = document.getElementById('returns-refund-message');
+const refundClose = document.getElementById('returns-refund-close');
+const refundCancel = document.getElementById('returns-refund-cancel');
+
+async function loadRefunds() {
+    try {
+        refundsContainer.innerHTML = '<div class="loading">Loading refunds...</div>';
+        const refundsList = await fetchRefunds();
+        renderRefunds(refundsList);
+    } catch (error) {
+        refundsContainer.innerHTML = '<div class="error">Failed to load refunds.</div>';
+    }
+}
+
+refundForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!activeReturnId) return;
+    const amount = Number(refundAmount.value);
+    const provider = refundProvider.value.trim() || undefined;
+
+    if (!amount || amount <= 0) {
+        refundMessage.textContent = 'Enter a valid refund amount.';
+        refundMessage.style.display = 'block';
+        return;
+    }
+
+    const submitBtn = refundForm.querySelector('button[type="submit"]');
+    refundMessage.style.display = 'none';
+    const originalText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Issuing refund...';
+
+    try {
+        await approveRefund(activeReturnId, amount, provider);
+        refundModal.style.display = 'none';
+        refundForm.reset();
+        await loadReturns();
+        await loadRefunds();
+    } catch (error) {
+        refundMessage.textContent = error.message || 'Failed to issue refund.';
+        refundMessage.style.display = 'block';
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+    }
+});
+
+refundClose.addEventListener('click', () => {
+    refundModal.style.display = 'none';
+    refundMessage.style.display = 'none';
+});
+
+refundCancel.addEventListener('click', () => {
+    refundModal.style.display = 'none';
+    refundMessage.style.display = 'none';
+});
+
 applyFiltersBtn.addEventListener('click', applyFilters);
 resetFiltersBtn.addEventListener('click', resetFilters);
 
@@ -222,6 +336,7 @@ closeModal.addEventListener('click', () => {
 window.addEventListener('click', (e) => {
     if (e.target === modal) modal.style.display = 'none';
     if (e.target === statusModal) closeStatusModal();
+    if (e.target === refundModal) refundModal.style.display = 'none';
 });
 
 statusYes.addEventListener('click', async () => {
@@ -259,6 +374,7 @@ returnNoteForm.addEventListener('submit', async (e) => {
 
 document.addEventListener('DOMContentLoaded', () => {
     loadReturns();
+    loadRefunds();
 });
 
 

@@ -74,3 +74,39 @@ export async function addReturnNote(returnId, note) {
 }
 
 
+
+// Approve a return request and create the refund record
+export async function approveRefund(returnId, amount, provider) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/admin/returns/${returnId}/refund`, {
+            method: 'POST',
+            headers: getHeaders(),
+            body: JSON.stringify({ amount, provider })
+        });
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Failed to issue refund');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Error approving refund:', error);
+        throw error;
+    }
+}
+
+// Fetch the list of refunds issued (admin view)
+export async function fetchRefunds(search = '') {
+    try {
+        const queryParams = new URLSearchParams();
+        if (search) queryParams.append('search', search);
+        const response = await fetch(`${API_BASE_URL}/admin/refunds${queryParams.toString() ? `?${queryParams.toString()}` : ''}`, {
+            headers: getHeaders()
+        });
+        if (!response.ok) throw new Error('Failed to fetch refunds');
+        const data = await response.json();
+        return data.refunds || data;
+    } catch (error) {
+        console.error('Error fetching refunds:', error);
+        return [];
+    }
+}

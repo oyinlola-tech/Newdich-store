@@ -77,25 +77,4 @@ export class ReturnController {
       return reply.status(400).send({ message: (error as Error).message });
     }
   }
-
-  async approveRefund(request: FastifyRequest, reply: FastifyReply) {
-    const { id } = request.params as { id: string };
-    const body = request.body as { amount?: number; provider?: string };
-    if (typeof body.amount !== 'number') {
-      return reply.status(400).send({ message: 'amount is required.' });
-    }
-    try {
-      const refund = await this.returnService.approveWithRefund(id, body.amount, body.provider);
-      return reply.status(201).send({ refund });
-    } catch (error) {
-      return reply.status(400).send({ message: (error as Error).message });
-    }
-  }
-
-  async adminRefunds(request: FastifyRequest, reply: FastifyReply) {
-    const query = request.query as { page?: string; limit?: string };
-    const { page, limit } = buildPagination(query.page, query.limit, 50);
-    const result = await this.returnService.listRefunds(page, limit);
-    return reply.send({ refunds: result.refunds, total: result.total, page, limit });
-  }
 }
