@@ -1,5 +1,6 @@
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import type { MediaService } from '../../application/services/media.service.js';
+import { IMAGE_UPLOAD_ERROR_MESSAGE, isAllowedImage } from '../../../../core/shared/media/image-types.js';
 
 export class MediaController {
   constructor(private readonly mediaService: MediaService) {}
@@ -10,11 +11,15 @@ export class MediaController {
 
     for await (const part of parts) {
       if (part.type === 'file') {
-        files.push({
+        const file = {
           buffer: await part.toBuffer(),
           originalName: part.filename ?? 'upload',
           mimeType: part.mimetype ?? 'application/octet-stream'
-        });
+        };
+        if (!isAllowedImage(file)) {
+          return reply.status(400).send({ message: IMAGE_UPLOAD_ERROR_MESSAGE });
+        }
+        files.push(file);
       }
     }
 

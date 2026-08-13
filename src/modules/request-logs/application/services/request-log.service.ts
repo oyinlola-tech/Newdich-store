@@ -1,18 +1,16 @@
-import type { PrismaClient } from '@prisma/client';
+import type { PrismaRequestLogRepository } from '../../infrastructure/repositories/prisma-request-log.repository.js';
 
 export class RequestLogService {
-  constructor(private readonly prisma: PrismaClient) {}
+  constructor(private readonly repository: PrismaRequestLogRepository) {}
 
   async log(input: { ip: string; path: string; method: string; status: number; userId?: string; userAgent?: string }) {
-    await this.prisma.requestLog.create({
-      data: {
-        ip: input.ip,
-        path: input.path,
-        method: input.method,
-        status: input.status,
-        userId: input.userId ?? null,
-        userAgent: input.userAgent ?? null
-      }
+    await this.repository.create({
+      ip: input.ip,
+      path: input.path,
+      method: input.method,
+      status: input.status,
+      userId: input.userId,
+      userAgent: input.userAgent
     });
   }
 
@@ -21,9 +19,9 @@ export class RequestLogService {
     if (filters.ip) where.ip = filters.ip;
     if (filters.path) where.path = { contains: filters.path };
 
-    const [logs, total] = await this.prisma.$transaction([
-      this.prisma.requestLog.findMany({ where, orderBy: { createdAt: 'desc' }, skip: (filters.page - 1) * filters.limit, take: filters.limit }),
-      this.prisma.requestLog.count({ where })
+    const [logs, total] = await Promise.all([
+      this.repository.findMany(where, (filters.page - 1) * filters.limit, filters.limit),
+      this.repository.count(where)
     ]);
     return { logs, total };
   }
