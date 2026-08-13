@@ -99,6 +99,16 @@ export function cleanRedirectParam(fallbackPath = '/') {
 }
 
 export function navigateToRoute(routeKey, params = {}, fallbackKey = 'home') {
-    const target = buildUrl(routeKey, params, fallbackKey);
-    window.location.assign(target);
+  const target = buildUrl(routeKey, params, fallbackKey);
+  window.location.assign(target);
+}
+
+export function isLoggedIn() {
+  return !!sessionStorage.getItem('authToken');
+}
+
+export function requireAuth(redirectPath = '/', fallbackKey = 'home') {
+  if (!isLoggedIn()) {
+    navigateToRoute('login', { redirect: redirectPath }, fallbackKey);
+  }
 }

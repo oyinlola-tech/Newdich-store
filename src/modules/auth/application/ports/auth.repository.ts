@@ -4,6 +4,8 @@ export interface CreateUserInput {
   name: string;
   email: string;
   passwordHash: string;
+  acceptedTermsAt?: Date;
+  newsletterOptIn?: boolean;
 }
 
 export interface UpdateUserPatch {

@@ -20,6 +20,7 @@ import {
 } from '../../domain/errors/auth.error.js';
 import { NotFoundError } from '../../../../core/domain/errors/domain.error.js';
 import type { SessionOutput } from '../../domain/types/auth.types.js';
+import type { NewsletterService } from '../../../newsletters/application/services/newsletter.service.js';
 
 export interface RegisterResult {
   user: User;
@@ -56,11 +57,12 @@ export class AuthService {
     private readonly tokenService: TokenService,
     private readonly passwordHasher: PasswordHasherService,
     private readonly mailerService: MailerService,
+    private readonly newsletterService: NewsletterService | null,
     private readonly logger: AppLogger,
     private readonly config: AuthServiceConfig
   ) {}
 
-  async register(input: { name: string; email: string; password: string }): Promise<RegisterResult> {
+  async register(input: { name: string; email: string; password: string; newsletterOptIn?: boolean }): Promise<RegisterResult> {
     const email = EmailValueObject.create(input.email).value;
     const existing = await this.authRepository.findByEmail(email);
     if (existing) {
@@ -72,8 +74,14 @@ export class AuthService {
     const user = await this.authRepository.create({
       name: input.name.trim(),
       email,
-      passwordHash
+      passwordHash,
+      acceptedTermsAt: new Date(),
+      newsletterOptIn: input.newsletterOptIn === true
     });
+
+    if (input.newsletterOptIn === true) {
+      await this.subscribeToNewsletter(user);
+    }
 
     if (this.config.otpRequired) {
       await this.otpService.revokeAllForEmail(email);
@@ -85,6 +93,20 @@ export class AuthService {
     await this.authRepository.markEmailVerified(user.id);
     await this.mailerService.sendWelcome({ email: user.email, name: user.name });
     return { user, session };
+  }
+
+  private async subscribeToNewsletter(user: User): Promise<void> {
+    try {
+      const newsletterService = this.newsletterService;
+      if (!newsletterService) return;
+      await newsletterService.subscribe({
+        email: user.email,
+        name: user.name,
+        source: 'REGISTER'
+      });
+    } catch (error) {
+      this.logger.error({ error, email: user.email }, 'newsletter subscription after register failed');
+    }
   }
 
   async login(
@@ -173,7 +195,7 @@ export class AuthService {
     ip?: string;
     userAgent?: string;
   }): Promise<VerifyOtpResult> {
-    const purpose = OtpPurpose[input.purpose as keyof typeof OtpPurpose];
+    const purpose = normalizeOtpPurpose(input.purpose);
     if (!purpose) {
       throw new ResetTokenError('INVALID_PURPOSE', 'Invalid OTP purpose.');
     }
@@ -326,4 +348,18 @@ export class AuthService {
       refreshToken
     };
   }
+}
+
+const OTP_PURPOSE_ALIASES: Record<string, OtpPurpose> = {
+  login: OtpPurpose.LOGIN,
+  register: OtpPurpose.REGISTER,
+  reset: OtpPurpose.RESET_PASSWORD,
+  admin_login: OtpPurpose.ADMIN_LOGIN
+};
+
+function normalizeOtpPurpose(purpose: string): OtpPurpose | undefined {
+  if (purpose in OtpPurpose) {
+    return OtpPurpose[purpose as keyof typeof OtpPurpose];
+  }
+  return OTP_PURPOSE_ALIASES[purpose];
 }

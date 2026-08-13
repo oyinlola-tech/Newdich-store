@@ -11,7 +11,8 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="auth-guest">
+    <script>sessionStorage.getItem("authToken")&&(document.body.classList.add("auth-authenticated"),document.body.classList.remove("auth-guest"));</script>
     <header>
         <div class="container">
             <div class="logo">
@@ -63,6 +64,18 @@
                             <label for="confirm-password">Confirm Password</label>
                             <input type="password" id="confirm-password" name="confirm-password" required>
                         </div>
+                        <div class="form-group checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="accepted-terms" required>
+                                <span>I agree to the <a href="/terms" target="_blank" rel="noopener">Terms and Conditions</a> and <a href="/privacy" target="_blank" rel="noopener">Privacy Policy</a>. *</span>
+                            </label>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="newsletter-optin">
+                                <span>Subscribe me to marketing emails for exclusive offers and new arrivals (optional).</span>
+                            </label>
+                        </div>
                         <button type="submit" class="btn-primary btn-block">Register</button>
                     </form>
                     <div class="auth-footer">
@@ -100,7 +113,7 @@
                         <h4>HELP</h4>
                         <ul>
                             <li><a href="/contact">Contact</a></li>
-                            <li><a href="/contact">FAQs</a></li>
+                            <li><a href="/faqs">FAQs</a></li>
                             <li><a href="/track">Delivery</a></li>
                             <li><a href="/returns">Returns</a></li>
                             <li><a href="/track">Track order</a></li>
@@ -109,10 +122,7 @@
                     <div class="footer-column">
                         <h4>ABOUT</h4>
                         <ul>
-                            <li><a href="/">Our story</a></li>
-                            <li><a href="/">Journal</a></li>
-                            <li><a href="/">Careers</a></li>
-                            <li><a href="/">Sell with us</a></li>
+                            <li><a href="/about">Our story</a></li>
                         </ul>
                     </div>
                 </div>
@@ -146,7 +156,7 @@
         </div>
         <div class="footer-legal">
             <div class="container">
-                <p>TELENTE STORE · © <span class="js-year">2026</span> Telente Store · <a href="/">Privacy</a> · <a href="/">Terms</a> · <a href="/">Cookies</a></p>
+                <p>TELENTE STORE · © <span class="js-year">2026</span> Telente Store · <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a> · <a href="/cookies">Cookies</a></p>
             </div>
         </div>
     </footer>

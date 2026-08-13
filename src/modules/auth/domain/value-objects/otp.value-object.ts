@@ -1,3 +1,4 @@
+import { randomInt } from 'node:crypto';
 import { OtpPurpose } from '@prisma/client';
 import { OtpError } from '../errors/auth.error.js';
 
@@ -10,7 +11,7 @@ export class OtpValueObject {
   ) {}
 
   static generate(lifetimeMinutes: number): OtpValueObject {
-    const code = String(Math.floor(Math.random() * 1_000_000)).padStart(6, '0');
+    const code = String(randomInt(0, 1_000_000)).padStart(6, '0');
     const expiresAt = new Date(Date.now() + lifetimeMinutes * 60_000);
     return new OtpValueObject(code, expiresAt);
   }

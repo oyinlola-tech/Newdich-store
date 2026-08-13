@@ -51,7 +51,8 @@ loginForm.addEventListener('submit', async (e) => {
                 purpose: 'login',
                 otpToken: data.otpToken || null
             }));
-            navigateToRoute('otp', { purpose: 'login', email });
+            const redirectTo = new URL(window.location.href).searchParams.get('redirect') || '';
+            navigateToRoute('otp', { purpose: 'login', email, redirect: redirectTo });
             return;
         }
         // After successful login, update cart count (since user may have a cart)

@@ -14,7 +14,7 @@ export function registerAuthRoutes(app: FastifyInstance, container: Container): 
   app.post('/auth/otp/verify', { config: { rateLimit: { max: 10, timeWindow: '5 minutes' } } }, controller.verifyOtp.bind(controller));
   app.post('/auth/forgot-password', { config: { rateLimit: { max: 5, timeWindow: '10 minutes' } } }, controller.forgotPassword.bind(controller));
   app.post('/auth/reset-password', { config: { rateLimit: { max: 5, timeWindow: '10 minutes' } } }, controller.resetPassword.bind(controller));
-  app.post('/auth/refresh-token', controller.refreshToken.bind(controller));
+  app.post('/auth/refresh-token', { config: { rateLimit: { max: 10, timeWindow: '5 minutes' } } }, controller.refreshToken.bind(controller));
 
   const requireCustomerAuth = requireAuth(tokenService);
   app.post('/auth/change-password', { preHandler: requireCustomerAuth }, controller.changePassword.bind(controller));

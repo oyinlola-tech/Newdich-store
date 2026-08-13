@@ -26,6 +26,8 @@ registerForm.addEventListener('submit', async (e) => {
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
     const confirmPassword = document.getElementById('confirm-password').value;
+    const acceptedTerms = document.getElementById('accepted-terms')?.checked === true;
+    const newsletterOptIn = document.getElementById('newsletter-optin')?.checked === true;
     
     // Clear previous messages
     errorDiv.style.display = 'none';
@@ -34,6 +36,11 @@ registerForm.addEventListener('submit', async (e) => {
     // Validation
     if (!name || !email || !password || !confirmPassword) {
         showError('Please fill in all fields.');
+        return;
+    }
+    
+    if (!acceptedTerms) {
+        showError('You must accept the Terms and Conditions and Privacy Policy.');
         return;
     }
     
@@ -60,7 +67,7 @@ registerForm.addEventListener('submit', async (e) => {
     submitBtn.disabled = true;
     
     try {
-        const data = await registerUser({ name, email, password });
+        const data = await registerUser({ name, email, password, acceptedTerms: true, newsletterOptIn });
         if (data?.requiresOtp || data?.otpRequired) {
             if (!data.otpToken) {
                 try {
@@ -74,7 +81,8 @@ registerForm.addEventListener('submit', async (e) => {
                 purpose: 'register',
                 otpToken: data.otpToken || null
             }));
-            navigateToRoute('otp', { purpose: 'register', email });
+            const redirectTo = new URL(window.location.href).searchParams.get('redirect') || '';
+            navigateToRoute('otp', { purpose: 'register', email, redirect: redirectTo });
             return;
         }
         // Registration successful

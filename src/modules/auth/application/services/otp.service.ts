@@ -1,4 +1,4 @@
-import { createHash, randomBytes } from 'node:crypto';
+import { createHash, randomBytes, timingSafeEqual } from 'node:crypto';
 import type { OtpPurpose } from '@prisma/client';
 import type { OtpRepositoryPort } from '../ports/otp.repository.js';
 import { OtpValueObject } from '../../domain/value-objects/otp.value-object.js';
@@ -66,7 +66,10 @@ export class OtpService {
       throw new OtpError('TOO_MANY_ATTEMPTS', 'Too many incorrect attempts. Please request a new code.');
     }
 
-    if (hashCode(input.code) !== record.codeHash) {
+    const inputHash = hashCode(input.code);
+    const inputBuffer = Buffer.from(inputHash);
+    const recordBuffer = Buffer.from(record.codeHash);
+    if (inputBuffer.length !== recordBuffer.length || !timingSafeEqual(inputBuffer, recordBuffer)) {
       await this.otpRepository.incrementAttempts(record.id);
       throw new OtpError('INVALID_OTP', 'Incorrect verification code. Please try again.');
     }

@@ -11,6 +11,7 @@ import { registerAuthRoutes } from './presentation/routes/auth.route.js';
 import { registerAdminAuthRoutes } from './presentation/routes/admin-auth.route.js';
 import { appConfig, authConfig } from '../../config/index.js';
 import type { AuthRepositoryPort } from './application/ports/auth.repository.js';
+import type { NewsletterService } from '../newsletters/application/services/newsletter.service.js';
 import { CommandBus } from '../../core/application/commands/command-bus.js';
 import { QueryBus } from '../../core/application/queries/query-bus.js';
 import { RegisterHandler } from './application/commands/register/register.handler.js';
@@ -45,6 +46,7 @@ export function registerAuthModule(container: Container, app: FastifyInstance): 
       c.get('token.service'),
       c.get('password-hasher.service'),
       c.get('mailer.service'),
+      container.has('newsletter.service') ? c.get<NewsletterService>('newsletter.service') : null,
       c.get('logger'),
       {
         otpRequired: authConfig.OTP_REQUIRED,
