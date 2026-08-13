@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to Telente Store</title>
+    <title>Order Milestone | Telente Store</title>
     <link rel="stylesheet" href="/emails/css/email.css">
 </head>
 <body class="auth-guest">
@@ -21,13 +21,18 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="email-body">
-                            <h1 class="email-headline">WELCOME<br>TO THE<br>GOOD STUFF.</h1>
-                            <p class="email-subhead">Thanks for joining Telente Store. Discover products worth bringing into your everyday.</p>
-                            <a href="/products" class="email-button">Start shopping →</a>
-                            <hr class="email-divider">
-                            <p class="email-text">CURRENTLY LOVING.</p>
-                            <p class="email-text" style="color: #5a6270;">A few things we think you'll enjoy.</p>
+                        <td class="email-body" style="text-align: center;">
+                            <div class="email-celebration-badge">Order Milestone</div>
+                            <h1 class="email-headline">YOU HAVE REACHED<br>{{milestone}} ORDERS.</h1>
+                            <p class="email-subhead">Thank you for being a valued customer. We appreciate your loyalty.</p>
+                            {{#if couponCode}}
+                            <div class="email-coupon">
+                                <p class="email-text-secondary" style="margin-bottom: 8px;">Your reward</p>
+                                <div class="email-coupon-code">{{couponCode}}</div>
+                                <p class="email-text-secondary" style="margin-top: 8px;">Use at checkout</p>
+                            </div>
+                            {{/if}}
+                            <a href="/products" class="email-button">Keep shopping →</a>
                         </td>
                     </tr>
                     <tr>

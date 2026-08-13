@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to Telente Store</title>
+    <title>Happy Birthday | Telente Store</title>
     <link rel="stylesheet" href="/emails/css/email.css">
 </head>
 <body class="auth-guest">
@@ -21,20 +21,26 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="email-body">
-                            <h1 class="email-headline">WELCOME<br>TO THE<br>GOOD STUFF.</h1>
-                            <p class="email-subhead">Thanks for joining Telente Store. Discover products worth bringing into your everyday.</p>
-                            <a href="/products" class="email-button">Start shopping →</a>
-                            <hr class="email-divider">
-                            <p class="email-text">CURRENTLY LOVING.</p>
-                            <p class="email-text" style="color: #5a6270;">A few things we think you'll enjoy.</p>
+                        <td class="email-body" style="text-align: center;">
+                            <div class="email-celebration-badge">Happy Birthday</div>
+                            <h1 class="email-headline">IT IS YOUR DAY.</h1>
+                            <p class="email-subhead">We noticed it is your birthday and we could not let it pass without saying something. You are part of the Telente family now, and that means a lot to us.</p>
+                            {{#if couponCode}}
+                            <div class="email-coupon">
+                                <p class="email-text-secondary" style="margin-bottom: 8px;">A small gift from us</p>
+                                <div class="email-coupon-code">{{couponCode}}</div>
+                                <p class="email-text-secondary" style="margin-top: 8px;">Use at checkout</p>
+                            </div>
+                            {{/if}}
+                            <p class="email-text-secondary" style="margin-top: 24px;">We hope your day is filled with good things. Thank you for being here.</p>
+                            <a href="/products" class="email-button">Browse our collections →</a>
                         </td>
                     </tr>
                     <tr>
                         <td class="email-footer">
                             <a href="/" class="email-footer-wordmark">TELENTE STORE</a>
                             <div class="email-footer-links">
-                                <a href="/">Shop</a>
+                                <a href="/products">Shop</a>
                                 <a href="/contact">Help</a>
                                 <a href="/contact">Contact</a>
                             </div>

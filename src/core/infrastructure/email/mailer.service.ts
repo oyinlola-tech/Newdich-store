@@ -7,6 +7,8 @@ import {
   adminAlertEmail,
   contactReplyEmail,
   loginAlertEmail,
+  newsletterUnsubscribeEmail,
+  newsletterWelcomeEmail,
   orderConfirmationEmail,
   orderStatusEmail,
   otpEmail,
@@ -251,6 +253,24 @@ export class MailerService {
       subject: `Re: ${input.subject}`,
       html: contactReplyEmail(user.name, input.subject, input.reply),
       purpose: 'contact-reply'
+    });
+  }
+
+  sendNewsletterWelcome(user: MailUser): Promise<void> {
+    return this.dispatch({
+      to: user.email,
+      subject: 'You are subscribed to the Telente Store newsletter',
+      html: newsletterWelcomeEmail(user.name),
+      purpose: 'newsletter-welcome'
+    });
+  }
+
+  sendNewsletterUnsubscribe(user: MailUser): Promise<void> {
+    return this.dispatch({
+      to: user.email,
+      subject: 'You have been unsubscribed from the Telente Store newsletter',
+      html: newsletterUnsubscribeEmail(user.name),
+      purpose: 'newsletter-unsubscribe'
     });
   }
 
