@@ -1,31 +1,19 @@
-import type { PrismaClient } from '@prisma/client';
+import type { SearchLogRepository } from '../../infrastructure/repositories/prisma-search-log.repository.js';
 
 export class SearchLogService {
-  constructor(private readonly prisma: PrismaClient) {}
+  constructor(private readonly repository: SearchLogRepository) {}
 
   async log(query: string, userId?: string): Promise<void> {
     const trimmed = query.trim();
     if (!trimmed) return;
     try {
-      await this.prisma.searchLog.create({ data: { query: trimmed.slice(0, 200), userId: userId ?? null } });
+      await this.repository.create({ query: trimmed, userId: userId ?? null });
     } catch {
       // Logging is best-effort; never fail a search because logging failed.
     }
   }
 
   async topSearches(days = 30, limit = 20) {
-    const since = new Date();
-    since.setDate(since.getDate() - days);
-    since.setHours(0, 0, 0, 0);
-
-    const rows = await this.prisma.searchLog.groupBy({
-      by: ['query'],
-      where: { createdAt: { gte: since } },
-      _count: { query: true },
-      orderBy: { _count: { query: 'desc' } },
-      take: limit
-    });
-
-    return rows.map((row) => ({ query: row.query, count: Number(row._count.query) }));
+    return this.repository.topSearches(days, limit);
   }
 }
