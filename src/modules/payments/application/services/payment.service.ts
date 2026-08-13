@@ -39,7 +39,7 @@ export interface PaymentIntent {
 export class PaymentService {
   constructor(
     private readonly paymentRepository: PaymentRepositoryPort,
-    private readonly orderService: OrderService,
+    private readonly orderService: OrderService | undefined,
     private readonly userRepository: UserRepositoryPort,
     private readonly mailerService: MailerService,
     private readonly settingsService: PaymentSettingsService,
@@ -236,7 +236,9 @@ export class PaymentService {
     }
     const updated = await this.paymentRepository.updateStatus(paymentId, status);
     if (status === 'REFUNDED') {
-      await this.orderService.updateStatus(payment.orderId, 'REFUNDED', 'Order refunded');
+      if (this.orderService) {
+        await this.orderService.updateStatus(payment.orderId, 'REFUNDED', 'Order refunded');
+      }
       await this.notifyRefunded(payment.orderId, Number(payment.amount), payment.method);
     }
     return updated;
@@ -253,18 +255,22 @@ export class PaymentService {
       await gateway.refund(payment.reference, Number(payment.amount));
     }
     const updated = await this.paymentRepository.updateStatus(payment.id, 'REFUNDED');
-    await this.orderService.updateStatus(payment.orderId, 'REFUNDED', 'Payment refunded');
+    if (this.orderService) {
+      await this.orderService.updateStatus(payment.orderId, 'REFUNDED', 'Payment refunded');
+    }
     await this.notifyRefunded(payment.orderId, Number(payment.amount), payment.method);
     return updated;
   }
 
   private async markPaid(paymentId: string, paidAt: Date, method: string) {
     const updated = await this.paymentRepository.updateStatus(paymentId, 'PAID', { paidAt });
-    await this.orderService.updateStatus(updated.orderId, 'PAID', 'Payment confirmed');
+    if (this.orderService) {
+      await this.orderService.updateStatus(updated.orderId, 'PAID', 'Payment confirmed');
+    }
 
     // Consume the coupon balance (store-credit style coupons) once the order
     // is actually paid. Percentage/one-off coupons only bump the used count.
-    if (this.couponService) {
+    if (this.couponService && this.orderService) {
       const order = await this.orderService.getById(updated.orderId);
       if (order?.couponCode) {
         await this.couponService
@@ -279,6 +285,7 @@ export class PaymentService {
   }
 
   private async notifyPaid(orderId: string, method: string, reference: string, paidAt: Date): Promise<void> {
+    if (!this.orderService) return;
     const order = await this.orderService.getById(orderId);
     if (!order) return;
     const user = await this.userRepository.findById(order.userId);
@@ -315,6 +322,7 @@ export class PaymentService {
   }
 
   private async notifyAdminPaid(orderId: string, reference: string, paidAt: Date): Promise<void> {
+    if (!this.orderService) return;
     const order = await this.orderService.getById(orderId);
     if (!order) return;
     const user = await this.userRepository.findById(order.userId);
@@ -327,6 +335,7 @@ export class PaymentService {
   }
 
   private async notifyFailed(orderId: string, reference: string): Promise<void> {
+    if (!this.orderService) return;
     const order = await this.orderService.getById(orderId);
     if (!order) return;
     const user = await this.userRepository.findById(order.userId);
@@ -339,6 +348,7 @@ export class PaymentService {
   }
 
   private async notifyRefunded(orderId: string, amount: number, method: string): Promise<void> {
+    if (!this.orderService) return;
     const order = await this.orderService.getById(orderId);
     if (!order) return;
     const user = await this.userRepository.findById(order.userId);

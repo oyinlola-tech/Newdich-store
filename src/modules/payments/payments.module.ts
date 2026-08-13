@@ -13,7 +13,7 @@ export function registerPaymentsModule(container: Container, app: FastifyInstanc
   container.register('payment.service', (c) =>
     new PaymentService(
       c.get('payment.repository'),
-      c.get('order.service'),
+      container.has('order.service') ? c.get('order.service') : undefined,
       c.get('user.repository'),
       c.get('mailer.service'),
       c.get('payment-settings.service'),
