@@ -77,6 +77,10 @@ export class CheckoutService {
 
     const total = Math.round((subtotal + shippingAmount + taxAmount - discountAmount) * 100) / 100;
 
+    if (couponCode) {
+      await this.couponService.consume(couponCode, discountAmount);
+    }
+
     const order = await this.orderService.create({
       userId: input.userId,
       items: cart.items.map((item) => ({
@@ -95,10 +99,6 @@ export class CheckoutService {
       note: input.note
     });
 
-    if (couponCode) {
-      await this.couponService.consume(couponCode, discountAmount);
-    }
-
     for (const item of order.items) {
       await this.reviewPromptService?.create(input.userId, item.productId, order.id, 14).catch(() => undefined);
     }
@@ -106,7 +106,10 @@ export class CheckoutService {
     // Payment first: the order is only finalized (emails, admin alert) once the
     // payment is confirmed via webhook or the confirm endpoint.
     const user = await this.userRepository.findById(input.userId);
-    const email = user?.email ?? 'customer@example.com';
+    if (!user?.email) {
+      throw new Error('User not found for checkout.');
+    }
+    const email = user.email;
 
     const payment = await this.paymentService.initiate({
       orderId: order.id,

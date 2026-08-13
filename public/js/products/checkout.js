@@ -1,5 +1,6 @@
 ﻿import { fetchCart } from '../../apis/main/cart.js';
 import { submitCheckout, confirmPayment, verifyPayment } from '../../apis/main/payments.js';
+import { API_BASE_URL, getHeaders } from '../../apis/main/config.js';
 import { isLoggedIn, getCurrentUser } from '../../apis/accounts/auth.js';
 import { updateCartCount } from '../main/main.js';
 import { formatCurrency } from '../security/format.js';
@@ -121,6 +122,11 @@ function renderCheckoutForm(user) {
                 <div class="order-items">
                     ${orderItemsHtml}
                 </div>
+                <div class="coupon-row">
+                    <input type="text" id="coupon-code" placeholder="Coupon code" aria-label="Coupon code">
+                    <button type="button" id="apply-coupon-btn" class="btn-filter">Apply</button>
+                </div>
+                <div id="coupon-message" class="coupon-message" style="display: none;"></div>
                 <div class="summary-totals">
                     <div class="summary-row">
                         <span>Subtotal:</span>
@@ -129,6 +135,10 @@ function renderCheckoutForm(user) {
                     <div class="summary-row">
                         <span>Shipping:</span>
                         <span>${formatCurrency(cartData.shippingCost)}</span>
+                    </div>
+                    <div class="summary-row" id="discount-row" style="display: none;">
+                        <span>Discount:</span>
+                        <span id="discount-amount"></span>
                     </div>
                     <div class="summary-row total">
                         <strong>Total:</strong>
@@ -146,6 +156,45 @@ function renderCheckoutForm(user) {
     // Attach form submit handler
     const form = document.getElementById('shipping-form');
     form.addEventListener('submit', handleOrderSubmit);
+
+    const applyCouponBtn = document.getElementById('apply-coupon-btn');
+    const couponMessage = document.getElementById('coupon-message');
+    applyCouponBtn.addEventListener('click', async () => {
+        const code = document.getElementById('coupon-code').value.trim();
+        couponMessage.style.display = 'none';
+        if (!code) {
+            couponMessage.textContent = 'Enter a coupon code first.';
+            couponMessage.className = 'coupon-message error-message';
+            couponMessage.style.display = 'block';
+            return;
+        }
+        try {
+            const subtotal = cartData?.totalPrice || 0;
+            const response = await fetch(`${API_BASE_URL}/coupons/validate?code=${encodeURIComponent(code)}&amount=${subtotal}`, {
+                headers: getHeaders()
+            });
+            const result = await response.json();
+            if (result.valid && result.discountAmount > 0) {
+                couponMessage.textContent = `Coupon applies ${formatCurrency(result.discountAmount)} off. It will be applied when you place your order.`;
+                couponMessage.className = 'coupon-message success-message';
+                const discountRow = document.getElementById('discount-row');
+                const discountAmount = document.getElementById('discount-amount');
+                if (discountRow && discountAmount) {
+                    discountAmount.textContent = `-${formatCurrency(result.discountAmount)}`;
+                    discountRow.style.display = 'flex';
+                }
+            } else {
+                couponMessage.textContent = result.message || 'This coupon does not apply to your order.';
+                couponMessage.className = 'coupon-message error-message';
+                const discountRow = document.getElementById('discount-row');
+                if (discountRow) discountRow.style.display = 'none';
+            }
+        } catch (error) {
+            couponMessage.textContent = 'Could not validate coupon. Please try again.';
+            couponMessage.className = 'coupon-message error-message';
+        }
+        couponMessage.style.display = 'block';
+    });
 }
 
 function getSelectedPaymentMethod() {
@@ -178,13 +227,24 @@ async function handleOrderSubmit(e) {
     submitBtn.disabled = true;
 
     try {
+        const couponCode = document.getElementById('coupon-code')?.value.trim() || undefined;
         const result = await submitCheckout({
             shippingMethod: 'STANDARD',
             paymentMethod,
+            couponCode,
             note: `Deliver to ${fullName}, ${address}, ${city}, ${postalCode}. Phone: ${phone}`
         });
 
         const { order, payment } = result;
+
+        if (result.totals?.discountAmount > 0) {
+            const discountRow = document.getElementById('discount-row');
+            const discountAmount = document.getElementById('discount-amount');
+            if (discountRow && discountAmount) {
+                discountAmount.textContent = `-${formatCurrency(result.totals.discountAmount)}`;
+                discountRow.style.display = 'flex';
+            }
+        }
 
         if (payment.method === 'PAY_ON_DELIVERY') {
             // No online payment needed — confirm directly.
@@ -242,7 +302,23 @@ async function runInlinePayment(payment, email, result, statusEl) {
 
     await loadScript(inline.scriptUrl);
 
-    const paid = await new Promise((resolve) => {
+    if (payment.provider === 'paystack' || payment.provider === 'flutterwave') {
+        const paid = await openInlineCheckout(payment, email, result);
+        if (paid) {
+            await pollUntilPaid(payment.reference);
+        } else {
+            showManualVerification(payment, statusEl);
+        }
+        return;
+    }
+
+    // Nomba and others: hosted checkout in a popup/iframe, then poll for
+    // confirmation so the customer is never left hanging after paying.
+    await runRedirectPayment(payment, result, statusEl);
+}
+
+function openInlineCheckout(payment, email, result) {
+    return new Promise((resolve) => {
         const done = (success) => resolve(success);
 
         if (payment.provider === 'paystack') {
@@ -251,51 +327,46 @@ async function runInlinePayment(payment, email, result, statusEl) {
                 return;
             }
             const handler = window.PaystackPop.setup({
-                key: inline.publicKey,
+                key: payment.inline.publicKey,
                 email,
                 amount: Math.round(result.totals.total * 100),
-                ref: inline.reference,
+                ref: payment.inline.reference,
                 currency: 'NGN',
                 metadata: { orderNumber: result.order.orderNumber },
                 callback: () => done(true),
                 onClose: () => done(false)
             });
             handler.openIframe();
-        } else if (payment.provider === 'flutterwave') {
+        } else {
             if (typeof window.FlutterwaveCheckout !== 'function') {
                 resolve(false);
                 return;
             }
             window.FlutterwaveCheckout({
-                public_key: inline.publicKey,
-                tx_ref: inline.reference,
+                public_key: payment.inline.publicKey,
+                tx_ref: payment.inline.reference,
                 amount: result.totals.total,
                 currency: 'NGN',
                 payment_options: payment.method === 'TRANSFER' ? 'banktransfer' : 'card',
                 callback: () => done(true),
                 onclose: () => done(false)
             });
-        } else {
-            // Nomba and others: open the provider checkout URL in a modal iframe.
-            resolve(await runRedirectPayment(payment, result, statusEl));
         }
     });
+}
 
-    if (paid) {
-        await pollUntilPaid(payment.reference);
-    } else {
-        statusEl.innerHTML = '<p>Payment window closed before completion. You can verify your payment status on the order page.</p>';
-        const submitBtn = document.getElementById('place-order-btn');
-        submitBtn.textContent = 'I have completed my payment';
-        submitBtn.disabled = false;
-        submitBtn.onclick = async () => {
-            try {
-                await pollUntilPaid(payment.reference);
-            } catch (err) {
-                showOrderError(err.message);
-            }
-        };
-    }
+function showManualVerification(payment, statusEl) {
+    statusEl.innerHTML = '<p>Payment window closed before completion. You can verify your payment status on the order page.</p>';
+    const submitBtn = document.getElementById('place-order-btn');
+    submitBtn.textContent = 'I have completed my payment';
+    submitBtn.disabled = false;
+    submitBtn.onclick = async () => {
+        try {
+            await pollUntilPaid(payment.reference);
+        } catch (err) {
+            showOrderError(err.message);
+        }
+    };
 }
 
 async function runTransferPayment(payment, result, statusEl) {
@@ -344,8 +415,6 @@ async function runRedirectPayment(payment, result, statusEl) {
         return;
     }
 
-    // Other providers without inline support: hosted checkout in a modal iframe
-    // so the customer is never redirected away from the store.
     statusEl.innerHTML = `
         <h3>Complete your payment</h3>
         <div class="checkout-iframe-wrap">
@@ -353,6 +422,11 @@ async function runRedirectPayment(payment, result, statusEl) {
         </div>
         <p class="helper-text">If the form above does not load, <a href="${escapeAttr(safeUrl)}" target="_blank" rel="noopener">open it in a new tab</a>.</p>
     `;
+    try {
+        await pollUntilPaid(payment.reference);
+    } catch (err) {
+        showOrderError(err.message);
+    }
 }
 
 async function pollUntilPaid(reference, maxAttempts = 30) {
