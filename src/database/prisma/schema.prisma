@@ -33,7 +33,10 @@ model User {
   status          UserStatus    @default(ACTIVE)
   permissions     Json?
   emailVerifiedAt DateTime?
+  acceptedTermsAt DateTime?
+  newsletterOptIn Boolean       @default(false)
   lastLoginAt     DateTime?
+  birthday        DateTime?
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
 
@@ -52,6 +55,7 @@ model User {
   passwordResets PasswordReset[]
   coupons     Coupon[]
   reviewPrompts ReviewPrompt[]
+  achievements UserAchievement[]
 
   @@index([role])
   @@index([status])
@@ -164,6 +168,7 @@ model Category {
   updatedAt DateTime       @updatedAt
 
   products CategoryProduct[]
+  discounts Discount[]
 
   @@index([parentId])
   @@index([status, sortOrder])
@@ -186,6 +191,7 @@ model Brand {
   updatedAt   DateTime @updatedAt
 
   products Product[]
+  discounts Discount[]
 
   @@index([isActive])
 }
@@ -221,10 +227,13 @@ model Product {
   orderItems    OrderItem[]
   reviews       Review[]
   coupons       Coupon[] @relation("CouponProducts")
+  discounts     Discount[]
 
   @@index([status, featured])
   @@index([name])
   @@index([slug])
+  @@index([brandId])
+  @@index([price])
 }
 
 model ProductVariant {
@@ -245,6 +254,7 @@ model ProductVariant {
   orderItems    OrderItem[]
 
   @@index([productId])
+  @@index([sku])
 }
 
 model ProductImage {
@@ -295,6 +305,7 @@ model Inventory {
   stockMovements   StockMovement[]
 
   @@index([quantity])
+  @@index([productId])
 }
 
 model StockMovement {
@@ -518,6 +529,9 @@ model Shipment {
 
   order   Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
   address Address? @relation(fields: [addressId], references: [id], onDelete: SetNull)
+
+  @@index([status, createdAt])
+  @@index([trackingNumber])
 }
 
 // ============================================================
@@ -533,6 +547,58 @@ enum CouponStatus {
   ACTIVE
   EXPIRED
   DISABLED
+}
+
+enum DiscountScope {
+  ALL
+  CATEGORY
+  PRODUCT
+  BRAND
+}
+
+model Discount {
+  id          String       @id @default(cuid())
+  name        String
+  description String?
+  type        DiscountType
+  value       Decimal      @db.Decimal(10, 2)
+  scope       DiscountScope @default(ALL)
+  categoryId  String?
+  productId   String?
+  brandId     String?
+  startsAt    DateTime?
+  endsAt      DateTime?
+  isActive    Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  category Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  product  Product?  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  brand    Brand?    @relation(fields: [brandId], references: [id], onDelete: SetNull)
+
+  @@index([isActive, startsAt, endsAt])
+  @@index([scope])
+}
+
+enum SubscriberStatus {
+  SUBSCRIBED
+  UNSUBSCRIBED
+}
+
+model NewsletterSubscriber {
+  id            String           @id @default(cuid())
+  email         String           @unique
+  name          String?
+  token         String           @unique
+  source        String           @default("FOOTER")
+  status        SubscriberStatus @default(SUBSCRIBED)
+  subscribedAt  DateTime         @default(now())
+  unsubscribedAt DateTime?
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  @@index([status])
+  @@index([subscribedAt])
 }
 
 model Coupon {
@@ -553,9 +619,58 @@ model Coupon {
 
   products Product[] @relation("CouponProducts")
   user     User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  achievementCoupons AchievementCoupon[]
 
   @@index([status])
   @@index([userId])
+}
+
+model Achievement {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  type        AchievementType
+  threshold   Int
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  userAchievements UserAchievement[]
+  coupons          AchievementCoupon[]
+
+  @@index([type, isActive])
+}
+
+model UserAchievement {
+  id           String    @id @default(cuid())
+  userId       String
+  achievementId String
+  unlockedAt   DateTime  @default(now())
+  notified     Boolean   @default(false)
+
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievement Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, achievementId])
+  @@index([userId, unlockedAt])
+}
+
+model AchievementCoupon {
+  id            String @id @default(cuid())
+  achievementId String
+  couponId      String
+
+  achievement Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+  coupon      Coupon      @relation(fields: [couponId], references: [id], onDelete: Cascade)
+
+  @@unique([achievementId, couponId])
+}
+
+enum AchievementType {
+  ORDERS
+  ANNIVERSARY
+  BIRTHDAY
+  CUSTOM
 }
 
 model Review {
@@ -610,6 +725,7 @@ model Return {
   refund Refund?
 
   @@index([userId, createdAt])
+  @@index([status, createdAt])
 }
 
 enum RefundStatus {
@@ -635,6 +751,7 @@ model Refund {
 
   @@index([status])
   @@index([userId])
+  @@index([provider, status])
 }
 
 // ============================================================
@@ -660,6 +777,7 @@ model Notification {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, readAt])
+  @@index([userId, createdAt])
   @@index([createdAt])
 }
 
@@ -682,6 +800,7 @@ model Media {
 
   @@index([type])
   @@index([createdAt])
+  @@index([url])
 }
 
 model StoreSettings {
@@ -728,6 +847,7 @@ model ContactMessage {
 
   @@index([status])
   @@index([createdAt])
+  @@index([email, createdAt])
 }
 
 // ============================================================
@@ -760,6 +880,7 @@ model EmailLog {
 
   @@index([to, createdAt])
   @@index([status])
+  @@index([provider, status])
 }
 
 model ReviewPrompt {
@@ -774,6 +895,7 @@ model ReviewPrompt {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, status])
+  @@index([productId, status])
   @@index([expiresAt])
 }
 
@@ -791,6 +913,7 @@ model ActivityLog {
 
   @@index([actorType, createdAt])
   @@index([action, createdAt])
+  @@index([actorId, actorType])
   @@index([targetType, targetId])
 }
 
@@ -806,6 +929,7 @@ model RequestLog {
 
   @@index([ip, createdAt])
   @@index([path, createdAt])
+  @@index([userId, createdAt])
 }
 
 model EmailTemplate {
@@ -837,6 +961,7 @@ model Job {
 
   @@index([status, createdAt])
   @@index([name, status])
+  @@index([scheduledAt])
 }
 
 enum JobStatus {
@@ -861,3 +986,36 @@ model SeoSetting {
 
   @@map("seo_settings")
 }
+
+model CommunicationCampaign {
+  id          String    @id @default(cuid())
+  name        String
+  type        String
+  status      String    @default("DRAFT")
+  audience    String
+  subject     String
+  body        String    @db.Text
+  templateId  String?
+  scheduledAt DateTime?
+  sentAt      DateTime?
+  createdBy   String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([status, type])
+  @@index([createdBy])
+}
+
+model CommunicationTemplate {
+  id        String    @id @default(cuid())
+  name      String    @unique
+  category  String
+  subject   String
+  body      String    @db.Text
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([category])
+}
+

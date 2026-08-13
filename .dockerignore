@@ -5,3 +5,5 @@ coverage
 .env.*
 uploads
 .git
+backups
+scripts

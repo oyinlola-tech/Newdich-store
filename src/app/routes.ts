@@ -1,6 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import type { Container } from './container.js';
 import { registerHealthModule } from '../modules/health/health.module.js';
+import { registerNewslettersModule } from '../modules/newsletters/newsletters.module.js';
 import { registerAuthModule } from '../modules/auth/auth.module.js';
 import { registerUsersModule } from '../modules/users/users.module.js';
 import { registerCategoriesModule } from '../modules/categories/categories.module.js';
@@ -16,6 +17,8 @@ import { registerPaymentsModule } from '../modules/payments/payments.module.js';
 import { registerCheckoutModule } from '../modules/checkout/checkout.module.js';
 import { registerShippingModule } from '../modules/shipping/shipping.module.js';
 import { registerReturnsModule } from '../modules/returns/returns.module.js';
+import { registerRefundsModule } from '../modules/refunds/refunds.module.js';
+import { registerDiscountsModule } from '../modules/discounts/discounts.module.js';
 import { registerNotificationsModule } from '../modules/notifications/notifications.module.js';
 import { registerCouponsModule } from '../modules/coupons/coupons.module.js';
 import { registerTaxModule } from '../modules/tax/tax.module.js';
@@ -32,9 +35,12 @@ import { registerActivityLogsModule } from '../modules/activity-logs/activity-lo
 import { registerRequestLogsModule } from '../modules/request-logs/request-logs.module.js';
 import { registerEmailTemplatesModule } from '../modules/email-templates/email-templates.module.js';
 import { registerSeoModule } from '../modules/seo/seo.module.js';
+import { registerCommunicationsModule } from '../modules/communications/communications.module.js';
+import { registerAchievementsModule } from '../modules/achievements/achievements.module.js';
 
 export function registerRoutes(app: FastifyInstance, container: Container): void {
   registerHealthModule(container, app);
+  registerNewslettersModule(container, app);
   registerAuthModule(container, app);
   registerUsersModule(container, app);
   registerCategoriesModule(container, app);
@@ -46,6 +52,7 @@ export function registerRoutes(app: FastifyInstance, container: Container): void
   registerAddressesModule(container, app);
   registerCouponsModule(container, app);
   registerTaxModule(container, app);
+  registerSearchModule(container, app);
   registerProductsModule(container, app);
   registerCartsModule(container, app);
   registerOrdersModule(container, app);
@@ -53,17 +60,20 @@ export function registerRoutes(app: FastifyInstance, container: Container): void
   registerCheckoutModule(container, app);
   registerShippingModule(container, app);
   registerReturnsModule(container, app);
+  registerRefundsModule(container, app);
+  registerDiscountsModule(container, app);
   registerNotificationsModule(container, app);
   registerWishlistsModule(container, app);
   registerReviewsModule(container, app);
   registerContactModule(container, app);
   registerAnalyticsModule(container, app);
   registerAuditModule(container, app);
-  registerSearchModule(container, app);
   registerWebhooksModule(container, app);
   registerReviewPromptsModule(container, app);
   registerActivityLogsModule(container, app);
   registerRequestLogsModule(container, app);
   registerEmailTemplatesModule(container, app);
   registerSeoModule(container, app);
+  registerCommunicationsModule(container, app);
+  registerAchievementsModule(container, app);
 }

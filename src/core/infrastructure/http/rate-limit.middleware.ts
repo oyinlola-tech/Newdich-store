@@ -17,7 +17,12 @@ export function smartRateLimit() {
     const isAuthenticated = !!request.user;
     const now = Date.now();
     const windowMs = appConfig.RATE_LIMIT_WINDOW_MS;
-    const maxRequests = isAuthenticated ? appConfig.RATE_LIMIT_MAX : Math.floor(appConfig.RATE_LIMIT_MAX / 3);
+    const maxRequests = isAuthenticated ? appConfig.RATE_LIMIT_MAX : Math.floor(appConfig.RATE_LIMIT_MAX * 0.9);
+
+    const isStaticAsset = request.url.match(/\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|map)$/);
+    if (isStaticAsset) {
+      return;
+    }
 
     let entry = requestCounts.get(ip);
     if (!entry || now - entry.firstRequest > windowMs) {
@@ -32,7 +37,7 @@ export function smartRateLimit() {
       });
     }
 
-    if (!isAuthenticated && entry.requests > maxRequests * 0.7 && !entry.captchaVerified) {
+    if (!isAuthenticated && entry.requests > maxRequests * 0.8 && !entry.captchaVerified) {
       entry.captchaRequired = true;
     }
 
@@ -58,7 +63,7 @@ export function smartRateLimit() {
     }
 
     if (!isAuthenticated && entry.requests > maxRequests * 0.5 && !entry.captchaVerified) {
-      const delay = Math.min((entry.requests - maxRequests * 0.5) * 200, 3000);
+      const delay = Math.min((entry.requests - maxRequests * 0.5) * 100, 2000);
       await new Promise((resolve) => setTimeout(resolve, delay));
     }
   };

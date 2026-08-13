@@ -4,12 +4,12 @@ services:
     container_name: telente-mysql
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: root_password
-      MYSQL_DATABASE: telente_store
-      MYSQL_USER: telente
-      MYSQL_PASSWORD: telente_password
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root_password}
+      MYSQL_DATABASE: ${DB_NAME:-telente_store}
+      MYSQL_USER: ${DB_USER:-telente}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-telente_password}
     ports:
-      - '3306:3306'
+      - '${DB_PORT:-3307}:3306'
     volumes:
       - telente_mysql_data:/var/lib/mysql
     healthcheck:
@@ -25,18 +25,15 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    env_file:
+      - .env
     environment:
-      NODE_ENV: development
+      NODE_ENV: production
       PORT: 3000
       HOST: 0.0.0.0
-      DATABASE_URL: mysql://telente:telente_password@db:3306/telente_store
-      JWT_SECRET: change-me-before-production
-      ADMIN_EMAIL: admin@telente.site
-      ADMIN_PASSWORD: ChangeMe_Admin123
-      ADMIN_NAME: Super Admin
-      PUBLIC_BASE_URL: http://localhost:3000
+      DATABASE_URL: mysql://${DB_USER:-telente}:${DB_PASSWORD:-telente_password}@db:3306/${DB_NAME:-telente_store}
     ports:
-      - '3000:3000'
+      - '${PORT:-3000}:3000'
     volumes:
       - telente_uploads:/app/uploads
 

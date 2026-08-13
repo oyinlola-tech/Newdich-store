@@ -5,6 +5,10 @@ import swaggerUi from '@fastify/swagger-ui';
 import { openApiDocument } from './openapi.js';
 
 export async function registerSwagger(app: FastifyInstance): Promise<void> {
+  if (process.env.DISABLE_SWAGGER === 'true') {
+    return;
+  }
+
   await app.register(swagger, {
     openapi: openApiDocument as unknown as OpenAPIV3.Document,
     refResolver: { buildLocalReference: (_json, _baseUri, _fragment, i) => `def-${i}` }

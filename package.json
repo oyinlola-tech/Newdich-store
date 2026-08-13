@@ -2,6 +2,7 @@
   "name": "telente-store-backend",
   "version": "0.1.0",
   "private": true,
+  "author": "Oluwayemi Oyinlola Michael ",
   "description": "Telente Store - modular monolith backend (Fastify + MySQL/Prisma)",
   "type": "module",
   "engines": {

@@ -26,7 +26,21 @@ export async function createApp(): Promise<{ app: FastifyInstance; container: Re
     bodyLimit: appConfig.MAX_UPLOAD_MB * 1024 * 1024 + 1024 * 1024
   });
 
-  await app.register(helmet, { contentSecurityPolicy: false });
+  await app.register(helmet, {
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "https://cdnjs.cloudflare.com", "https://fonts.googleapis.com", "https://checkout.flutterwave.com", "https://js.paystack.co", "https://nomba.com", "https://js.stripe.com"],
+        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdnjs.cloudflare.com"],
+        imgSrc: ["'self'", "data:", "https:"],
+        connectSrc: ["'self'", "http://localhost:3000", "https://api.flutterwave.com", "https://api.paystack.co", "https://api.nomba.com", "https://api.stripe.com"],
+        fontSrc: ["'self'", "data:", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com"],
+        objectSrc: ["'none'"],
+        mediaSrc: ["'self'"],
+        frameSrc: ["'self'", "https://checkout.flutterwave.com", "https://js.paystack.co", "https://nomba.com", "https://js.stripe.com"]
+      }
+    }
+  });
   if (appConfig.NODE_ENV === 'production' && appConfig.CORS_ORIGIN === '*') {
     throw new Error('CORS_ORIGIN must not be "*" in production');
   }

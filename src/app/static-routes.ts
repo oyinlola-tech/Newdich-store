@@ -32,14 +32,30 @@ const HTML_ROUTES: Record<string, string> = {
   '/admin/payment-settings': 'admins/pages/payment-settings.html',
   '/admin/analytics': 'admins/pages/analytics.html',
   '/admin/coupons': 'admins/pages/coupons.html',
+  '/admin/newsletter': 'admins/pages/newsletter.html',
   '/admin/admins': 'admins/pages/admins.html',
   '/admin/audit': 'admins/pages/audit.html',
   '/admin/emails': 'admins/pages/emails.html',
-  '/admin/login': 'admins/auth/login.html',
-  '/admin/forgot-password': 'admins/auth/forgot-password.html',
-  '/admin/reset-password': 'admins/auth/reset-password.html',
-  '/admin/otp': 'admins/auth/otp.html',
-  '/track': 'pages/track.html'
+  '/admin/achievements': 'admins/pages/achievements.html',
+  '/admin/login': 'auths/login.html',
+  '/admin/forgot-password': 'auths/forgot-password.html',
+  '/admin/reset-password': 'auths/reset-password.html',
+  '/admin/otp': 'auths/otp.html',
+  '/track': 'pages/track.html',
+  '/about': 'pages/about.html',
+  '/terms': 'pages/terms.html',
+  '/privacy': 'pages/privacy.html',
+  '/cookies': 'pages/cookies.html',
+  '/faqs': 'pages/faqs.html',
+  '/achievements': 'pages/achievements.html',
+  '/addresses': 'pages/addresses.html',
+  '/notifications': 'pages/notifications.html',
+  '/payment-methods': 'pages/payment-methods.html',
+  '/reviews': 'pages/reviews.html',
+  '/unsubscribe': 'pages/unsubscribe.html',
+  '/cancel-order': 'pages/cancel-order.html',
+  '/brands': 'products/brands.html',
+  '/categories': 'products/categories.html'
 };
 
 export function isApiRoute(url: string): boolean {
@@ -53,14 +69,18 @@ export function wantsHtml(request: FastifyRequest): boolean {
 }
 
 export async function registerStaticRoutes(app: FastifyInstance): Promise<void> {
+  const seoScript = '<script type="module" src="/js/main/seo.js"></script>';
+
   for (const [route, file] of Object.entries(HTML_ROUTES)) {
     app.get(route, async (_request: FastifyRequest, reply: FastifyReply) => {
       try {
-        const html = await readFile(join(PUBLIC_DIR, file), 'utf-8');
+        let html = await readFile(join(PUBLIC_DIR, file), 'utf-8');
+        if (!html.includes('js/main/seo.js')) {
+          html = html.replace('</head>', `${seoScript}</head>`);
+        }
         return reply.type('text/html').send(html);
       } catch {
-        const notFoundHtml = await readFile(join(PUBLIC_DIR, 'errors/404.html'), 'utf-8');
-        return reply.type('text/html').send(notFoundHtml);
+        return reply.code(500).type('text/html').send('<h1>500 - Internal Server Error</h1>');
       }
     });
   }

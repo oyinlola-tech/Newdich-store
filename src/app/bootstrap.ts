@@ -8,10 +8,15 @@ import { NoopCacheProvider } from '../core/infrastructure/cache/noop-cache.provi
 import { RedisCacheProvider } from '../core/infrastructure/cache/redis-cache.provider.js';
 import { BullMQQueueProvider } from '../core/infrastructure/queue/bullmq-queue.provider.js';
 import { DatabaseQueueProvider } from '../core/infrastructure/queue/database-queue.provider.js';
+import { DatabaseJobProcessor } from '../core/infrastructure/queue/database-job.processor.js';
 import { TokenService } from '../modules/auth/infrastructure/security/token.service.js';
 import { PasswordHasherService } from '../modules/auth/infrastructure/security/password-hasher.service.js';
 import { LocalStorageProvider } from '../core/infrastructure/storage/local-storage.provider.js';
 import { MailerService } from '../core/infrastructure/email/mailer.service.js';
+import { PrismaRequestLogRepository } from '../modules/request-logs/infrastructure/repositories/prisma-request-log.repository.js';
+import { RequestLogService } from '../modules/request-logs/application/services/request-log.service.js';
+import { PrismaActivityLogRepository } from '../modules/activity-logs/infrastructure/repositories/prisma-activity-log.repository.js';
+import { ActivityLogService } from '../modules/activity-logs/application/services/activity-log.service.js';
 import { authConfig, cacheConfig } from '../config/index.js';
 
 export function buildContainer(): Container {
@@ -35,6 +40,18 @@ export function buildContainer(): Container {
   container.registerSingleton('storage.provider', () => new LocalStorageProvider());
   container.registerSingleton('mailer.service', (c) =>
     new MailerService(c.get('email.provider'), c.get('prisma'), c.get('logger'))
+  );
+  container.register('job.processor', (c) =>
+    new DatabaseJobProcessor(c.get('prisma'), c.get('logger'))
+  );
+
+  container.register('request-log.repository', (c) => new PrismaRequestLogRepository(c.get('prisma')));
+  container.register('request-log.service', (c) =>
+    new RequestLogService(c.get('request-log.repository'))
+  );
+  container.register('activity-log.repository', (c) => new PrismaActivityLogRepository(c.get('prisma')));
+  container.register('activity-log.service', (c) =>
+    new ActivityLogService(c.get('activity-log.repository'))
   );
 
   return container;
