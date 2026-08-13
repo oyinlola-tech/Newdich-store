@@ -2,7 +2,7 @@
 import { checkAdminAuth } from './admin.js';
 import { escapeHtml, escapeAttr } from './sanitize.js';
 
-if (!checkAdminAuth()) return;
+if (!checkAdminAuth()) { throw new Error("Admin auth check failed"); }
 
 const contactContainer = document.getElementById('contact-container');
 const statusFilter = document.getElementById('status-filter');
@@ -37,7 +37,7 @@ function getMessageId(message) {
 
 function getMessageStatus(message) {
     const status = message?.status || 'NEW';
-    const map: Record<string, string> = { open: 'NEW', pending: 'READ', resolved: 'CLOSED' };
+    const map = { open: 'NEW', pending: 'READ', resolved: 'CLOSED' };
     return map[status] || status;
 }
 

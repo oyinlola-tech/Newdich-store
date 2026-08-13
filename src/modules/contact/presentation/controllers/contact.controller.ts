@@ -26,6 +26,25 @@ export class ContactController {
     }
   }
 
+  async subscribe(request: FastifyRequest, reply: FastifyReply) {
+    const body = request.body as { email?: string };
+    const email = body.email?.trim();
+    if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+      return reply.status(400).send({ message: 'A valid email address is required.' });
+    }
+    try {
+      await this.contactService.create({
+        name: 'Newsletter Subscriber',
+        email,
+        subject: 'Newsletter Subscription',
+        message: 'Subscribe to newsletter'
+      });
+      return reply.send({ message: 'Subscribed successfully!' });
+    } catch (error) {
+      return reply.status(400).send({ message: (error as Error).message });
+    }
+  }
+
   async adminList(request: FastifyRequest, reply: FastifyReply) {
     const query = request.query as { status?: string; search?: string; page?: string; limit?: string };
     const { page, limit } = buildPagination(query.page, query.limit, 50);

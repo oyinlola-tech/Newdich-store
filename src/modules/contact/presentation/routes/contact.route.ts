@@ -8,6 +8,7 @@ export function registerContactRoutes(app: FastifyInstance, container: Container
   const admin = isAdmin(container);
 
   app.post('/contact', controller.create.bind(controller));
+  app.post('/contact/subscribe', controller.subscribe.bind(controller));
   app.get('/admin/contact', { preHandler: [admin] }, controller.adminList.bind(controller));
   app.get('/admin/contact/:id', { preHandler: [admin] }, controller.adminGet.bind(controller));
   app.put('/admin/contact/:id/status', { preHandler: adminPermission(container, 'customers.manage') }, controller.updateStatus.bind(controller));
