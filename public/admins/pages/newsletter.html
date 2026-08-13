@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:; img-src 'self' data: https://via.placeholder.com; connect-src 'self' http://localhost:3000; base-uri 'self'; form-action 'self'; frame-ancestors 'none'">
+    <meta name="referrer" content="no-referrer">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Newsletter | Telente Store</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/admins/css/admin.css">
+</head>
+<body class="auth-guest">
+    <script>sessionStorage.getItem("authToken")&&(document.body.classList.add("auth-authenticated"),document.body.classList.remove("auth-guest"));</script>
+    <div class="admin-wrapper">
+        <aside class="admin-sidebar">
+            <div class="sidebar-header">
+                <h2>Telente Admin</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="/admin"><i class="fas fa-dashboard"></i> Dashboard</a></li>
+                    <li><a href="/admin/products"><i class="fas fa-box"></i> Products</a></li>
+                    <li><a href="/admin/categories"><i class="fas fa-tags"></i> Categories</a></li>
+                    <li><a href="/admin/inventory"><i class="fas fa-warehouse"></i> Inventory</a></li>
+                    <li><a href="/admin/orders"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+                    <li><a href="/admin/returns"><i class="fas fa-undo"></i> Returns</a></li>
+                    <li><a href="/admin/contact"><i class="fas fa-envelope"></i> Contact</a></li>
+                    <li><a href="/admin/coupons"><i class="fas fa-ticket-alt"></i> Coupons</a></li>
+                    <li><a href="/admin/newsletter" class="active"><i class="fas fa-paper-plane"></i> Newsletter</a></li>
+                    <li><a href="/admin/payment-settings"><i class="fas fa-credit-card"></i> Payments</a></li>
+                    <li><a href="/admin/users"><i class="fas fa-users"></i> Users</a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <button id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </aside>
+
+        <main class="admin-main">
+            <header class="admin-header">
+                <div class="header-title">
+                    <h1>Newsletter Subscribers</h1>
+                </div>
+                <div class="header-user">
+                    <span id="admin-name">Admin</span>
+                </div>
+            </header>
+
+            <div class="admin-content">
+                <div id="newsletter-counts" class="stats-grid"></div>
+
+                <div class="filters">
+                    <div class="filter-group">
+                        <label for="status-filter">Status</label>
+                        <select id="status-filter">
+                            <option value="all">All</option>
+                            <option value="SUBSCRIBED">Subscribed</option>
+                            <option value="UNSUBSCRIBED">Unsubscribed</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="newsletter-search">Search</label>
+                        <input type="text" id="newsletter-search" placeholder="Email or name">
+                    </div>
+                    <div class="filter-actions">
+                        <button id="apply-filters" class="btn-primary">Apply</button>
+                        <button id="reset-filters" class="btn-secondary">Reset</button>
+                    </div>
+                </div>
+
+                <div id="newsletter-container">
+                    <div class="loading">Loading subscribers...</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="/admins/js/main/newsletter-admin.js"></script>
+    <script type="module" src="/admins/js/main/admin.js"></script>
+</body>
+</html>

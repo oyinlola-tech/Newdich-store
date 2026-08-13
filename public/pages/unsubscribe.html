@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:; img-src 'self' data: https://via.placeholder.com; connect-src 'self' http://localhost:3000; base-uri 'self'; form-action 'self'; frame-ancestors 'none'">
+    <meta name="referrer" content="no-referrer">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unsubscribe - Telente Store</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="auth-guest">
+    <script>sessionStorage.getItem("authToken")&&(document.body.classList.add("auth-authenticated"),document.body.classList.remove("auth-guest"));</script>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>Telente Store</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/products">Products</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <div class="container">
+            <div class="auth-container">
+                <div class="auth-card">
+                    <h2>Unsubscribe from Newsletter</h2>
+                    <p style="text-align: center; color: #5a6270; margin-bottom: 18px;">
+                        We are sorry to see you go. Confirm below to stop receiving marketing emails from Telente Store.
+                    </p>
+                    <form id="unsubscribe-form">
+                        <div class="form-group">
+                            <label for="unsubscribe-email">Email Address</label>
+                            <input type="email" id="unsubscribe-email" readonly>
+                        </div>
+                        <button type="submit" class="btn-primary btn-block">Unsubscribe</button>
+                    </form>
+                    <div id="unsubscribe-message" class="error-message" style="display: none; margin-top: 12px; text-align: center;"></div>
+                    <div class="auth-footer">
+                        <p>Changed your mind? <a href="/">Keep browsing</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-editorial">
+            <div class="container">
+                <h2 class="footer-editorial-statement">SEE YOU<br>AROUND.</h2>
+                <p class="footer-editorial-sub">Good things are always worth another look.</p>
+                <a href="/products" class="footer-cta">Keep shopping →</a>
+            </div>
+        </div>
+        <div class="footer-nav-groups">
+            <div class="container">
+                <div class="footer-grid">
+                    <div class="footer-column">
+                        <h4>SHOP</h4>
+                        <ul>
+                            <li><a href="/products">All products</a></li>
+                            <li><a href="/products?filter=new">New arrivals</a></li>
+                            <li><a href="/products?filter=bestsellers">Bestsellers</a></li>
+                            <li><a href="/products?filter=deals">Deals</a></li>
+                            <li><a href="/products">Categories</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>HELP</h4>
+                        <ul>
+                            <li><a href="/contact">Contact</a></li>
+                            <li><a href="/faqs">FAQs</a></li>
+                            <li><a href="/track">Delivery</a></li>
+                            <li><a href="/returns">Returns</a></li>
+                            <li><a href="/track">Track order</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>ABOUT</h4>
+                        <ul>
+                            <li><a href="/about">Our story</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-newsletter">
+            <div class="container">
+                <form class="newsletter-form" onsubmit="event.preventDefault();">
+                    <input type="email" placeholder="your@email.com" aria-label="Email for newsletter">
+                    <button type="submit" aria-label="Subscribe to newsletter">→</button>
+                </form>
+                <p>Join our newsletter for new arrivals, offers and style tips.</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>TELENTE STORE · © <span class="js-year">2026</span> Telente Store · <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a> · <a href="/cookies">Cookies</a></p>
+            </div>
+        </div>
+    </footer>
+    <script type="module" src="/js/main/unsubscribe.js"></script>
+    <script type="module" src="/js/pages/footer-year.js"></script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:; img-src 'self' data: https://via.placeholder.com; connect-src 'self' http://localhost:3000; base-uri 'self'; form-action 'self'; frame-ancestors 'none'">
+    <meta name="referrer" content="no-referrer">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Communications | Telente Store</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/admins/css/admin.css">
+</head>
+<body class="auth-guest">
+    <script>sessionStorage.getItem("authToken")&&(document.body.classList.add("auth-authenticated"),document.body.classList.remove("auth-guest"));</script>
+    <div class="admin-wrapper">
+        <aside class="admin-sidebar">
+            <div class="sidebar-header">
+                <h2>Telente Admin</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="/admin"><i class="fas fa-dashboard"></i> Dashboard</a></li>
+                    <li><a href="/admin/products"><i class="fas fa-box"></i> Products</a></li>
+                    <li><a href="/admin/categories"><i class="fas fa-tags"></i> Categories</a></li>
+                    <li><a href="/admin/inventory"><i class="fas fa-warehouse"></i> Inventory</a></li>
+                    <li><a href="/admin/orders"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+                    <li><a href="/admin/returns"><i class="fas fa-undo"></i> Returns</a></li>
+                    <li><a href="/admin/contact"><i class="fas fa-envelope"></i> Contact</a></li>
+                    <li><a href="/admin/payment-settings"><i class="fas fa-credit-card"></i> Payments</a></li>
+                    <li><a href="/admin/users"><i class="fas fa-users"></i> Users</a></li>
+                    <li><a href="/admin/communications" class="active"><i class="fas fa-bullhorn"></i> Communications</a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <button id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </aside>
+
+        <main class="admin-main">
+            <header class="admin-header">
+                <div class="header-title">
+                    <h1>Communications</h1>
+                </div>
+                <div class="header-user">
+                    <span id="admin-name">Admin</span>
+                </div>
+            </header>
+
+            <div class="admin-content">
+                <div class="filters">
+                    <div class="filter-group">
+                        <label for="type-filter">Type</label>
+                        <select id="type-filter">
+                            <option value="all">All Types</option>
+                            <option value="email">Email</option>
+                            <option value="sms">SMS</option>
+                            <option value="push">Push Notification</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="status-filter">Status</label>
+                        <select id="status-filter">
+                            <option value="all">All Status</option>
+                            <option value="draft">Draft</option>
+                            <option value="scheduled">Scheduled</option>
+                            <option value="sent">Sent</option>
+                        </select>
+                    </div>
+                    <div class="filter-actions">
+                        <button id="apply-filters" class="btn-primary">Apply Filters</button>
+                        <button id="reset-filters" class="btn-secondary">Reset</button>
+                        <button id="create-communication-btn" class="btn-primary">Create Communication</button>
+                    </div>
+                </div>
+
+                <div id="communications-container">
+                    <div class="loading">Loading communications...</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="communication-modal" class="modal" style="display: none;">
+        <div class="modal-content modal-large">
+            <span class="close">&times;</span>
+            <h2>Create Communication</h2>
+            <form id="communication-form">
+                <div class="form-group">
+                    <label for="comm-type">Type</label>
+                    <select id="comm-type" required>
+                        <option value="email">Email</option>
+                        <option value="sms">SMS</option>
+                        <option value="push">Push Notification</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="comm-subject">Subject</label>
+                    <input type="text" id="comm-subject" required>
+                </div>
+                <div class="form-group">
+                    <label for="comm-body">Body</label>
+                    <textarea id="comm-body" rows="6" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="comm-audience">Audience</label>
+                    <select id="comm-audience" required>
+                        <option value="all">All Users</option>
+                        <option value="customers">Customers</option>
+                        <option value="admins">Admins</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Create</button>
+                    <button type="button" class="btn-secondary" data-close="communication-modal">Cancel</button>
+                </div>
+            </form>
+            <div id="communication-message" class="profile-message" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script type="module" src="/admins/js/communications/index.js"></script>
+</body>
+</html>
