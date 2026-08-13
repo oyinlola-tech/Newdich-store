@@ -16,6 +16,7 @@ jobs:
           node-version: 24
           cache: 'npm'
       - run: npm ci --ignore-scripts || npm install
+      - run: npx prisma generate
       - run: npm run typecheck
       - run: npm run lint
 
@@ -42,4 +43,5 @@ jobs:
           node-version: 24
           cache: 'npm'
       - run: npm ci --ignore-scripts || npm install
+      - run: npx prisma generate
       - run: npx vitest run --coverage
