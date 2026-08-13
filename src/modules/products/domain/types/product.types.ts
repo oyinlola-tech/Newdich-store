@@ -27,7 +27,13 @@ export interface ProductFilters {
   search?: string;
   minPrice?: number;
   maxPrice?: number;
+  discounted?: boolean;
+  discountAll?: boolean;
+  discountProductIds?: string[];
+  discountBrandIds?: string[];
+  discountCategoryIds?: string[];
   status?: ProductStatus;
+  sort?: 'price_asc' | 'price_desc' | 'featured' | 'newest';
   page: number;
   limit: number;
 }
@@ -35,6 +41,9 @@ export interface ProductFilters {
 export interface ProductListResult {
   products: ProductWithRelations[];
   total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
 }
 
 export interface CreateProductData {

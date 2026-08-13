@@ -11,13 +11,20 @@ import { GetProductHandler } from './application/queries/get-product/get-product
 import { GetProductsHandler } from './application/queries/get-products/get-products.handler.js';
 import { SearchProductsHandler } from './application/queries/search-products/search-products.handler.js';
 import { ProductController } from './presentation/controllers/product.controller.js';
-import { registerProductRoutes } from './presentation/routes/product.route.js';import { CommandBus } from '../../core/application/commands/command-bus.js';
+import { registerProductRoutes } from './presentation/routes/product.route.js';
+import { CommandBus } from '../../core/application/commands/command-bus.js';
 import { QueryBus } from '../../core/application/queries/query-bus.js';
 
 export function registerProductsModule(container: Container, app: FastifyInstance): void {
   container.register('product.repository', (c) => new PrismaProductRepository(c.get('prisma')));
   container.register('product.service', (c) =>
-    new ProductService(c.get('product.repository'), c.get('category.repository'), c.get('brand.repository'))
+    new ProductService(
+      c.get('product.repository'),
+      c.get('category.repository'),
+      c.get('brand.repository'),
+      c.get('cache.provider'),
+      container.has('discount.repository') ? c.get('discount.repository') : null
+    )
   );
   container.register('product.controller', (c) =>
     new ProductController(

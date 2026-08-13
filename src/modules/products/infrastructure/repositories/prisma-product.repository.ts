@@ -3,6 +3,20 @@ import type { ProductRepositoryPort } from '../../application/ports/product.repo
 import type { CreateProductData, ProductFilters, ProductListResult, ProductWithRelations, UpdateProductData } from '../../domain/types/product.types.js';
 import { toProductWithRelations } from '../mappers/product.mapper.js';
 
+function getOrderBy(sort?: string): Record<string, string> {
+  switch (sort) {
+    case 'price_asc':
+      return { price: 'asc' };
+    case 'price_desc':
+      return { price: 'desc' };
+    case 'featured':
+      return { featured: 'desc' };
+    case 'newest':
+    default:
+      return { createdAt: 'desc' };
+  }
+}
+
 const includeRelations = {
   categories: { include: { category: { select: { id: true, name: true } } } },
   images: true,
@@ -52,19 +66,37 @@ export class PrismaProductRepository implements ProductRepositoryPort {
     if (filters.brandId) {
       where.brandId = filters.brandId;
     }
+    if (filters.discounted === true && filters.discountAll !== true) {
+      const discountConditions: Record<string, unknown>[] = [{ compareAtPrice: { not: null } }];
+      if (filters.discountProductIds?.length) {
+        discountConditions.push({ id: { in: filters.discountProductIds } });
+      }
+      if (filters.discountBrandIds?.length) {
+        discountConditions.push({ brandId: { in: filters.discountBrandIds } });
+      }
+      if (filters.discountCategoryIds?.length) {
+        discountConditions.push({ categories: { some: { categoryId: { in: filters.discountCategoryIds } } } });
+      }
+      if (where.OR) {
+        where.AND = [...(where.AND as Record<string, unknown>[] ?? []), { OR: where.OR }];
+        delete where.OR;
+      }
+      where.OR = discountConditions;
+    }
 
     const [rows, total] = await this.prisma.$transaction([
       this.prisma.product.findMany({
         where,
         include: includeRelations,
-        orderBy: { createdAt: 'desc' },
+        orderBy: getOrderBy(filters.sort),
         skip: (filters.page - 1) * filters.limit,
         take: filters.limit
       }),
       this.prisma.product.count({ where })
     ]);
 
-    return { products: rows.map(toProductWithRelations), total };
+    const totalPages = Math.ceil(total / filters.limit);
+    return { products: rows.map(toProductWithRelations), total, page: filters.page, limit: filters.limit, totalPages };
   }
 
   async create(input: CreateProductData): Promise<ProductWithRelations> {

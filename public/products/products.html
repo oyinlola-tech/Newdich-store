@@ -11,7 +11,8 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="auth-guest">
+    <script>sessionStorage.getItem("authToken")&&(document.body.classList.add("auth-authenticated"),document.body.classList.remove("auth-guest"));</script>
     <header>
         <div class="container">
             <div class="logo">
@@ -68,6 +69,15 @@
                         </select>
                     </div>
                     <div class="filter-group">
+                        <label for="sort-by">Sort By</label>
+                        <select id="sort-by">
+                            <option value="newest">Newest</option>
+                            <option value="featured">Featured</option>
+                            <option value="price_asc">Price: Low to High</option>
+                            <option value="price_desc">Price: High to Low</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
                         <label for="filter-search">Search</label>
                         <input type="text" id="filter-search" placeholder="Search products...">
                     </div>
@@ -78,6 +88,13 @@
                     <div class="filter-group">
                         <label for="filter-max-price">Max Price (₦)</label>
                         <input type="number" id="filter-max-price" placeholder="Max">
+                    </div>
+                    <div class="filter-group">
+                        <label for="filter-discounted">Deals</label>
+                        <select id="filter-discounted">
+                            <option value="">All Prices</option>
+                            <option value="true">On Sale Only</option>
+                        </select>
                     </div>
                     <div class="filter-actions">
                         <button id="apply-filters" class="btn-filter">Apply Filters</button>
@@ -125,7 +142,7 @@
                         <h4>HELP</h4>
                         <ul>
                             <li><a href="/contact">Contact</a></li>
-                            <li><a href="/contact">FAQs</a></li>
+                            <li><a href="/faqs">FAQs</a></li>
                             <li><a href="/track">Delivery</a></li>
                             <li><a href="/returns">Returns</a></li>
                             <li><a href="/track">Track order</a></li>
@@ -134,10 +151,7 @@
                     <div class="footer-column">
                         <h4>ABOUT</h4>
                         <ul>
-                            <li><a href="/">Our story</a></li>
-                            <li><a href="/">Journal</a></li>
-                            <li><a href="/">Careers</a></li>
-                            <li><a href="/">Sell with us</a></li>
+                            <li><a href="/about">Our story</a></li>
                         </ul>
                     </div>
                 </div>
@@ -171,7 +185,7 @@
         </div>
         <div class="footer-legal">
             <div class="container">
-                <p>TELENTE STORE · © <span class="js-year">2026</span> Telente Store · <a href="/">Privacy</a> · <a href="/">Terms</a> · <a href="/">Cookies</a></p>
+                <p>TELENTE STORE · © <span class="js-year">2026</span> Telente Store · <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a> · <a href="/cookies">Cookies</a></p>
             </div>
         </div>
     </footer>

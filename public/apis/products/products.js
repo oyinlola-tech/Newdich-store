@@ -20,6 +20,8 @@ export async function fetchAllProducts(filters = {}) {
     if (filters.search) queryParams.append('search', filters.search);
     if (filters.minPrice) queryParams.append('minPrice', filters.minPrice);
     if (filters.maxPrice) queryParams.append('maxPrice', filters.maxPrice);
+    if (filters.sort && filters.sort !== 'newest') queryParams.append('sort', filters.sort);
+    if (filters.discounted) queryParams.append('discounted', filters.discounted);
     const url = `${API_BASE_URL}/products${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
     try {
         const response = await fetch(url, { headers: getHeaders() });

@@ -9,7 +9,9 @@ let currentFilters = {
     category: 'all',
     search: '',
     minPrice: '',
-    maxPrice: ''
+    maxPrice: '',
+    sort: 'newest',
+    discounted: ''
 };
 
 const productsGrid = document.getElementById('products-grid');
@@ -17,6 +19,8 @@ const filterCategory = document.getElementById('filter-category');
 const filterSearch = document.getElementById('filter-search');
 const filterMinPrice = document.getElementById('filter-min-price');
 const filterMaxPrice = document.getElementById('filter-max-price');
+const filterDiscounted = document.getElementById('filter-discounted');
+const sortBy = document.getElementById('sort-by');
 const applyFiltersBtn = document.getElementById('apply-filters');
 const resetFiltersBtn = document.getElementById('reset-filters');
 const relatedGrid = document.getElementById('products-related-grid');
@@ -167,6 +171,10 @@ async function loadCategories() {
                 filterCategory.appendChild(option);
             });
         }
+        if (filterCategory.dataset.pendingValue) {
+            filterCategory.value = filterCategory.dataset.pendingValue;
+            delete filterCategory.dataset.pendingValue;
+        }
     } catch (error) {
         // If categories fail, keep default "All Categories"
     }
@@ -192,8 +200,11 @@ function applyFilters() {
         category: filterCategory.value,
         search: filterSearch.value.trim(),
         minPrice: filterMinPrice.value.trim(),
-        maxPrice: filterMaxPrice.value.trim()
+        maxPrice: filterMaxPrice.value.trim(),
+        sort: sortBy.value,
+        discounted: filterDiscounted.value
     };
+    syncUrlWithFilters();
     loadProducts();
 }
 
@@ -203,23 +214,81 @@ function resetFilters() {
     filterSearch.value = '';
     filterMinPrice.value = '';
     filterMaxPrice.value = '';
+    filterDiscounted.value = '';
+    sortBy.value = 'newest';
     currentFilters = {
         category: 'all',
         search: '',
         minPrice: '',
-        maxPrice: ''
+        maxPrice: '',
+        sort: 'newest',
+        discounted: ''
     };
+    history.replaceState({}, document.title, '/products');
     loadProducts();
+}
+
+// Read initial filters from the URL (?filter=new|bestsellers|deals and ?category=...)
+function readUrlFilters() {
+    const params = new URLSearchParams(window.location.search);
+    const shortcut = params.get('filter');
+
+    let sort = params.get('sort') || 'newest';
+    let discounted = params.get('discounted') || '';
+
+    if (shortcut === 'new') {
+        sort = 'newest';
+    } else if (shortcut === 'bestsellers') {
+        sort = 'featured';
+    } else if (shortcut === 'deals') {
+        discounted = 'true';
+        sort = 'price_desc';
+    }
+
+    const filter = {
+        category: params.get('category') || 'all',
+        search: params.get('search') || '',
+        minPrice: params.get('minPrice') || '',
+        maxPrice: params.get('maxPrice') || '',
+        sort,
+        discounted
+    };
+
+    filterCategory.value = filter.category;
+    filterSearch.value = filter.search;
+    filterMinPrice.value = filter.minPrice;
+    filterMaxPrice.value = filter.maxPrice;
+    filterDiscounted.value = filter.discounted;
+    sortBy.value = filter.sort;
+    if (filter.category !== 'all') {
+        // The category options load later; keep the raw value for the first request.
+        filterCategory.dataset.pendingValue = filter.category;
+    }
+    currentFilters = filter;
+}
+
+function syncUrlWithFilters() {
+    const params = new URLSearchParams();
+    if (currentFilters.category && currentFilters.category !== 'all') params.set('category', currentFilters.category);
+    if (currentFilters.search) params.set('search', currentFilters.search);
+    if (currentFilters.minPrice) params.set('minPrice', currentFilters.minPrice);
+    if (currentFilters.maxPrice) params.set('maxPrice', currentFilters.maxPrice);
+    if (currentFilters.sort && currentFilters.sort !== 'newest') params.set('sort', currentFilters.sort);
+    if (currentFilters.discounted) params.set('discounted', currentFilters.discounted);
+    const query = params.toString();
+    history.replaceState({}, document.title, '/products' + (query ? `?${query}` : ''));
 }
 
 // Event listeners
 document.addEventListener('DOMContentLoaded', () => {
+    readUrlFilters();
     loadCategories();
     loadProducts();
     updateCartCount(); // from main.js
 
     applyFiltersBtn.addEventListener('click', applyFilters);
     resetFiltersBtn.addEventListener('click', resetFilters);
+    sortBy.addEventListener('change', applyFilters);
 });
 
 

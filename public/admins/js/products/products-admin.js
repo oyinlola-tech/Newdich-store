@@ -213,6 +213,17 @@ async function handleProductSubmit(e) {
         alert('You can upload a maximum of 10 images.');
         return;
     }
+    if (!currentEditId && files.length === 0) {
+        alert('Please upload at least one product image.');
+        return;
+    }
+    if (currentEditId && files.length === 0) {
+        const existingImages = JSON.parse(existingImagesContainer.dataset.images || '[]');
+        if (!existingImages.length) {
+            alert('Please upload at least one product image.');
+            return;
+        }
+    }
 
     let payload = productData;
     if (files.length > 0) {

@@ -14,6 +14,7 @@ import { createProductValidator, updateProductValidator } from '../validators/pr
 import { toProductOutput } from '../serializers/product.serializer.js';
 import type { MediaService } from '../../../media/application/services/media.service.js';
 import type { SearchLogService } from '../../../search/application/services/search-log.service.js';
+import { IMAGE_UPLOAD_ERROR_MESSAGE, isAllowedImage } from '../../../../core/shared/media/image-types.js';
 
 export class ProductController {
   constructor(
@@ -32,6 +33,8 @@ export class ProductController {
       search?: string;
       minPrice?: string;
       maxPrice?: string;
+      discounted?: string;
+      sort?: string;
       page?: string;
       limit?: string;
     };
@@ -46,6 +49,8 @@ export class ProductController {
         search: query.search?.trim() || undefined,
         minPrice: query.minPrice ? Number(query.minPrice) : undefined,
         maxPrice: query.maxPrice ? Number(query.maxPrice) : undefined,
+        discounted: query.discounted === 'true' ? true : undefined,
+        sort: query.sort as 'price_asc' | 'price_desc' | 'featured' | 'newest' | undefined,
         page,
         limit
       })
@@ -54,8 +59,9 @@ export class ProductController {
     return reply.send({
       products: result.products.map(toProductOutput),
       total: result.total,
-      page,
-      limit
+      page: result.page,
+      limit: result.limit,
+      totalPages: result.totalPages
     });
   }
 
@@ -136,9 +142,23 @@ export class ProductController {
   }
 
   async create(request: FastifyRequest, reply: FastifyReply) {
-    const parsed = await this.parseBodyWithFiles(request);
+    let parsed: Awaited<ReturnType<ProductController['parseBodyWithFiles']>>;
+    try {
+      parsed = await this.parseBodyWithFiles(request);
+    } catch (error) {
+      if (error instanceof InvalidImageTypeError) {
+        return reply.status(400).send({ message: error.message });
+      }
+      throw error;
+    }
     const dto = parseBody(createProductValidator, parsed.fields);
+    if (parsed.files.length > 10) {
+      return reply.status(400).send({ message: 'A product can have at most 10 images.' });
+    }
     const imageUrls = await this.saveImages(parsed.files, dto.images);
+    if (imageUrls.length === 0) {
+      return reply.status(400).send({ message: 'At least one product image is required.' });
+    }
 
     const product = await this.commandBus.execute(
       new CreateProductCommand({
@@ -161,7 +181,15 @@ export class ProductController {
 
   async update(request: FastifyRequest, reply: FastifyReply) {
     const { id } = request.params as { id: string };
-    const parsed = await this.parseBodyWithFiles(request);
+    let parsed: Awaited<ReturnType<ProductController['parseBodyWithFiles']>>;
+    try {
+      parsed = await this.parseBodyWithFiles(request);
+    } catch (error) {
+      if (error instanceof InvalidImageTypeError) {
+        return reply.status(400).send({ message: error.message });
+      }
+      throw error;
+    }
     const dto = parseBody(updateProductValidator, parsed.fields);
     const imageUrls = parsed.files.length > 0 ? await this.saveImages(parsed.files, []) : dto.images;
 
@@ -217,11 +245,15 @@ export class ProductController {
 
     for await (const part of parts) {
       if (part.type === 'file') {
-        files.push({
+        const file: ParsedFile = {
           buffer: await part.toBuffer(),
           originalName: part.filename ?? 'upload',
           mimeType: part.mimetype ?? 'application/octet-stream'
-        });
+        };
+        if (!isAllowedImage(file)) {
+          throw new InvalidImageTypeError();
+        }
+        files.push(file);
       } else {
         const value = part.value as string;
         if (part.fieldname in fields && Array.isArray(fields[part.fieldname])) {
@@ -242,4 +274,10 @@ export interface ParsedFile {
   buffer: Buffer;
   originalName: string;
   mimeType: string;
+}
+
+export class InvalidImageTypeError extends Error {
+  constructor() {
+    super(IMAGE_UPLOAD_ERROR_MESSAGE);
+  }
 }

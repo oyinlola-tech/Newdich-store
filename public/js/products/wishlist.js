@@ -3,6 +3,9 @@ import { addToCart } from '../../apis/main/cart.js';
 import { updateCartCount } from '../main/main.js';
 import { formatCurrency } from '../security/format.js';
 import { escapeHtml, escapeAttr, sanitizeUrl } from '../security/sanitize.js';
+import { requireAuth } from '../security/security.js';
+
+requireAuth('/wishlist', 'wishlist');
 
 const wishlistContainer = document.getElementById('wishlist-container');
 
