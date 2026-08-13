@@ -1,191 +1,35 @@
 import type { FastifyReply, FastifyRequest } from 'fastify';
-import type { PrismaClient } from '@prisma/client';
+import type { AnalyticsService } from '../../application/services/analytics.service.js';
 
 export class AnalyticsController {
-  constructor(private readonly prisma: PrismaClient) {}
+  constructor(private readonly analyticsService: AnalyticsService) {}
 
   async stats(_request: FastifyRequest, reply: FastifyReply) {
-    const now = new Date();
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    const startOfWeek = new Date(now);
-    startOfWeek.setDate(now.getDate() - 6);
-    startOfWeek.setHours(0, 0, 0, 0);
-
-    const [
-      totalOrders,
-      totalProducts,
-      totalUsers,
-      totalCustomers,
-      revenue,
-      monthRevenue,
-      weekRevenue,
-      ordersByStatus,
-      lowStockCount,
-      pendingReturns,
-      unreadContact,
-      todayOrders
-    ] = await this.prisma.$transaction([
-      this.prisma.order.count(),
-      this.prisma.product.count(),
-      this.prisma.user.count(),
-      this.prisma.user.count({ where: { role: 'CUSTOMER' } }),
-      this.prisma.order.aggregate({ _sum: { total: true }, where: { status: { not: 'CANCELLED' } } }),
-      this.prisma.order.aggregate({
-        _sum: { total: true },
-        where: { status: { not: 'CANCELLED' }, placedAt: { gte: startOfMonth } }
-      }),
-      this.prisma.order.aggregate({
-        _sum: { total: true },
-        where: { status: { not: 'CANCELLED' }, placedAt: { gte: startOfWeek } }
-      }),
-      this.prisma.order.groupBy({ by: ['status'], _count: true, orderBy: { _count: { status: 'desc' } } }),
-      this.prisma.inventory.count({ where: { quantity: { lte: 5 } } }),
-      this.prisma.return.count({ where: { status: 'REQUESTED' } }),
-      this.prisma.contactMessage.count({ where: { status: 'NEW' } }),
-      this.prisma.order.count({ where: { placedAt: { gte: new Date(now.getFullYear(), now.getMonth(), now.getDate()) } } })
-    ]);
-
-    const statusCounts = ordersByStatus.reduce<Record<string, number>>((acc, row) => {
-      acc[row.status] = Number((row._count as { status?: number }).status ?? 0);
-      return acc;
-    }, {});
-
-    return reply.send({
-      totalOrders,
-      totalProducts,
-      totalUsers,
-      totalCustomers,
-      totalRevenue: Number(revenue._sum.total ?? 0),
-      monthRevenue: Number(monthRevenue._sum.total ?? 0),
-      weekRevenue: Number(weekRevenue._sum.total ?? 0),
-      todayOrders,
-      ordersByStatus: statusCounts,
-      lowStockCount,
-      pendingReturns,
-      unreadContact
-    });
+    const data = await this.analyticsService.stats();
+    return reply.send(data);
   }
 
   async recentOrders(request: FastifyRequest, reply: FastifyReply) {
     const query = request.query as { limit?: string };
     const limit = Math.min(Number(query.limit ?? 5) || 5, 50);
-
-    const orders = await this.prisma.order.findMany({
-      include: {
-        user: { select: { id: true, name: true, email: true } },
-        items: { select: { id: true, name: true, quantity: true, total: true } }
-      },
-      orderBy: { placedAt: 'desc' },
-      take: limit
-    });
-
-    return reply.send({
-      orders: orders.map((order) => ({
-        id: order.id,
-        orderNumber: order.orderNumber,
-        status: order.status,
-        total: order.total,
-        currency: order.currency,
-        placedAt: order.placedAt,
-        customer: order.user?.name ?? 'Unknown',
-        itemCount: order.items.reduce((sum, item) => sum + item.quantity, 0)
-      }))
-    });
+    const orders = await this.analyticsService.recentOrders(limit);
+    return reply.send({ orders });
   }
 
   async topProducts(_request: FastifyRequest, reply: FastifyReply) {
-    const rows = await this.prisma.orderItem.groupBy({
-      by: ['productId'],
-      _sum: { quantity: true, total: true },
-      orderBy: { _sum: { quantity: 'desc' } },
-      take: 10
-    });
-
-    const products = await this.prisma.product.findMany({
-      where: { id: { in: rows.map((row) => row.productId) } },
-      select: { id: true, name: true, slug: true, price: true }
-    });
-
-    const byId = new Map(products.map((p) => [p.id, p]));
-    return reply.send({
-      products: rows.map((row) => {
-        const product = byId.get(row.productId);
-        return {
-          productId: row.productId,
-          name: product?.name ?? 'Unknown',
-          slug: product?.slug ?? '',
-          unitsSold: row._sum.quantity ?? 0,
-          revenue: Number(row._sum.total ?? 0)
-        };
-      })
-    });
+    const products = await this.analyticsService.topProducts(10);
+    return reply.send({ products });
   }
 
   async topCustomers(_request: FastifyRequest, reply: FastifyReply) {
-    const rows = await this.prisma.order.groupBy({
-      by: ['userId'],
-      where: { status: { not: 'CANCELLED' } },
-      _sum: { total: true },
-      _count: { id: true },
-      orderBy: { _sum: { total: 'desc' } },
-      take: 10
-    });
-
-    const users = await this.prisma.user.findMany({
-      where: { id: { in: rows.map((row) => row.userId) } },
-      select: { id: true, name: true, email: true }
-    });
-
-    const byId = new Map(users.map((u) => [u.id, u]));
-    return reply.send({
-      customers: rows.map((row) => ({
-        userId: row.userId,
-        name: byId.get(row.userId)?.name ?? 'Unknown',
-        email: byId.get(row.userId)?.email ?? '',
-        orders: row._count.id ?? 0,
-        totalSpent: Number(row._sum.total ?? 0)
-      }))
-    });
+    const customers = await this.analyticsService.topCustomers(10);
+    return reply.send({ customers });
   }
 
   async salesSeries(request: FastifyRequest, reply: FastifyReply) {
     const query = request.query as { days?: string };
     const days = Math.min(90, Math.max(7, Number(query.days ?? 30)));
-    const since = new Date();
-    since.setDate(since.getDate() - (days - 1));
-    since.setHours(0, 0, 0, 0);
-
-    const rows = await this.prisma.order.findMany({
-      where: { status: { not: 'CANCELLED' }, placedAt: { gte: since } },
-      select: { placedAt: true, total: true, status: true }
-    });
-
-    const labels: string[] = [];
-    const revenue: number[] = [];
-    const orders: number[] = [];
-    const dayIndex = new Map<string, number>();
-
-    for (let i = 0; i < days; i++) {
-      const date = new Date(since);
-      date.setDate(since.getDate() + i);
-      const key = date.toISOString().slice(0, 10);
-      labels.push(key);
-      dayIndex.set(key, i);
-      revenue.push(0);
-      orders.push(0);
-    }
-
-    for (const row of rows) {
-      const key = row.placedAt.toISOString().slice(0, 10);
-      const index = dayIndex.get(key);
-      if (index === undefined) continue;
-      revenue[index] += Number(row.total);
-      orders[index] += 1;
-    }
-
-    return reply.send({
-      days,
-      series: labels.map((label, i) => ({ date: label, revenue: Math.round(revenue[i] * 100) / 100, orders: orders[i] }))
-    });
+    const series = await this.analyticsService.salesSeries(days);
+    return reply.send(series);
   }
 }
