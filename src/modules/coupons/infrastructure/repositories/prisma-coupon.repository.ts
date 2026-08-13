@@ -104,7 +104,9 @@ export class PrismaCouponRepository implements CouponRepositoryPort {
 
   async consume(code: string, amount: number): Promise<void> {
     const coupon = await this.prisma.coupon.findUnique({ where: { code: code.toUpperCase() } });
-    if (!coupon) return;
+    if (!coupon) {
+      throw new Error('Coupon not found.');
+    }
     const currentBalance = coupon.balance === null || coupon.balance === undefined ? null : Number(coupon.balance);
     const nextBalance = currentBalance === null ? null : Math.max(0, Math.round((currentBalance - amount) * 100) / 100);
     await this.prisma.coupon.update({
