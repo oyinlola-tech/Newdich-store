@@ -4,7 +4,7 @@ import type { UserRepositoryPort } from '../../../users/application/ports/user.r
 import type { CartRepositoryPort } from '../../../carts/infrastructure/repositories/prisma-cart.repository.js';
 import type { PaymentService } from '../../../payments/application/services/payment.service.js';
 
-const EMAILED_STATUSES = new Set(['PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED']);
+const EMAILED_STATUSES = new Set(['PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED', 'REFUNDED']);
 
 export class OrderService {
   constructor(
@@ -96,29 +96,33 @@ export class OrderService {
       note: noteParts.length > 0 ? noteParts.join(' | ') : undefined
     });
 
-    await this.cartRepository.clear(userId);
-
     const user = await this.userRepository.findById(userId);
     if (user) {
-      await this.mailerService.sendOrderConfirmation(
-        { email: user.email, name: user.name },
-        {
-          userName: user.name,
-          orderNumber: order.orderNumber,
-          subtotal: total,
-          shippingAmount: 0,
-          taxAmount: 0,
-          discountAmount: 0,
-          total,
-          items: items.map((item) => ({ name: item.name, quantity: item.quantity, price: item.price })),
-          placedAt: order.placedAt
-        }
-      );
-      await this.mailerService.sendAdminAlert({
-        subject: `New order #${order.orderNumber}`,
-        body: `A new order (${order.orderNumber}) was placed for ${total} ${order.currency}.`
-      });
+      try {
+        await this.mailerService.sendOrderConfirmation(
+          { email: user.email, name: user.name },
+          {
+            userName: user.name,
+            orderNumber: order.orderNumber,
+            subtotal: total,
+            shippingAmount: 0,
+            taxAmount: 0,
+            discountAmount: 0,
+            total,
+            items: items.map((item) => ({ name: item.name, quantity: item.quantity, price: item.price })),
+            placedAt: order.placedAt
+          }
+        );
+        await this.mailerService.sendAdminAlert({
+          subject: `New order #${order.orderNumber}`,
+          body: `A new order (${order.orderNumber}) was placed for ${total} ${order.currency}.`
+        });
+      } catch {
+        // email failures must not block order completion
+      }
     }
+
+    await this.cartRepository.clear(userId);
 
     return order;
   }

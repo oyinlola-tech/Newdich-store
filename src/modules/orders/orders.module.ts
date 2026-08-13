@@ -13,7 +13,7 @@ export function registerOrdersModule(container: Container, app: FastifyInstance)
       c.get('user.repository'),
       c.get('mailer.service'),
       c.get('cart.repository'),
-      c.get('payment.service')
+      container.has('payment.service') ? c.get('payment.service') : undefined
     )
   );
   container.register('order.controller', (c) => new OrderController(c.get('order.service')));

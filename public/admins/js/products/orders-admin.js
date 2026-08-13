@@ -4,7 +4,7 @@ import { formatCurrency } from '../main/format.js';
 import { escapeHtml, escapeAttr } from '../main/sanitize.js';
 import { navigateToRoute } from '../main/security.js';
 
-if (!checkAdminAuth()) return;
+if (!checkAdminAuth()) { throw new Error("Admin auth check failed"); }
 
 let currentOrders = [];
 let currentFilters = {

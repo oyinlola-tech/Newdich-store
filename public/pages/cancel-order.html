@@ -1,24 +1,23 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:; img-src 'self' data: https://via.placeholder.com; connect-src 'self' http://localhost:3000; base-uri 'self'; form-action 'self'; frame-ancestors 'none'">
     <meta name="referrer" content="no-referrer">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telente Store - Order Confirmation</title>
+    <title>Telente Store - Cancel Order</title>
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
-</head>
-<body class="auth-guest">
+</head><body class="auth-guest">
     <script>
             if (!sessionStorage.getItem('authToken')) {
-                window.location.href = '/login?redirect=' + encodeURIComponent('/order-confirmation');
+                window.location.href = '/login?redirect=' + encodeURIComponent('/orders');
             }
         </script>
-    <script>sessionStorage.getItem("authToken")&&(document.body.classList.add("auth-authenticated"),document.body.classList.remove("auth-guest"));</script>
-    <header>
+<script>sessionStorage.getItem("authToken")&&(document.body.classList.add("auth-authenticated"),document.body.classList.remove("auth-guest"));</script>
+<header>
         <div class="container">
             <div class="logo">
                 <h1>Telente Store</h1>
@@ -49,13 +48,16 @@
         </div>
     </header><main>
         <div class="container">
-            <div id="order-confirmation-container">
-                <div class="loading">Loading order details...</div>
+            <div class="account-page">
+                <h2 class="section-title">Cancel Order</h2>
+                <div id="cancel-order-container">
+                    <div class="loading">Loading cancel order...</div>
+                </div>
             </div>
         </div>
     </main>
 
-                <footer>
+        <footer>
         <div class="footer-editorial">
             <div class="container">
                 <h2 class="footer-editorial-statement">SEE YOU<br>AROUND.</h2>
@@ -128,17 +130,8 @@
         </div>
     </footer>
 
-    <script type="module" src="js/products/order-confirmation.js"></script>
+    <script type="module" src="/js/orders/cancel-order.js"></script>
+    <script type="module" src="/js/main/main.js"></script>
     <script type="module" src="/js/pages/footer-year.js"></script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
