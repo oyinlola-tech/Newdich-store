@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:; img-src 'self' data: https://via.placeholder.com; connect-src 'self' http://localhost:3000; base-uri 'self'; form-action 'self'; frame-ancestors 'none'">
+    <meta name="referrer" content="no-referrer">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telente Store - FAQs</title>
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head><body class="auth-guest">
+<script>sessionStorage.getItem("authToken")&&(document.body.classList.add("auth-authenticated"),document.body.classList.remove("auth-guest"));</script>
+<header>
+        <div class="container">
+            <div class="logo">
+                <h1>Telente Store</h1>
+            </div>
+            <button class="hamburger" aria-label="Menu">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/products">Products</a></li>
+                    <li><a href="/wishlist">Wishlist</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="header-icons">
+                <a href="/wishlist" class="wishlist-icon">
+                    <i class="fas fa-heart"></i>
+                </a>
+                <a href="/cart" class="cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count">0</span>
+                </a>
+                <a href="/account" class="user-icon">
+                    <i class="fas fa-user"></i>
+                </a>
+            </div>
+        </div>
+    </header><main>
+        <div class="container">
+            <div class="content-page">
+                <div class="content-header">
+                    <h2 class="section-title">Frequently Asked Questions</h2>
+                    <input type="search" id="faq-search" class="faq-search" placeholder="Search questions...">
+                </div>
+                <div class="faq-categories">
+                    <button class="faq-category-pill active" data-filter="all">All</button>
+                    <button class="faq-category-pill" data-filter="orders">Orders</button>
+                    <button class="faq-category-pill" data-filter="shipping">Shipping</button>
+                    <button class="faq-category-pill" data-filter="returns">Returns & Refunds</button>
+                    <button class="faq-category-pill" data-filter="payments">Payments</button>
+                    <button class="faq-category-pill" data-filter="account">Account</button>
+                </div>
+                <div class="content-block" data-category="orders">
+    <div class="faq-item">
+        <button type="button" class="faq-question">How do I track my order? <i class="fas fa-chevron-down"></i></button>
+        <div class="faq-answer" style="max-height: 0; overflow: hidden;"><p>Head to the <a href="/track">track page</a> and enter your order number. You can also find live status inside your account.</p></div>
+    </div>
+    <div class="faq-item">
+        <button type="button" class="faq-question">Can I change or cancel an order after placing it? <i class="fas fa-chevron-down"></i></button>
+        <div class="faq-answer" style="max-height: 0; overflow: hidden;"><p>Orders can be cancelled while they are still PENDING or PROCESSING - use the <a href="/cancel-order">cancel order</a> page. Once shipped, they can no longer be cancelled.</p></div>
+    </div>
+</div>
+                <div class="content-block" data-category="shipping">
+    <div class="faq-item">
+        <button type="button" class="faq-question">How long does delivery take? <i class="fas fa-chevron-down"></i></button>
+        <div class="faq-answer" style="max-height: 0; overflow: hidden;"><p>Most orders are dispatched within 24 hours and delivered in 2-5 business days. Delivery times are shown at checkout.</p></div>
+    </div>
+    <div class="faq-item">
+        <button type="button" class="faq-question">Which delivery options are available? <i class="fas fa-chevron-down"></i></button>
+        <div class="faq-answer" style="max-height: 0; overflow: hidden;"><p>We offer standard and express delivery. Exact options and prices are calculated at checkout based on your address.</p></div>
+    </div>
+</div>
+                <div class="content-block" data-category="returns">
+    <div class="faq-item">
+        <button type="button" class="faq-question">What is your return policy? <i class="fas fa-chevron-down"></i></button>
+        <div class="faq-answer" style="max-height: 0; overflow: hidden;"><p>You can return most items within 30 days of delivery. Visit the <a href="/returns">returns page</a> to start a return.</p></div>
+    </div>
+    <div class="faq-item">
+        <button type="button" class="faq-question">When will I get my refund? <i class="fas fa-chevron-down"></i></button>
+        <div class="faq-answer" style="max-height: 0; overflow: hidden;"><p>Refunds are issued to your original payment method within 5-10 business days of the returned item arriving at our warehouse.</p></div>
+    </div>
+</div>
+                <div class="content-block" data-category="payments">
+    <div class="faq-item">
+        <button type="button" class="faq-question">Which payment methods do you accept? <i class="fas fa-chevron-down"></i></button>
+        <div class="faq-answer" style="max-height: 0; overflow: hidden;"><p>We accept all major cards and secure online payment methods. Options are shown at checkout.</p></div>
+    </div>
+    <div class="faq-item">
+        <button type="button" class="faq-question">Is my payment information secure? <i class="fas fa-chevron-down"></i></button>
+        <div class="faq-answer" style="max-height: 0; overflow: hidden;"><p>Yes. Payments are handled over encrypted connections and we never store your full card details.</p></div>
+    </div>
+</div>
+                <div class="content-block" data-category="account">
+    <div class="faq-item">
+        <button type="button" class="faq-question">How do I reset my password? <i class="fas fa-chevron-down"></i></button>
+        <div class="faq-answer" style="max-height: 0; overflow: hidden;"><p>Use the <a href="/forgot-password">forgot password</a> link on the login page and follow the email instructions.</p></div>
+    </div>
+    <div class="faq-item">
+        <button type="button" class="faq-question">How do I manage my addresses? <i class="fas fa-chevron-down"></i></button>
+        <div class="faq-answer" style="max-height: 0; overflow: hidden;"><p>Sign in and open the <a href="/addresses">addresses</a> page in your account to add, edit, or remove delivery addresses.</p></div>
+    </div>
+</div>
+            </div>
+        </div>
+    </main>
+
+        <footer>
+        <div class="footer-editorial">
+            <div class="container">
+                <h2 class="footer-editorial-statement">SEE YOU<br>AROUND.</h2>
+                <p class="footer-editorial-sub">Good things are always worth another look.</p>
+                <a href="/products" class="footer-cta">Keep shopping →</a>
+            </div>
+        </div>
+        <div class="footer-nav-groups">
+            <div class="container">
+                <div class="footer-grid">
+                    <div class="footer-column">
+                        <h4>SHOP</h4>
+                        <ul>
+                            <li><a href="/products">All products</a></li>
+                            <li><a href="/products?filter=new">New arrivals</a></li>
+                            <li><a href="/products?filter=bestsellers">Bestsellers</a></li>
+                            <li><a href="/products?filter=deals">Deals</a></li>
+                            <li><a href="/products">Categories</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>HELP</h4>
+                        <ul>
+                            <li><a href="/contact">Contact</a></li>
+                            <li><a href="/faqs">FAQs</a></li>
+                            <li><a href="/track">Delivery</a></li>
+                            <li><a href="/returns">Returns</a></li>
+                            <li><a href="/track">Track order</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>ABOUT</h4>
+                        <ul>
+                            <li><a href="/about">Our story</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-newsletter">
+            <div class="container">
+                <h4>STAY IN THE LOOP.</h4>
+                <p>New drops, good finds, and things worth knowing.</p>
+                <form class="newsletter-form" onsubmit="event.preventDefault();">
+                    <input type="email" placeholder="your@email.com" aria-label="Email for newsletter">
+                    <button type="submit">→</button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-marquee" aria-hidden="true">
+            <div class="footer-marquee-inner">
+                <span>GOOD PRODUCTS</span>
+                <span>·</span>
+                <span>GOOD FINDS</span>
+                <span>·</span>
+                <span>GOOD DAYS</span>
+                <span>·</span>
+                <span>GOOD PRODUCTS</span>
+                <span>·</span>
+                <span>GOOD FINDS</span>
+                <span>·</span>
+                <span>GOOD DAYS</span>
+                <span>·</span>
+            </div>
+        </div>
+        <div class="footer-legal">
+            <div class="container">
+                <p>TELENTE STORE · © <span class="js-year">2026</span> Telente Store · <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a> · <a href="/cookies">Cookies</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="/js/pages/footer-year.js"></script>
+    <script type="module" src="/js/main/cookie-consent.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('faq-search');
+            const filterPills = document.querySelectorAll('.faq-category-pill');
+            const faqItems = document.querySelectorAll('.faq-item');
+            const categoryBlocks = document.querySelectorAll('.content-block[data-category]');
+
+            function toggleFaq(item) {
+                const isActive = item.classList.contains('active');
+                faqItems.forEach(i => i.classList.remove('active'));
+                if (!isActive) {
+                    item.classList.add('active');
+                    const answer = item.querySelector('.faq-answer');
+                    if (answer) {
+                        answer.style.maxHeight = answer.scrollHeight + 'px';
+                    }
+                } else {
+                    const answer = item.querySelector('.faq-answer');
+                    if (answer) answer.style.maxHeight = '0';
+                }
+            }
+
+            faqItems.forEach(item => {
+                const btn = item.querySelector('.faq-question');
+                btn.addEventListener('click', () => toggleFaq(item));
+            });
+
+            function filterCategory(category) {
+                faqItems.forEach(item => {
+                    const parentBlock = item.closest('.content-block[data-category]');
+                    const itemCategory = parentBlock ? parentBlock.getAttribute('data-category') : '';
+                    if (category === 'all' || itemCategory === category) {
+                        item.style.display = '';
+                    } else {
+                        item.style.display = 'none';
+                        item.classList.remove('active');
+                        const answer = item.querySelector('.faq-answer');
+                        if (answer) answer.style.maxHeight = '0';
+                    }
+                });
+
+                categoryBlocks.forEach(block => {
+                    const visibleItems = block.querySelectorAll('.faq-item[style=""], .faq-item:not([style])');
+                    block.style.display = visibleItems.length > 0 ? '' : 'none';
+                });
+            }
+
+            filterPills.forEach(pill => {
+                pill.addEventListener('click', () => {
+                    filterPills.forEach(p => p.classList.remove('active'));
+                    pill.classList.add('active');
+                    const filter = pill.getAttribute('data-filter');
+                    filterCategory(filter);
+                });
+            });
+
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    const term = e.target.value.toLowerCase().trim();
+                    let activeCategory = 'all';
+                    const activePill = document.querySelector('.faq-category-pill.active');
+                    if (activePill) activeCategory = activePill.getAttribute('data-filter');
+
+                    faqItems.forEach(item => {
+                        const question = item.querySelector('.faq-question').textContent.toLowerCase();
+                        const answer = item.querySelector('.faq-answer-inner').textContent.toLowerCase();
+                        const match = question.includes(term) || answer.includes(term);
+                        const parentBlock = item.closest('.content-block[data-category]');
+                        const itemCategory = parentBlock ? parentBlock.getAttribute('data-category') : '';
+                        
+                        const categoryMatches = activeCategory === 'all' || itemCategory === activeCategory;
+                        item.style.display = (match && categoryMatches) ? '' : 'none';
+                        
+                        if (!match) {
+                            item.classList.remove('active');
+                            const answerEl = item.querySelector('.faq-answer');
+                            if (answerEl) answerEl.style.maxHeight = '0';
+                        }
+                    });
+
+                    categoryBlocks.forEach(block => {
+                        const visibleItems = block.querySelectorAll('.faq-item[style=""], .faq-item:not([style])');
+                        block.style.display = visibleItems.length > 0 ? '' : 'none';
+                    });
+                });
+            }
+        });
+    </script>
+    <script type="module" src="/js/main/main.js"></script>
+</body>
+</html>

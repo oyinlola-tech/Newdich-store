@@ -1,19 +1,18 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:; img-src 'self' data: https://via.placeholder.com; connect-src 'self' http://localhost:3000; base-uri 'self'; form-action 'self'; frame-ancestors 'none'">
     <meta name="referrer" content="no-referrer">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telente Store - Home</title>
-    <!-- Font Awesome 6 (Free) -->
+    <title>Telente Store - About Us</title>
+    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
-</head>
-<body class="auth-guest">
-    <script>sessionStorage.getItem("authToken")&&(document.body.classList.add("auth-authenticated"),document.body.classList.remove("auth-guest"));</script>
-    <header>
+</head><body class="auth-guest">
+<script>sessionStorage.getItem("authToken")&&(document.body.classList.add("auth-authenticated"),document.body.classList.remove("auth-guest"));</script>
+<header>
         <div class="container">
             <div class="logo">
                 <h1>Telente Store</h1>
@@ -43,78 +42,35 @@
             </div>
         </div>
     </header><main>
-        <section class="hero hero-editorial">
-            <div class="container">
-                <div class="hero-grid">
-                    <div class="hero-text">
-                        <p class="hero-eyebrow">EVERYDAY, ELEVATED</p>
-                        <h2 class="hero-display">GOOD<span class="hero-display-accent">THINGS.</span></h2>
-                        <h3 class="hero-display-sub">FIND THEIR WAY HOME.</h3>
-                        <p class="hero-subhead">A considered collection of things worth bringing into your everyday.</p>
-                        <div class="hero-actions">
-                            <a href="/products" class="btn-primary btn-hero">Shop everything</a>
-                        </div>
-                    </div>
-                    <div class="hero-visual">
-                        <div id="hero-featured-card" class="product-card">
-                            <div class="loading">Loading featured highlight...</div>
-                        </div>
-                    </div>
-                </div>
+        <div class="container">
+            <div class="content-page">
+                <div class="content-header">
+    <h2 class="section-title">About Telente Store</h2>
+    <p>Good products, good finds, good days.</p>
+</div>
+<div class="content-block">
+    <h3>Our Story</h3>
+    <p>Telente Store was built around a simple idea: shopping should feel good. We scour for quality products worth owning, present them honestly, and make sure every order arrives the way it should - on time and as described.</p>
+    <p>From everyday essentials to the occasional treat, everything we carry earns its place through usefulness, design, and value.</p>
+</div>
+<div class="content-block">
+    <h3>Why Shop With Us</h3>
+    <ul class="content-list">
+        <li>Curated catalog - every product earns its spot</li>
+        <li>Fast, tracked delivery</li>
+        <li>Hassle-free returns within 30 days</li>
+        <li>Support that actually answers</li>
+    </ul>
+</div>
+<div class="content-block">
+    <h3>Contact</h3>
+    <p>Questions? Head to <a href="/contact">our contact page</a> or email <a href="mailto:support@telente.site">support@telente.site</a>.</p>
+</div>
             </div>
-        </section>
-
-        <section class="hero-statement">
-            <div class="container">
-                <h2 class="statement-display">FOR THE<br>THINGS YOU<br>DO EVERY DAY.</h2>
-            </div>
-        </section>
-
-        <section class="category-exploration">
-            <div class="container">
-                <div class="category-grid">
-                    <a href="/products?category=fashion" class="category-block category-block--1">
-                        <span class="category-label">FASHION</span>
-                    </a>
-                    <a href="/products?category=home" class="category-block category-block--2">
-                        <span class="category-label">HOME</span>
-                    </a>
-                    <a href="/products?category=tech" class="category-block category-block--3">
-                        <span class="category-label">TECH</span>
-                    </a>
-                    <a href="/products?category=beauty" class="category-block category-block--4">
-                        <span class="category-label">BEAUTY</span>
-                    </a>
-                </div>
-            </div>
-        </section>
-
-        <section class="featured-products">
-            <div class="container">
-                <h3 class="section-display">CURRENTLY<br>LOVING.</h3>
-                <div id="featured-products-grid" class="product-grid">
-                    <div class="loading">Loading products...</div>
-                </div>
-            </div>
-        </section>
-
-        <section class="related-products">
-            <div class="container">
-                <h3 class="section-display">WORTH A<br>LOOK.</h3>
-                <div id="home-related-grid" class="product-grid">
-                    <div class="loading">Loading related products...</div>
-                </div>
-            </div>
-        </section>
-
-        <section class="hero-statement hero-statement--footer">
-            <div class="container">
-                <h2 class="statement-display">MAKE YOURSELF<br>AT HOME.</h2>
-            </div>
-        </section>
+        </div>
     </main>
 
-            <footer>
+        <footer>
         <div class="footer-editorial">
             <div class="container">
                 <h2 class="footer-editorial-statement">SEE YOU<br>AROUND.</h2>
@@ -187,9 +143,7 @@
         </div>
     </footer>
 
-    <script type="module" src="js/index.js"></script>
+    <script type="module" src="/js/main/main.js"></script>
     <script type="module" src="/js/pages/footer-year.js"></script>
 </body>
 </html>
-
-
