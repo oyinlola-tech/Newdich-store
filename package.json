@@ -59,7 +59,7 @@
     "tsx": "^4.23.11",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.66.0",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.11"
   },
   "prisma": {
     "schema": "src/database/prisma/schema.prisma",
